@@ -19,7 +19,7 @@ jobs:
           command: mvn test
 
       - codecov/upload:
-          file: {{ coverage_report_filepath }}
+          file: target/site/jacoco/index.html
 
 workflows:
   sample:
