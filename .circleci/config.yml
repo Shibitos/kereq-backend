@@ -16,7 +16,6 @@ jobs:
       - run:
           command: |
             psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE postgres;"
-            psql -h 127.0.0.1 -U postgres -c "CREATE USER postgres WITH PASSWORD 'postgres'; GRANT ALL PRIVILEGES ON DATABASE postgres TO postgres;"
       - run:
           name: Build
           command: mvn -B -DskipTests clean package
