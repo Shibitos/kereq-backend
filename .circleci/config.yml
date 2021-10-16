@@ -9,8 +9,14 @@ jobs:
   build-and-test:
     docker:
       - image: cimg/openjdk:11.0
+      - image: postgres:13.1-alpine
     steps:
       - checkout
+      - run: apt-get update -qq && apt-get install -y postgresql
+      - run:
+          command: |
+            psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE postgres;"
+            psql -h 127.0.0.1 -U postgres -c "CREATE USER postgres WITH PASSWORD 'postgres'; GRANT ALL PRIVILEGES ON DATABASE postgres TO postgres;"
       - run:
           name: Build
           command: mvn -B -DskipTests clean package
