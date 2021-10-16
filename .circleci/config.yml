@@ -10,11 +10,11 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
       - image: postgres:13.1-alpine
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
     steps:
       - checkout
-      - run:
-          command: |
-            psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE postgres;"
       - run:
           name: Build
           command: mvn -B -DskipTests clean package
