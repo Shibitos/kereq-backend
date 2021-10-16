@@ -1,0 +1,22 @@
+package com.kereq;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.kereq.controller.HelloWorldController;
+import org.junit.jupiter.api.Test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+public class SampleTest {
+
+    @Autowired
+    private HelloWorldController controller;
+
+    @Test
+    public void contextLoads() throws Exception {
+        assertThat(controller).isNotNull();
+        assertThat(controller.second()).isEqualTo("Second");
+    }
+}
