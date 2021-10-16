@@ -28,7 +28,7 @@ jobs:
           token: 54a222bf-7770-4cb0-913d-c5a86161d181
 
 workflows:
-  sample:
+  build-test-coverage:
     jobs:
       - build-and-test
       
