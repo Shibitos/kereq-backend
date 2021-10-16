@@ -3,7 +3,7 @@
 version: 2.1
 
 orbs:
-  codecov: codecov/codecov@1.0.2
+  codecov: codecov/codecov@3.1.1
 
 jobs:
   build-and-test:
@@ -23,11 +23,12 @@ jobs:
           name: Test
           command: mvn test
 
-      - codecov/upload:
-          file: target/site/jacoco/index.html
+#      - codecov/upload:
+#          file: target/site/jacoco/index.html
 
 workflows:
   sample:
     jobs:
       - build-and-test
+      - codecov/upload
       
