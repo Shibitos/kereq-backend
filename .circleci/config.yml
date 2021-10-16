@@ -23,12 +23,12 @@ jobs:
           name: Test
           command: mvn test
 
-#      - codecov/upload:
-#          file: target/site/jacoco/index.html
+      - codecov/upload:
+          file: target/site/jacoco/index.html
+          token: 54a222bf-7770-4cb0-913d-c5a86161d181
 
 workflows:
   sample:
     jobs:
       - build-and-test
-      - codecov/upload
       
