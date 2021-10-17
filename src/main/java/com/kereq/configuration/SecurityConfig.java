@@ -4,8 +4,8 @@ import com.kereq.configuration.jwt.AuthenticationFailureHandler;
 import com.kereq.configuration.jwt.AuthenticationSuccessHandler;
 import com.kereq.configuration.jwt.JSONObjectAuthenticationFilter;
 import com.kereq.configuration.jwt.JwtAuthorizationFilter;
-import com.kereq.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
@@ -37,8 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.secret = secret;
     }
 
+    //@Qualifier("UserDetailsServiceImpl")
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
