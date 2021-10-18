@@ -1,4 +1,4 @@
-package com.kereq.configuration.jwt;
+package com.kereq.authorization.configuration;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

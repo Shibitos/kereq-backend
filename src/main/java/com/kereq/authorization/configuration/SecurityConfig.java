@@ -1,11 +1,6 @@
-package com.kereq.configuration;
+package com.kereq.authorization.configuration;
 
-import com.kereq.configuration.jwt.AuthenticationFailureHandler;
-import com.kereq.configuration.jwt.AuthenticationSuccessHandler;
-import com.kereq.configuration.jwt.JSONObjectAuthenticationFilter;
-import com.kereq.configuration.jwt.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
-@EnableWebSecurity(debug = false)
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
@@ -38,7 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.secret = secret;
     }
 
-    //@Qualifier("UserDetailsServiceImpl")
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -54,10 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable(); //TODO: csrf?
+        http.cors().and().csrf().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/", "/auth/*").permitAll() //TODO: what with logged user?
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -74,6 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         filter.setAuthenticationFailureHandler(authenticationFailureHandler);
         filter.setAuthenticationManager(super.authenticationManager());
+        filter.setFilterProcessesUrl("/auth/login");
         return filter;
     }
 

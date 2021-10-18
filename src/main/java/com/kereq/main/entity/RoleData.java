@@ -1,4 +1,4 @@
-package com.kereq.entity;
+package com.kereq.main.entity;
 
 import lombok.Getter;
 import lombok.Setter;

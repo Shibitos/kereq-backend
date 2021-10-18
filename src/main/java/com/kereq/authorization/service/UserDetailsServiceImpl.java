@@ -1,7 +1,7 @@
-package com.kereq.service;
+package com.kereq.authorization.service;
 
-import com.kereq.entity.UserData;
-import com.kereq.repository.UserRepository;
+import com.kereq.main.entity.UserData;
+import com.kereq.main.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

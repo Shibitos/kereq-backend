@@ -1,4 +1,4 @@
-package com.kereq.entity;
+package com.kereq.main.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -58,7 +58,7 @@ public class UserData extends BaseEntity implements UserDetails {
     @NotNull
     private boolean activated;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "USERS_ROLES",
             joinColumns = {@JoinColumn(name = "UR_USER_ID", referencedColumnName = "USER_ID")},

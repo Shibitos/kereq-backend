@@ -1,6 +1,7 @@
-package com.kereq.configuration.jwt;
+package com.kereq.authorization.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kereq.authorization.dto.LoginDTO;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -23,9 +24,9 @@ public class JSONObjectAuthenticationFilter extends UsernamePasswordAuthenticati
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
-            LoginCredentials authRequest = objectMapper.readValue(sb.toString(), LoginCredentials.class);
+            LoginDTO authRequest = objectMapper.readValue(sb.toString(), LoginDTO.class);
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    authRequest.getUsername(), authRequest.getPassword()
+                    authRequest.getLogin(), authRequest.getPassword()
             );
             setDetails(request, token);
             return this.getAuthenticationManager().authenticate(token);

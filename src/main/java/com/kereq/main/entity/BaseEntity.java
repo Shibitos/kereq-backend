@@ -1,4 +1,4 @@
-package com.kereq.entity;
+package com.kereq.main.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,4 +26,13 @@ public class BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "AUDIT_RD")
     private Date auditRD;
+
+//    @CreatedBy
+//    @Column(updatable = false)
+//    @JsonIgnore
+//    private String createdBy;
+//
+//    @LastModifiedBy
+//    @JsonIgnore
+//    private String updatedBy;
 }
