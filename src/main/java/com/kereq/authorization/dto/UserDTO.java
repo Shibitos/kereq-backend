@@ -1,6 +1,5 @@
 package com.kereq.authorization.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kereq.authorization.validation.annotations.PasswordMatch;
 import com.kereq.authorization.validation.annotations.ValidPassword;
 import lombok.Getter;
