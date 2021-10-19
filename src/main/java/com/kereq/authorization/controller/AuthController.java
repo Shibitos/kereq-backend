@@ -20,11 +20,6 @@ public class AuthController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/register")
-    public String register() {
-        return "reg";
-    }
-
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO) {
         UserData user = modelMapper.map(userDTO, UserData.class);
