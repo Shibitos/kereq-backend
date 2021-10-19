@@ -2,9 +2,13 @@ package com.kereq.authorization.service;
 
 import com.kereq.authorization.dto.UserDTO;
 import com.kereq.main.entity.UserData;
+import com.kereq.main.exception.ApplicationException;
+import com.kereq.main.exception.error.ApplicationError;
+import com.kereq.main.exception.error.RepositoryError;
 import com.kereq.main.repository.RoleRepository;
 import com.kereq.main.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.sonatype.aether.RepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,20 +26,15 @@ public class AuthService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void RegisterUser(final UserDTO userDTO) {
-        if (userRepository.existsByLogin(userDTO.getLogin())) {
-            //TODO: custom exception handling (one custom exception class + list of exception messages with {0} format?)
-            //ex. ref.: https://auth0.com/blog/get-started-with-custom-error-handling-in-spring-boot-java/
+    public void RegisterUser(UserData user) {
+        if (userRepository.existsByLogin(user.getLogin())) {
+            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS, user.getLogin(), "Login");
         }
-        if (userRepository.existsByEmail(userDTO.getEmail())) {
-            //TODO: exception
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS, user.getLogin(), "Email");
         }
-        UserData user = modelMapper.map(userDTO, UserData.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Collections.singleton(roleRepository.findByCode("ROLE_USER")));
         userRepository.save(user);
