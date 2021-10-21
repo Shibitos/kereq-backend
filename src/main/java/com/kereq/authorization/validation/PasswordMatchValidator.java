@@ -1,7 +1,7 @@
 package com.kereq.authorization.validation;
 
 import com.kereq.authorization.dto.UserDTO;
-import com.kereq.authorization.validation.annotations.PasswordMatch;
+import com.kereq.authorization.validation.annotation.PasswordMatch;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

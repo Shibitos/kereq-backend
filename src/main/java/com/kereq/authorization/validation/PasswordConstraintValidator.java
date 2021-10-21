@@ -1,6 +1,6 @@
 package com.kereq.authorization.validation;
 
-import com.kereq.authorization.validation.annotations.ValidPassword;
+import com.kereq.authorization.validation.annotation.ValidPassword;
 import org.passay.*;
 
 import javax.validation.ConstraintValidator;
@@ -18,7 +18,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
 
     @Override
     public boolean isValid(final String password, final ConstraintValidatorContext context) {
-        PasswordValidator validator = new PasswordValidator(Arrays.asList(
+        PasswordValidator validator = new PasswordValidator(Arrays.asList( //TODO: think of it
         new LengthRule(8, 24),
         new CharacterRule(EnglishCharacterData.UpperCase, 1), //At least one upper-case character
         new CharacterRule(EnglishCharacterData.LowerCase, 1), //At least one lower-case character

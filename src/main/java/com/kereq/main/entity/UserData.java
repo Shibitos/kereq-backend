@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @AttributeOverride(name = "auditRD", column = @Column(name = "USER_AUDIT_RD"))
 @Getter
 @Setter
-public class UserData extends BaseEntity implements UserDetails {
+public class UserData extends AuditableEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

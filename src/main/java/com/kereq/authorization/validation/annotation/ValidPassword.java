@@ -1,4 +1,4 @@
-package com.kereq.authorization.validation.annotations;
+package com.kereq.authorization.validation.annotation;
 
 import com.kereq.authorization.validation.PasswordConstraintValidator;
 

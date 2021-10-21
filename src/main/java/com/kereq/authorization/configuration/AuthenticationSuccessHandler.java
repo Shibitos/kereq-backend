@@ -34,6 +34,6 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
                 .withSubject(principal.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
                 .sign(Algorithm.HMAC256(secret));
-        response.getOutputStream().print("{\"token\": \"" + token + "\"}");
+        response.getOutputStream().print("{\"token\": \"" + token + "\"}"); //TODO: think of it
     }
 }

@@ -14,7 +14,7 @@ import java.util.Date;
 @MappedSuperclass
 @Getter
 @Setter
-public class BaseEntity {
+public class AuditableEntity { //TODO: search criteria?
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
