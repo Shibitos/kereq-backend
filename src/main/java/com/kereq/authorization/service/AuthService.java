@@ -1,10 +1,11 @@
 package com.kereq.authorization.service;
 
 import com.kereq.authorization.entity.TokenData;
+import com.kereq.authorization.error.AuthError;
 import com.kereq.authorization.repository.TokenRepository;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
-import com.kereq.main.exception.error.RepositoryError;
+import com.kereq.main.error.RepositoryError;
 import com.kereq.main.repository.RoleRepository;
 import com.kereq.main.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,10 @@ public class AuthService {
     private final int verificationTokenExpirationTime = 60 * 24; //TODO: move to app parameters (and create them)
 
     public UserData registerUser(UserData user) {
-        if (userRepository.existsByLogin(user.getLogin())) {
+        if (userRepository.existsByLogin(user.getLogin().toLowerCase())) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS, user.getLogin(), "Login");
         }
-        if (userRepository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(user.getEmail().toLowerCase())) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS, user.getLogin(), "Email");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -48,7 +49,7 @@ public class AuthService {
         //TODO: email verification
     }
 
-    public TokenData createVerificationToken(UserData user) {
+    public TokenData generateVerificationToken(UserData user) {
         if (!userRepository.existsById(user.getId())) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND, user.getId());
         }
@@ -62,6 +63,33 @@ public class AuthService {
         token.setExpireDate(calculateExpireDate(verificationTokenExpirationTime));
 
         return tokenRepository.save(token);
+    }
+
+    public TokenData generateNewVerificationToken(final String existingToken) {
+        TokenData token = tokenRepository.findByValue(existingToken);
+        token.setValue(UUID.randomUUID().toString());
+        token = tokenRepository.save(token);
+        return token;
+    }
+
+    public void confirmUser(String token) {
+        final TokenData verificationToken = tokenRepository.findByValue(token);
+        if (verificationToken == null) {
+            throw new ApplicationException(AuthError.TOKEN_INVALID);
+        }
+
+        final UserData user = verificationToken.getUser();
+        final Calendar cal = Calendar.getInstance();
+        if ((verificationToken.getExpireDate()
+                .getTime() - cal.getTime()
+                .getTime()) <= 0) {
+            tokenRepository.delete(verificationToken);
+            throw new ApplicationException(AuthError.TOKEN_EXPIRED);
+        }
+
+        user.setActivated(true);
+        userRepository.save(user);
+        tokenRepository.delete(verificationToken);
     }
 
     private Date calculateExpireDate(final int expireTimeInMinutes) {

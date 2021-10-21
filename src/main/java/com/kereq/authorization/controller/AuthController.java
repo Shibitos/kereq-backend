@@ -7,10 +7,7 @@ import com.kereq.main.entity.UserData;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -28,8 +25,15 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO) {
         UserData user = modelMapper.map(userDTO, UserData.class); //TODO: captcha?
         user = authService.registerUser(user);
-        TokenData token = authService.createVerificationToken(user);
+        TokenData token = authService.generateVerificationToken(user);
         //TODO: sending token
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<?> registerUser(@RequestParam String token) {
+        authService.confirmUser(token);
 
         return ResponseEntity.ok().build();
     }

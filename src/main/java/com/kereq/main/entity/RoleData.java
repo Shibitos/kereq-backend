@@ -18,7 +18,7 @@ public class RoleData extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ROLE_ID")
-    private Short id;
+    private Long id;
 
     @Column(name="ROLE_CODE", length = 20, unique = true)
     @NotNull
