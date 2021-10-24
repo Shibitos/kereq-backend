@@ -4,18 +4,20 @@ import com.kereq.authorization.entity.TokenData;
 import com.kereq.authorization.error.AuthError;
 import com.kereq.authorization.repository.TokenRepository;
 import com.kereq.main.entity.UserData;
-import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.error.RepositoryError;
+import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.RoleRepository;
 import com.kereq.main.repository.UserRepository;
+import com.kereq.messaging.entity.MessageData;
+import com.kereq.messaging.entity.MessageTemplateData;
+import com.kereq.messaging.repository.MessageTemplateRepository;
+import com.kereq.messaging.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AuthService {
@@ -30,7 +32,13 @@ public class AuthService {
     private TokenRepository tokenRepository;
 
     @Autowired
+    private MessageTemplateRepository messageTemplateRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService;
 
     private final int verificationTokenExpirationTime = 60 * 24; //TODO: move to app parameters (and create them)
 
@@ -46,7 +54,6 @@ public class AuthService {
         user.setActivated(false);
 
         return userRepository.save(user);
-        //TODO: email verification
     }
 
     public TokenData generateVerificationToken(UserData user) {
@@ -63,6 +70,23 @@ public class AuthService {
         token.setExpireDate(calculateExpireDate(verificationTokenExpirationTime));
 
         return tokenRepository.save(token);
+    }
+
+    public void sendVerificationToken(UserData user, TokenData token) {
+        if (!token.getUser().getId().equals(user.getId())
+                || !TokenData.TokenType.VERIFICATION.equals(token.getType())) {
+            throw new ApplicationException();
+        }
+        MessageTemplateData template = messageTemplateRepository.findByCode("COMPLETE_REGISTRATION");
+        if (template == null) {
+            throw new ApplicationException();
+        }
+        Map<String, String> params = new HashMap<>();
+        final String baseUrl =
+                ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        params.put("CONFIRM_URL", baseUrl + "/auth/confirm?token=" + token.getValue());
+        MessageData message = emailService.createMessageFromTemplate(template, user.getEmail(), params);
+        emailService.sendMessage(message);
     }
 
     public TokenData generateNewVerificationToken(final String existingToken) {

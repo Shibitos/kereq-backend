@@ -21,4 +21,7 @@ CREATE TABLE MESSAGES (
     MSG_AUDIT_MD TIMESTAMP,
     MSG_AUDIT_RD TIMESTAMP
 );
+
+INSERT INTO MESSAGE_TEMPLATES (MSG_TMP_CODE, MSG_TMP_SUBJECT, MSG_TMP_BODY)
+VALUES ('COMPLETE_REGISTRATION', 'Complete registration', 'To complete registration, click following link: {{CONFIRM_URL}}');
 --TODO: sizes of columns

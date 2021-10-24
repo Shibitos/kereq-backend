@@ -26,12 +26,12 @@ public class AuthController {
         UserData user = modelMapper.map(userDTO, UserData.class); //TODO: captcha?
         user = authService.registerUser(user);
         TokenData token = authService.generateVerificationToken(user);
-        //TODO: sending token
+        authService.sendVerificationToken(user, token);
 
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/confirm")
+    @GetMapping("/confirm")
     public ResponseEntity<?> registerUser(@RequestParam String token) {
         authService.confirmUser(token);
 

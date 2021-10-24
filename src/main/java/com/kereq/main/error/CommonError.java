@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 public enum CommonError implements ApplicationError {
 
     OTHER_ERROR(500, "Error occurred."),
-    VALIDATION_ERROR(400, "Validation failed.");
+    VALIDATION_ERROR(400, "Validation failed."),
+    INVALID_ERROR(400, "Invalid {0}."),
+    MISSING_ERROR(404, "Missing {0}.");
 
     private final int httpCode;
     private final String message;
