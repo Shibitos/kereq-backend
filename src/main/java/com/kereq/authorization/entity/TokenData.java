@@ -15,13 +15,6 @@ import java.util.Date;
 @Setter
 public class TokenData { //TODO: purge tokens task
 
-    public interface TokenType { //TODO: validation?
-        String VERIFICATION = "V";
-        String PASSWORD_RESET = "R";
-
-        String ALL = "V|R";
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="TKN_ID")
@@ -43,4 +36,11 @@ public class TokenData { //TODO: purge tokens task
     @OneToOne(targetEntity = UserData.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "TKN_USER_ID")
     private UserData user;
+
+    public interface TokenType { //TODO: validation?
+        String VERIFICATION = "V";
+        String PASSWORD_RESET = "R";
+
+        String ALL = "V|R";
+    }
 }

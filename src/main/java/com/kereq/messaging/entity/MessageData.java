@@ -15,14 +15,6 @@ import javax.persistence.*;
 @Setter
 public class MessageData extends AuditableEntity {
 
-    public interface Status {
-        String PENDING = "P";
-        String SENT = "S";
-        String FAILED = "F";
-
-        String ALL = "P|S|F";
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="MSG_ID")
@@ -49,4 +41,12 @@ public class MessageData extends AuditableEntity {
 
     @Column(name="MSG_RETRY_COUNT")
     private Integer retryCount;
+
+    public interface Status {
+        String PENDING = "P";
+        String SENT = "S";
+        String FAILED = "F";
+
+        String ALL = "P|S|F";
+    }
 }

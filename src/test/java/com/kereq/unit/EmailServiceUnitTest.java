@@ -25,9 +25,6 @@ public class EmailServiceUnitTest {
     private MessageRepository messageRepository;
 
     @Mock
-    private MessageTemplateRepository messageTemplateRepository;
-
-    @Mock
     private Environment env;
 
     @InjectMocks

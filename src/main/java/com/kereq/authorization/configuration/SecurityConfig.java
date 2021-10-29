@@ -27,6 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AccessDeniedHandler accessDeniedHandler;
     private final String secret;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     public SecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler,
                           AuthenticationFailureHandler authenticationFailureHandler,
                           CustomAccessDeniedHandler accessDeniedHandler,
@@ -36,9 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.accessDeniedHandler = accessDeniedHandler;
         this.secret = secret;
     }
-
-    @Autowired
-    private UserDetailsService userDetailsService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {

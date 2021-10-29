@@ -82,7 +82,7 @@ public class EmailService {
     }
 
     private String appendParameters(String content, Map<String, String> params) {
-        content = PARAM_PATTERN.matcher(content).replaceAll((match) -> {
+        return PARAM_PATTERN.matcher(content).replaceAll((match) -> {
             String key = match.group();
             key = key.substring(2, key.length() - 2);
             if (!params.containsKey(key)) {
@@ -90,7 +90,5 @@ public class EmailService {
             }
             return params.get(key);
         });
-
-        return content;
     }
 }
