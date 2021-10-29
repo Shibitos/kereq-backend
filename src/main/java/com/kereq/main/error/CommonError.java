@@ -1,4 +1,4 @@
-package com.kereq.main.exception.error;
+package com.kereq.main.error;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CommonError implements ApplicationError {
 
-    OTHER_ERROR(500, "Error occurred.");
+    OTHER_ERROR(500, "Error occurred."),
+    VALIDATION_ERROR(400, "Validation failed."),
+    INVALID_ERROR(400, "Invalid {0}."),
+    MISSING_ERROR(404, "Missing {0}.");
 
     private final int httpCode;
     private final String message;

@@ -1,8 +1,7 @@
 package com.kereq.authorization.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kereq.authorization.validation.annotations.PasswordMatch;
-import com.kereq.authorization.validation.annotations.ValidPassword;
+import com.kereq.authorization.validation.annotation.PasswordMatch;
+import com.kereq.authorization.validation.annotation.ValidPassword;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +12,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @PasswordMatch
-public class UserDTO {
+public class UserDTO { //TODO: validation messages?
 
     @NotNull
     @Size(min = 4, max = 25)

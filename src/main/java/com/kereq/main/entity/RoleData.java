@@ -13,12 +13,12 @@ import javax.validation.constraints.NotNull;
 @AttributeOverride(name = "auditRD", column = @Column(name = "ROLE_AUDIT_RD"))
 @Getter
 @Setter
-public class RoleData extends BaseEntity {
+public class RoleData extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ROLE_ID")
-    private Short id;
+    private Long id;
 
     @Column(name="ROLE_CODE", length = 20, unique = true)
     @NotNull

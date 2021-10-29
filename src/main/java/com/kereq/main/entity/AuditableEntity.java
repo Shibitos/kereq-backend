@@ -5,13 +5,16 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 
 @MappedSuperclass
 @Getter
 @Setter
-public class BaseEntity {
+public class AuditableEntity { //TODO: search criteria?
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

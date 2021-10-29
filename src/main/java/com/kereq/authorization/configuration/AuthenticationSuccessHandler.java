@@ -2,12 +2,11 @@ package com.kereq.authorization.configuration;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +34,6 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
                 .withSubject(principal.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
                 .sign(Algorithm.HMAC256(secret));
-        response.getOutputStream().print("{\"token\": \"" + token + "\"}");
+        response.getOutputStream().print("{\"token\": \"" + token + "\"}"); //TODO: think of it
     }
 }
