@@ -21,7 +21,7 @@ jobs:
           command: mvn -B -DskipTests clean package
       - run:
           name: Test
-          command: mvn test
+          command: mvn -P test test
 
       - codecov/upload:
           file: target/site/jacoco/index.html
