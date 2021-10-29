@@ -56,7 +56,6 @@ public class ApplicationErrorControllerAdvice {
     public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException exception,
                                                                     final HttpServletRequest request) {
         HttpStatus status = exception.getStatus();
-        //request.get
 
         return new ResponseEntity<>(
                 new ErrorResponse(
