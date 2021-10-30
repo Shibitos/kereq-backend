@@ -8,12 +8,9 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-public class LoginDTO {
+public class ResendTokenDTO {
 
     @NotNull
-    @Size(min = 4, max = 25)
-    private String login;
-
-    @NotNull
-    private String password;
+    @Size(min = 4, max = 50)
+    private String loginOrEmail;
 }

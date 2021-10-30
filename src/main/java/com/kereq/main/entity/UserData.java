@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name="USERS")
+@Table(name = "USERS")
 @AttributeOverride(name = "auditCD", column = @Column(name = "USER_AUDIT_CD"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "USER_AUDIT_MD"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "USER_AUDIT_RD"))
@@ -25,36 +25,36 @@ public class UserData extends AuditableEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="USER_ID")
+    @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name="USER_LOGIN", length = 25, unique = true)
+    @Column(name = "USER_LOGIN", length = 25, unique = true)
     @NotNull
     @Size(min = 4, max = 25)
     private String login;
 
-    @Column(name="USER_FIRST_NAME", length = 25)
+    @Column(name = "USER_FIRST_NAME", length = 25)
     @NotNull
     @Size(min = 4, max = 25)
     private String firstName;
 
-    @Column(name="USER_LAST_NAME", length = 25)
+    @Column(name = "USER_LAST_NAME", length = 25)
     @NotNull
     @Size(min = 4, max = 25)
     private String lastName;
 
-    @Column(name="USER_EMAIL", length = 50, unique = true)
+    @Column(name = "USER_EMAIL", length = 50, unique = true)
     @NotNull
     @Size(min = 8, max = 50)
     private String email;
 
     @JsonIgnore
-    @Column(name="USER_PASSWORD", length = 72)
+    @Column(name = "USER_PASSWORD", length = 72)
     @NotNull
     private String password;
 
     @JsonIgnore
-    @Column(name="USER_ACTIVATED")
+    @Column(name = "USER_ACTIVATED")
     @NotNull
     private boolean activated;
 

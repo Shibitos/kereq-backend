@@ -1,5 +1,7 @@
 package com.kereq.authorization.controller;
 
+import com.kereq.authorization.dto.ConfirmDTO;
+import com.kereq.authorization.dto.ResendTokenDTO;
 import com.kereq.authorization.dto.UserDTO;
 import com.kereq.authorization.entity.TokenData;
 import com.kereq.authorization.service.AuthService;
@@ -7,7 +9,10 @@ import com.kereq.main.entity.UserData;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -26,14 +31,21 @@ public class AuthController {
         UserData user = modelMapper.map(userDTO, UserData.class); //TODO: captcha?
         user = authService.registerUser(user);
         TokenData token = authService.generateVerificationToken(user);
-        authService.sendVerificationToken(user, token);
+        authService.sendVerificationToken(user, token, false);
 
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/confirm")
-    public ResponseEntity<?> registerUser(@RequestParam String token) {
-        authService.confirmUser(token);
+    @PostMapping("/confirm")
+    public ResponseEntity<?> confirmUser(@Valid @RequestBody  ConfirmDTO confirmDTO) {
+        authService.confirmUser(confirmDTO.getToken());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/resend-confirm")
+    public ResponseEntity<?> resendConfirmUser(@Valid @RequestBody ResendTokenDTO loginOrEmailDTO) {
+        authService.resendVerificationToken(loginOrEmailDTO.getLoginOrEmail()); //TODO: security?
 
         return ResponseEntity.ok().build();
     }

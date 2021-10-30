@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.kereq.main.dto.ErrorResponse;
 import com.kereq.main.error.CommonError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +23,11 @@ public class ApplicationErrorControllerAdvice {
     @Autowired
     private ObjectMapper mapper;
 
+    private static final Logger LOG = LoggerFactory.getLogger(ApplicationErrorControllerAdvice.class);
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception, final HttpServletRequest request) {
+        LOG.error("Exception occurred", exception);
         return handleApplicationException(new ApplicationException(), request);
     }
 
@@ -56,6 +61,9 @@ public class ApplicationErrorControllerAdvice {
     public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException exception,
                                                                     final HttpServletRequest request) {
         HttpStatus status = exception.getStatus();
+        if (CommonError.OTHER_ERROR.getMessage().equals(exception.getErrorCode())) {
+            LOG.error(exception.getMessage(), exception);
+        }
 
         return new ResponseEntity<>(
                 new ErrorResponse(

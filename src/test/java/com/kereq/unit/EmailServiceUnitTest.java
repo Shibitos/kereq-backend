@@ -5,7 +5,6 @@ import com.kereq.main.exception.ApplicationException;
 import com.kereq.messaging.entity.MessageData;
 import com.kereq.messaging.entity.MessageTemplateData;
 import com.kereq.messaging.repository.MessageRepository;
-import com.kereq.messaging.repository.MessageTemplateRepository;
 import com.kereq.messaging.service.EmailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +65,7 @@ public class EmailServiceUnitTest {
     };
 
     @BeforeEach
-    public void setup() {
+    public void setup() { //TODO: sendMessageTest: if fail, retry count up (on limit = failed), else status sent
         MockitoAnnotations.initMocks(this);
         when(env.getProperty("email.support")).thenReturn("kereq@ethereal.email");
         when(messageRepository.save(Mockito.any(MessageData.class))).thenAnswer(i -> i.getArguments()[0]);

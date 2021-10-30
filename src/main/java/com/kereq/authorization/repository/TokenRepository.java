@@ -9,6 +9,8 @@ public interface TokenRepository extends JpaRepository<TokenData, Long> {
 
     boolean existsByUserIdAndType(Long userId, String tokenType);
 
+    TokenData findByUserIdAndType(Long userId, String tokenType);
+
     TokenData findByValue(String value);
 
     void deleteByExpireDateLessThan(Date date);

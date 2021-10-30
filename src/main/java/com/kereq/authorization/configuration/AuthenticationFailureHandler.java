@@ -22,7 +22,7 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
+        HttpStatus httpStatus = HttpStatus.UNAUTHORIZED; //TODO: security?
 
         Map<String, Object> data = new HashMap<>();
         data.put("timestamp", new Date());
