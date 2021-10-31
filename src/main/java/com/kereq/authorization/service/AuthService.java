@@ -54,10 +54,10 @@ public class AuthService {
 
     public UserData registerUser(UserData user) {
         if (userRepository.existsByLogin(user.getLogin().toLowerCase())) {
-            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS, user.getLogin(), "Login");
+            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getLogin(), "Login");
         }
         if (userRepository.existsByEmail(user.getEmail().toLowerCase())) {
-            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS, user.getLogin(), "Email");
+            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getLogin(), "Email");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Collections.singleton(roleRepository.findByCode("ROLE_USER")));
@@ -71,7 +71,7 @@ public class AuthService {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND, user.getId());
         }
         if (tokenRepository.existsByUserIdAndType(user.getId(), TokenData.TokenType.VERIFICATION)) {
-            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS); //TODO: what with empty exceptions?
+            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
         }
         TokenData token = new TokenData();
         token.setType(TokenData.TokenType.VERIFICATION);

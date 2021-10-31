@@ -13,7 +13,7 @@ import java.util.Date;
 @Table(name = "USER_TOKENS")
 @Getter
 @Setter
-public class TokenData { //TODO: purge tokens task
+public class TokenData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
