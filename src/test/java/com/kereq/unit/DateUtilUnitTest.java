@@ -30,10 +30,10 @@ public class DateUtilUnitTest {
         Date minusFiveMinutes = DateUtil.addMinutes(now, -5);
         Date plusFiveMinutes = DateUtil.addMinutes(now, 5);
 
-        assertThat(DateUtil.isExpired(minusFiveMinutes, 6)).isEqualTo(false);
-        assertThat(DateUtil.isExpired(minusFiveMinutes, 4)).isEqualTo(true);
+        assertThat(DateUtil.isExpired(minusFiveMinutes, 6)).isFalse();
+        assertThat(DateUtil.isExpired(minusFiveMinutes, 4)).isTrue();
 
-        assertThat(DateUtil.isExpired(plusFiveMinutes)).isEqualTo(false);
-        assertThat(DateUtil.isExpired(minusFiveMinutes)).isEqualTo(true);
+        assertThat(DateUtil.isExpired(plusFiveMinutes)).isFalse();
+        assertThat(DateUtil.isExpired(minusFiveMinutes)).isTrue();
     }
 }

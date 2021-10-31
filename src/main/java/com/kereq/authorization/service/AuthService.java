@@ -53,10 +53,10 @@ public class AuthService {
     private final int minResendTokenTimeMin = 1; //TODO: always lower than tokenExpirationTime
 
     public UserData registerUser(UserData user) {
-        if (userRepository.existsByLogin(user.getLogin().toLowerCase())) {
+        if (userRepository.existsByLoginIgnoreCase(user.getLogin())) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getLogin(), "Login");
         }
-        if (userRepository.existsByEmail(user.getEmail().toLowerCase())) {
+        if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getLogin(), "Email");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -121,9 +121,8 @@ public class AuthService {
 
     public TokenData renewVerificationToken(TokenData token) {
         token.setValue(UUID.randomUUID().toString());
-        token = tokenRepository.save(token);
 
-        return token;
+        return tokenRepository.save(token);
     }
 
     public void confirmUser(String token) {
