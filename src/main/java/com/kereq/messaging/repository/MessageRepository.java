@@ -2,7 +2,11 @@ package com.kereq.messaging.repository;
 
 import com.kereq.messaging.entity.MessageData;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface MessageRepository extends JpaRepository<MessageData, Long> {
 
+    @Query(value = "SELECT * FROM MESSAGES, MESSAGE_TEMPLATES WHERE MSG_MSG_TMP_ID=MSG_TMP_ID" +
+            " AND MSG_TMP_CODE=?1 ORDER BY MSG_AUDIT_CD DESC LIMIT 1", nativeQuery = true)
+    MessageData findFirstByTemplateCodeNewest(String templateCode);
 }

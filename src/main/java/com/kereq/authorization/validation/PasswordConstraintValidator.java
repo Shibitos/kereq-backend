@@ -12,11 +12,6 @@ import java.util.List;
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
     @Override
-    public void initialize(final ValidPassword arg0) {
-
-    }
-
-    @Override
     public boolean isValid(final String password, final ConstraintValidatorContext context) {
         PasswordValidator validator = new PasswordValidator(Arrays.asList( //TODO: think of it
         new LengthRule(8, 24),

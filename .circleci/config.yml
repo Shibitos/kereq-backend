@@ -24,7 +24,7 @@ jobs:
           command: mvn -P test test
 
       - codecov/upload:
-          file: target/site/jacoco/index.html
+          file: target/site/jacoco/jacoco.xml
           token: 54a222bf-7770-4cb0-913d-c5a86161d181
 
 workflows:
