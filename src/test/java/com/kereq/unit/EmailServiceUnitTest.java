@@ -21,7 +21,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class EmailServiceUnitTest {
+class EmailServiceUnitTest {
 
     @Mock
     private MessageRepository messageRepository;
@@ -72,15 +72,15 @@ public class EmailServiceUnitTest {
     }
 
     @Test
-    public void testCreateMessage() {
+    void testCreateMessage() {
         MessageTemplateData template = getTestTemplate("test_noparam_1", "Test subject", "Test body");
         MessageData message = emailService.createMessageFromTemplate(template, validEmails[0], null);
-        assertThat(message.getRetryCount()).isEqualTo(0);
+        assertThat(message.getRetryCount()).isZero();
         assertThat(message.getStatus()).isEqualTo(MessageData.Status.PENDING);
     }
 
     @Test
-    public void testEmailValidation() {
+    void testEmailValidation() {
         MessageTemplateData template = getTestTemplate("t", "S", "B");
         for (String validEmail : validEmails) {
             Assertions.assertDoesNotThrow(() -> emailService.createMessageFromTemplate(template, validEmail, null), validEmail);
@@ -91,7 +91,7 @@ public class EmailServiceUnitTest {
     }
 
     @Test
-    public void testParseMessageComplete() {
+    void testParseMessageComplete() {
         Map<String, String> params = new HashMap<>() {
             {
                 put("param1", "test1");
@@ -106,7 +106,7 @@ public class EmailServiceUnitTest {
     }
 
     @Test
-    public void testParseMessageIncomplete() {
+    void testParseMessageIncomplete() {
         Map<String, String> params = new HashMap<>() {
             {
                 put("param1", "test1");

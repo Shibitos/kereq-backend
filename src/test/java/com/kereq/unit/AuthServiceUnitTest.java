@@ -24,7 +24,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Date;
 
@@ -32,7 +31,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-public class AuthServiceUnitTest {
+class AuthServiceUnitTest {
 
     @Mock
     private UserRepository userRepository;
@@ -92,7 +91,7 @@ public class AuthServiceUnitTest {
     }
 
     @Test
-    public void testRegisterUser() {
+    void testRegisterUser() {
         UserData user = new UserData();
         user.setLogin("testFound");
         user.setEmail("testFound@abc.com");
@@ -111,13 +110,13 @@ public class AuthServiceUnitTest {
         user = Assertions.assertDoesNotThrow(() -> authService.registerUser(userAtt3));
 
         assertThat(user.getPassword()).isEqualTo("encoded");
-        assertThat(user.getRoles().size() == 1).isTrue();
+        assertThat(user.getRoles().size()).isEqualTo(1);
         assertThat(user.getRoles().stream().anyMatch(r -> r.getCode().equals("ROLE_USER"))).isTrue();
         assertThat(user.isActivated()).isFalse();
     }
 
     @Test
-    public void testGenerateVerificationToken() {
+    void testGenerateVerificationToken() {
         UserData user = new UserData();
         user.setId(1L);
         Assertions.assertThrows(ApplicationException.class, () -> authService.generateVerificationToken(user));
@@ -131,21 +130,21 @@ public class AuthServiceUnitTest {
         assertThat(token.getType()).isEqualTo(TokenData.TokenType.VERIFICATION);
         assertThat(token.getLastSendDate()).isNull();
         assertThat(token.getExpireDate()).isAfter(new Date());
-        assertThat(token.getValue().length()).isEqualTo(TOKEN_LENGTH);
+        assertThat(token.getValue()).hasSize(TOKEN_LENGTH);
     }
 
     @Test
-    public void testRenewVerificationToken() {
+    void testRenewVerificationToken() {
         TokenData token = new TokenData();
         authService.renewVerificationToken(token);
         String oldTokenValue = token.getValue();
-        assertThat(token.getValue().length()).isEqualTo(TOKEN_LENGTH);
+        assertThat(token.getValue()).hasSize(TOKEN_LENGTH);
         authService.renewVerificationToken(token);
         assertThat(token.getValue()).isNotEqualTo(oldTokenValue);
     }
 
     @Test
-    public void testSendVerificationToken() {
+    void testSendVerificationToken() {
         UserData userFalse = new UserData();
         userFalse.setId(1L);
         TokenData token = new TokenData();
