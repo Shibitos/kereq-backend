@@ -70,6 +70,9 @@ public class AuthService {
         if (!userRepository.existsById(user.getId())) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND, user.getId());
         }
+        if (user.isActivated()) {
+            throw new ApplicationException(AuthError.USER_ALREADY_ACTIVATED);
+        }
         if (tokenRepository.existsByUserIdAndType(user.getId(), TokenData.TokenType.VERIFICATION)) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
         }
@@ -89,7 +92,7 @@ public class AuthService {
         }
         MessageData message = null;
         if (useExistingMessage) {
-            message = messageRepository.findFirstByTemplateCodeNewest("COMPLETE_REGISTRATION");
+            message = messageRepository.findFirstByUserEmailTemplateCodeNewest(user.getEmail(), "COMPLETE_REGISTRATION");
         }
         if (message == null || !MessageData.Status.PENDING.equals(message.getStatus())) {
             message = generateVerificationMessage(user, token);
