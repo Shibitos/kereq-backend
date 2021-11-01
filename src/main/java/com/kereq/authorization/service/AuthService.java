@@ -48,9 +48,11 @@ public class AuthService {
     @Autowired
     private EmailService emailService;
 
-    private final int verificationTokenExpirationTimeMin = 60 * 24; //TODO: move to app parameters (and create them)
+    private static final String VERIFICATION_TEMPLATE_CODE = "COMPLETE_REGISTRATION";
 
-    private final int minResendTokenTimeMin = 1; //TODO: always lower than tokenExpirationTime
+    private static final int TOKEN_EXPIRATION_TIME_MIN = 60 * 24; //TODO: move to app parameters (and create them)
+
+    private static final int TOKEN_RESEND_TIME_MIN = 1; //TODO: always lower than tokenExpirationTime
 
     public UserData registerUser(UserData user) {
         if (userRepository.existsByLoginIgnoreCase(user.getLogin())) {
@@ -80,7 +82,7 @@ public class AuthService {
         token.setType(TokenData.TokenType.VERIFICATION);
         token.setUser(user);
         token.setValue(UUID.randomUUID().toString());
-        token.setExpireDate(DateUtil.addMinutes(DateUtil.now(), verificationTokenExpirationTimeMin));
+        token.setExpireDate(DateUtil.addMinutes(DateUtil.now(), TOKEN_EXPIRATION_TIME_MIN));
 
         return tokenRepository.save(token);
     }
@@ -92,7 +94,7 @@ public class AuthService {
         }
         MessageData message = null;
         if (useExistingMessage) {
-            message = messageRepository.findFirstByUserEmailTemplateCodeNewest(user.getEmail(), "COMPLETE_REGISTRATION");
+            message = messageRepository.findFirstByUserEmailTemplateCodeNewest(user.getEmail(), VERIFICATION_TEMPLATE_CODE);
         }
         if (message == null || !MessageData.Status.PENDING.equals(message.getStatus())) {
             message = generateVerificationMessage(user, token);
@@ -111,7 +113,7 @@ public class AuthService {
         if (token == null) {
             throw new ApplicationException(AuthError.TOKEN_INVALID);
         }
-        if (!DateUtil.isExpired(token.getLastSendDate(), minResendTokenTimeMin)) {
+        if (!DateUtil.isExpired(token.getLastSendDate(), TOKEN_RESEND_TIME_MIN)) {
             throw new ApplicationException(AuthError.TOKEN_TOO_EARLY);
         }
         boolean expired = false;
@@ -144,9 +146,9 @@ public class AuthService {
     }
 
     private MessageData generateVerificationMessage(UserData user, TokenData token) {
-        MessageTemplateData template = messageTemplateRepository.findByCode("COMPLETE_REGISTRATION");
+        MessageTemplateData template = messageTemplateRepository.findByCode(VERIFICATION_TEMPLATE_CODE);
         if (template == null) {
-            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_VALUE, "COMPLETE_REGISTRATION");
+            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_VALUE, VERIFICATION_TEMPLATE_CODE);
         }
         Map<String, String> params = new HashMap<>();
         final String baseUrl =

@@ -15,6 +15,8 @@ import java.util.Date;
 @Setter
 public class TokenData {
 
+    private static final long serialVersionUID = -3364805981914373200L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "TKN_ID")

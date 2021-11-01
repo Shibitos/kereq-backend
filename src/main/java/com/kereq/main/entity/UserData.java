@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 @Setter
 public class UserData extends AuditableEntity implements UserDetails {
 
+    private static final long serialVersionUID = 4675228760392277493L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
@@ -85,7 +87,7 @@ public class UserData extends AuditableEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return activated;
+        return isEnabled();
     }
 
     @Override

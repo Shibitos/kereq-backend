@@ -15,6 +15,8 @@ import javax.persistence.*;
 @Setter
 public class MessageData extends AuditableEntity {
 
+    private static final long serialVersionUID = -2049230680668747742L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MSG_ID")
