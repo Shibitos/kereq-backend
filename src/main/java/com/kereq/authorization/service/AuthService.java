@@ -48,11 +48,11 @@ public class AuthService {
     @Autowired
     private EmailService emailService;
 
-    private static final String VERIFICATION_TEMPLATE_CODE = "COMPLETE_REGISTRATION";
+    public static final String VERIFICATION_TEMPLATE_CODE = "COMPLETE_REGISTRATION";
 
-    private static final int TOKEN_EXPIRATION_TIME_MIN = 60 * 24; //TODO: move to app parameters (and create them)
+    public static final int TOKEN_EXPIRATION_TIME_MIN = 60 * 24; //TODO: move to app parameters (and create them)
 
-    private static final int TOKEN_RESEND_TIME_MIN = 1; //TODO: always lower than tokenExpirationTime
+    public static final int TOKEN_RESEND_TIME_MIN = 1; //TODO: always lower than tokenExpirationTime
 
     public UserData registerUser(UserData user) {
         if (userRepository.existsByLoginIgnoreCase(user.getLogin())) {
@@ -113,7 +113,7 @@ public class AuthService {
         if (token == null) {
             throw new ApplicationException(AuthError.TOKEN_INVALID);
         }
-        if (!DateUtil.isExpired(token.getLastSendDate(), TOKEN_RESEND_TIME_MIN)) {
+        if (token.getLastSendDate() != null && !DateUtil.isExpired(token.getLastSendDate(), TOKEN_RESEND_TIME_MIN)) {
             throw new ApplicationException(AuthError.TOKEN_TOO_EARLY);
         }
         boolean expired = false;
