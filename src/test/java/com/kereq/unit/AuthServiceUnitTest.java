@@ -8,7 +8,6 @@ import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.RoleData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.error.RepositoryError;
-import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.RoleRepository;
 import com.kereq.main.repository.UserRepository;
 import com.kereq.main.util.DateUtil;

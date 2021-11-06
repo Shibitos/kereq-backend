@@ -2,7 +2,6 @@ package com.kereq.unit;
 
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.error.CommonError;
-import com.kereq.main.exception.ApplicationException;
 import com.kereq.messaging.entity.MessageData;
 import com.kereq.messaging.entity.MessageTemplateData;
 import com.kereq.messaging.repository.MessageRepository;
