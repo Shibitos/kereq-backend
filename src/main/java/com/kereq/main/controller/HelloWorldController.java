@@ -1,10 +1,10 @@
-package com.kereq.controller;
+package com.kereq.main.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class HelloWorldController {
+public class HelloWorldController { //TODO: to remove
 
     @RequestMapping("/")
     public String helloWorld() {
