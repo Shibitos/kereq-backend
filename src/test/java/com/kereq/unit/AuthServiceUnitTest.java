@@ -186,18 +186,17 @@ class AuthServiceUnitTest {
         user = buildUserWithId(2L);
         when(userRepository.findByLoginOrEmail("resendTooEarly")).thenReturn(user);
         when(tokenRepository.findByUserIdAndType(2L, TokenData.TokenType.VERIFICATION))
-                .thenReturn(buildTokenWithLastSendDate(user, DateUtil.now()));
+                .thenReturn(buildToken(user, DateUtil.now()));
 
         user = buildUserWithId(3L);
         when(userRepository.findByLoginOrEmail("resend1")).thenReturn(user);
         when(tokenRepository.findByUserIdAndType(3L, TokenData.TokenType.VERIFICATION))
-                .thenReturn(buildTokenWithLastSendDate(user, null));
+                .thenReturn(buildToken(user, null));
 
         user = buildUserWithId(4L);
         when(userRepository.findByLoginOrEmail("resend2")).thenReturn(user);
         when(tokenRepository.findByUserIdAndType(4L, TokenData.TokenType.VERIFICATION))
-                .thenReturn(buildTokenWithLastSendDate(user, DateUtil.addMinutes(DateUtil.now(),
-                        -AuthService.TOKEN_RESEND_TIME_MIN)));
+                .thenReturn(buildToken(user, DateUtil.addMinutes(DateUtil.now(), -AuthService.TOKEN_RESEND_TIME_MIN)));
 
         Assertions.assertThrows(ApplicationException.class,
                 () -> authService.resendVerificationToken("nonexisting"));
@@ -210,6 +209,36 @@ class AuthServiceUnitTest {
         Assertions.assertDoesNotThrow(() -> authService.resendVerificationToken("resend2"));
     }
 
+    @Test
+    public void testConfirmUser() {
+        when(tokenRepository.findByValue("nonexisting")).thenReturn(null);
+
+        TokenData notVerification = buildToken(null, null);
+        notVerification.setType("nonexistingtype");
+        when(tokenRepository.findByValue("notVerification")).thenReturn(notVerification);
+
+        TokenData expired = buildToken(null, null);
+        when(tokenRepository.findByValue("expired")).thenReturn(expired);
+
+        UserData user = buildUserWithId(1L);
+        user.setActivated(false);
+        TokenData notExpired = buildToken(user, null);
+        notExpired.setExpireDate(DateUtil.addMinutes(DateUtil.now(), 1000));
+        when(tokenRepository.findByValue("notExpired")).thenReturn(notExpired);
+
+        Assertions.assertThrows(ApplicationException.class,
+                () -> authService.confirmUser("nonexisting"));
+        Assertions.assertThrows(ApplicationException.class,
+                () -> authService.confirmUser("notVerification"));
+
+
+        Assertions.assertThrows(ApplicationException.class,
+                () -> authService.confirmUser("expired")); //TODO: proper exception
+
+        Assertions.assertDoesNotThrow(() -> authService.confirmUser("notExpired"));
+        assertThat(user.isActivated()).isTrue();
+    }
+
     private UserData buildUserWithId(Long id) {
         UserData user = new UserData();
         user.setId(id);
@@ -217,7 +246,7 @@ class AuthServiceUnitTest {
         return user;
     }
 
-    private TokenData buildTokenWithLastSendDate(UserData user, Date date) {
+    private TokenData buildToken(UserData user, Date date) {
         TokenData token = new TokenData();
         token.setType(TokenData.TokenType.VERIFICATION);
         token.setLastSendDate(date);

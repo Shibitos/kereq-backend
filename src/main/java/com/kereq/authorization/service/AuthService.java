@@ -90,7 +90,7 @@ public class AuthService {
     public void sendVerificationToken(UserData user, TokenData token, boolean useExistingMessage) {
         if (!token.getUser().getId().equals(user.getId())
                 || !TokenData.TokenType.VERIFICATION.equals(token.getType())) {
-            throw new ApplicationException();
+            throw new ApplicationException(AuthError.TOKEN_INVALID);
         }
         MessageData message = null;
         if (useExistingMessage) {
@@ -132,7 +132,7 @@ public class AuthService {
 
     public void confirmUser(String token) {
         final TokenData verificationToken = tokenRepository.findByValue(token);
-        if (verificationToken == null) {
+        if (verificationToken == null || !TokenData.TokenType.VERIFICATION.equals(verificationToken.getType())) {
             throw new ApplicationException(AuthError.TOKEN_INVALID);
         }
         UserData user = verificationToken.getUser();
