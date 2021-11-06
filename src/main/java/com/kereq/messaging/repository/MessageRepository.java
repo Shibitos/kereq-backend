@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface MessageRepository extends JpaRepository<MessageData, Long> {
 
     @Query(value = "SELECT * FROM MESSAGES, MESSAGE_TEMPLATES WHERE MSG_MSG_TMP_ID=MSG_TMP_ID" +
-            " AND MSG_TMP_CODE=?1 ORDER BY MSG_AUDIT_CD DESC LIMIT 1", nativeQuery = true)
-    MessageData findFirstByTemplateCodeNewest(String templateCode);
+            " MSG_TO=?1 AND MSG_TMP_CODE=?2 ORDER BY MSG_AUDIT_CD DESC LIMIT 1", nativeQuery = true)
+    MessageData findFirstByUserEmailTemplateCodeNewest(String emailTo, String templateCode);
 }

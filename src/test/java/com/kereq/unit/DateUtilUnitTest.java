@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DateUtilUnitTest {
+class DateUtilUnitTest {
 
     @BeforeEach
     public void setup() {
@@ -17,14 +17,14 @@ public class DateUtilUnitTest {
     }
 
     @Test
-    public void testAddMinutes() {
+    void testAddMinutes() {
         Date now = new Date();
         Date plusFiveMinutes = new Date(now.getTime() + TimeUnit.MINUTES.toMillis(5));
         assertThat(DateUtil.addMinutes(now, 5).getTime()).isEqualTo(plusFiveMinutes.getTime());
     }
 
     @Test
-    public void testIsExpired() {
+    void testIsExpired() {
         Date now = new Date();
 
         Date minusFiveMinutes = DateUtil.addMinutes(now, -5);

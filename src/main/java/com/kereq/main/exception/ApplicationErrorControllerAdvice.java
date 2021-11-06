@@ -52,9 +52,19 @@ public class ApplicationErrorControllerAdvice {
             mainJSON.add(entry);
         });
 
-        return handleApplicationException(new ApplicationException(mainJSON,
-                CommonError.VALIDATION_ERROR),
-                request);
+        CommonError error = CommonError.VALIDATION_ERROR;
+        HttpStatus status = HttpStatus.valueOf(error.getHttpCode());
+
+        return new ResponseEntity<>(
+                new ErrorResponse(
+                        status,
+                        error.buildMessage(),
+                        error.name(),
+                        request.getRequestURI(),
+                        mainJSON
+                ),
+                status
+        );
     }
 
     @ExceptionHandler(ApplicationException.class)
@@ -70,8 +80,7 @@ public class ApplicationErrorControllerAdvice {
                         status,
                         exception.getMessage(),
                         exception.getErrorCode(),
-                        request.getRequestURI(),
-                        exception.getData()
+                        request.getRequestURI()
                 ),
                 status
         );

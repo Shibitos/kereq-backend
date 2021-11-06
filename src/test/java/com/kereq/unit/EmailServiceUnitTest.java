@@ -1,7 +1,7 @@
 package com.kereq.unit;
 
+import com.kereq.helper.AssertHelper;
 import com.kereq.main.error.CommonError;
-import com.kereq.main.exception.ApplicationException;
 import com.kereq.messaging.entity.MessageData;
 import com.kereq.messaging.entity.MessageTemplateData;
 import com.kereq.messaging.repository.MessageRepository;
@@ -21,7 +21,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class EmailServiceUnitTest {
+class EmailServiceUnitTest {
 
     @Mock
     private MessageRepository messageRepository;
@@ -72,26 +72,26 @@ public class EmailServiceUnitTest {
     }
 
     @Test
-    public void testCreateMessage() {
+    void testCreateMessage() {
         MessageTemplateData template = getTestTemplate("test_noparam_1", "Test subject", "Test body");
         MessageData message = emailService.createMessageFromTemplate(template, validEmails[0], null);
-        assertThat(message.getRetryCount()).isEqualTo(0);
+        assertThat(message.getRetryCount()).isZero();
         assertThat(message.getStatus()).isEqualTo(MessageData.Status.PENDING);
     }
 
     @Test
-    public void testEmailValidation() {
+    void testEmailValidation() {
         MessageTemplateData template = getTestTemplate("t", "S", "B");
         for (String validEmail : validEmails) {
             Assertions.assertDoesNotThrow(() -> emailService.createMessageFromTemplate(template, validEmail, null), validEmail);
         }
         for (String invalidEmail : invalidEmails) {
-            Assertions.assertThrows(ApplicationException.class, () -> emailService.createMessageFromTemplate(template, invalidEmail, null), invalidEmail);
+            AssertHelper.assertException(CommonError.INVALID_ERROR, () -> emailService.createMessageFromTemplate(template, invalidEmail, null), invalidEmail);
         }
     }
 
     @Test
-    public void testParseMessageComplete() {
+    void testParseMessageComplete() {
         Map<String, String> params = new HashMap<>() {
             {
                 put("param1", "test1");
@@ -106,18 +106,15 @@ public class EmailServiceUnitTest {
     }
 
     @Test
-    public void testParseMessageIncomplete() {
+    void testParseMessageIncomplete() {
         Map<String, String> params = new HashMap<>() {
             {
                 put("param1", "test1");
             }
         };
         MessageTemplateData template = getTestTemplate("test_param_2", "Test {{param1}} subject", "{{param1}}Test {{param2}}");
-        ApplicationException ex = Assertions.assertThrows(ApplicationException.class, () -> emailService.createMessageFromTemplate(template, validEmails[0], params));
-        assertThat(ex.getErrorCode()).isEqualTo(CommonError.MISSING_ERROR.toString());
-
-        ex = Assertions.assertThrows(ApplicationException.class, () -> emailService.createMessageFromTemplate(template, validEmails[0], null));
-        assertThat(ex.getErrorCode()).isEqualTo(CommonError.MISSING_ERROR.toString());
+        AssertHelper.assertException(CommonError.MISSING_ERROR, () -> emailService.createMessageFromTemplate(template, validEmails[0], params));
+        AssertHelper.assertException(CommonError.MISSING_ERROR, () -> emailService.createMessageFromTemplate(template, validEmails[0], null));
     }
 
     private MessageTemplateData getTestTemplate(String code, String subject, String body) {

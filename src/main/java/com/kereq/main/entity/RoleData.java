@@ -15,6 +15,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class RoleData extends AuditableEntity {
 
+    private static final long serialVersionUID = -5210912422426143296L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ROLE_ID")

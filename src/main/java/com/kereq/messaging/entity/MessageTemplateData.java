@@ -16,6 +16,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class MessageTemplateData extends AuditableEntity {
 
+    private static final long serialVersionUID = 3920250129891131537L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MSG_TMP_ID")

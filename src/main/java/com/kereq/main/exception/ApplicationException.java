@@ -10,11 +10,11 @@ import org.springframework.http.HttpStatus;
 @Setter
 public class ApplicationException extends RuntimeException {
 
-    private String errorCode;
+    private static final long serialVersionUID = -2234686647803914126L;
 
-    private HttpStatus status;
+    private final String errorCode;
 
-    private Object data;
+    private final HttpStatus status;
 
     public ApplicationException() {
         this(CommonError.OTHER_ERROR);
@@ -24,10 +24,5 @@ public class ApplicationException extends RuntimeException {
         super(error.buildMessage(msgParams));
         errorCode = error.name();
         status = HttpStatus.valueOf(error.getHttpCode());
-    }
-
-    public ApplicationException(Object data, ApplicationError error, Object... msgParams) {
-        this(error, msgParams);
-        this.data = data;
     }
 }

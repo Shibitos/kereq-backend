@@ -27,7 +27,7 @@ public class AuthController {
     private ModelMapper modelMapper;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<Object> registerUser(@Valid @RequestBody UserDTO userDTO) {
         UserData user = modelMapper.map(userDTO, UserData.class); //TODO: captcha?
         user = authService.registerUser(user);
         TokenData token = authService.generateVerificationToken(user);
@@ -37,14 +37,14 @@ public class AuthController {
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity<?> confirmUser(@Valid @RequestBody  ConfirmDTO confirmDTO) {
+    public ResponseEntity<Object> confirmUser(@Valid @RequestBody  ConfirmDTO confirmDTO) {
         authService.confirmUser(confirmDTO.getToken());
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/resend-confirm")
-    public ResponseEntity<?> resendConfirmUser(@Valid @RequestBody ResendTokenDTO loginOrEmailDTO) {
+    public ResponseEntity<Object> resendConfirmUser(@Valid @RequestBody ResendTokenDTO loginOrEmailDTO) {
         authService.resendVerificationToken(loginOrEmailDTO.getLoginOrEmail()); //TODO: security?
 
         return ResponseEntity.ok().build();
