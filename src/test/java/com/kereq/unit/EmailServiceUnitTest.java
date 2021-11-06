@@ -1,5 +1,6 @@
 package com.kereq.unit;
 
+import com.kereq.helper.AssertHelper;
 import com.kereq.main.error.CommonError;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.messaging.entity.MessageData;
@@ -86,7 +87,7 @@ class EmailServiceUnitTest {
             Assertions.assertDoesNotThrow(() -> emailService.createMessageFromTemplate(template, validEmail, null), validEmail);
         }
         for (String invalidEmail : invalidEmails) {
-            Assertions.assertThrows(ApplicationException.class, () -> emailService.createMessageFromTemplate(template, invalidEmail, null), invalidEmail);
+            AssertHelper.assertException(CommonError.INVALID_ERROR, () -> emailService.createMessageFromTemplate(template, invalidEmail, null), invalidEmail);
         }
     }
 
@@ -113,11 +114,8 @@ class EmailServiceUnitTest {
             }
         };
         MessageTemplateData template = getTestTemplate("test_param_2", "Test {{param1}} subject", "{{param1}}Test {{param2}}");
-        ApplicationException ex = Assertions.assertThrows(ApplicationException.class, () -> emailService.createMessageFromTemplate(template, validEmails[0], params));
-        assertThat(ex.getErrorCode()).isEqualTo(CommonError.MISSING_ERROR.toString());
-
-        ex = Assertions.assertThrows(ApplicationException.class, () -> emailService.createMessageFromTemplate(template, validEmails[0], null));
-        assertThat(ex.getErrorCode()).isEqualTo(CommonError.MISSING_ERROR.toString());
+        AssertHelper.assertException(CommonError.MISSING_ERROR, () -> emailService.createMessageFromTemplate(template, validEmails[0], params));
+        AssertHelper.assertException(CommonError.MISSING_ERROR, () -> emailService.createMessageFromTemplate(template, validEmails[0], null));
     }
 
     private MessageTemplateData getTestTemplate(String code, String subject, String body) {

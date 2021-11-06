@@ -1,10 +1,13 @@
 package com.kereq.unit;
 
 import com.kereq.authorization.entity.TokenData;
+import com.kereq.authorization.error.AuthError;
 import com.kereq.authorization.repository.TokenRepository;
 import com.kereq.authorization.service.AuthService;
+import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.RoleData;
 import com.kereq.main.entity.UserData;
+import com.kereq.main.error.RepositoryError;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.RoleRepository;
 import com.kereq.main.repository.UserRepository;
@@ -64,7 +67,12 @@ class AuthServiceUnitTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
+        when(userRepository.existsById(1L)).thenReturn(false);
+        when(userRepository.existsById(2L)).thenReturn(true);
         when(userRepository.existsById(3L)).thenReturn(true);
+        when(tokenRepository.existsByUserIdAndType(1L, TokenData.TokenType.VERIFICATION)).thenReturn(false);
+        when(tokenRepository.existsByUserIdAndType(2L, TokenData.TokenType.VERIFICATION)).thenReturn(true);
+        when(tokenRepository.existsByUserIdAndType(3L, TokenData.TokenType.VERIFICATION)).thenReturn(false);
         when(tokenRepository.save(Mockito.any(TokenData.class))).thenAnswer(i -> i.getArguments()[0]);
 
         MessageTemplateData template = new MessageTemplateData();
@@ -82,8 +90,6 @@ class AuthServiceUnitTest {
         when(userRepository.existsByLoginIgnoreCase("testNotFound")).thenReturn(false);
         when(userRepository.existsByEmailIgnoreCase("testFound@abc.com")).thenReturn(true);
         when(userRepository.existsByEmailIgnoreCase("testNotFound@abc.com")).thenReturn(false);
-        when(userRepository.existsById(1L)).thenReturn(false);
-        when(userRepository.existsById(2L)).thenReturn(true);
         when(userRepository.save(Mockito.any(UserData.class))).thenAnswer(i -> i.getArguments()[0]);
         when(passwordEncoder.encode(Mockito.any(CharSequence.class))).thenReturn("encoded");
         RoleData defaultRole = new RoleData();
@@ -97,11 +103,13 @@ class AuthServiceUnitTest {
         user.setFirstName("John");
         user.setLastName("Test");
         UserData userAtt1 = user;
-        Assertions.assertThrows(ApplicationException.class, () -> authService.registerUser(userAtt1));
+        AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE,
+                () -> authService.registerUser(userAtt1));
 
         user.setLogin("testNotFound");
         UserData userAtt2 = user;
-        Assertions.assertThrows(ApplicationException.class, () -> authService.registerUser(userAtt2));
+        AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE,
+                () -> authService.registerUser(userAtt2));
 
         user.setEmail("testNotFound@abc.com");
         UserData userAtt3 = user;
@@ -117,12 +125,15 @@ class AuthServiceUnitTest {
     void testGenerateVerificationToken() {
         UserData user = new UserData();
         user.setId(1L);
-        Assertions.assertThrows(ApplicationException.class, () -> authService.generateVerificationToken(user));
+        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
+                () -> authService.generateVerificationToken(user));
         user.setId(2L);
-        Assertions.assertThrows(ApplicationException.class, () -> authService.generateVerificationToken(user));
+        AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
+                () -> authService.generateVerificationToken(user));
         user.setId(3L);
         user.setActivated(true);
-        Assertions.assertThrows(ApplicationException.class, () -> authService.generateVerificationToken(user));
+        AssertHelper.assertException(AuthError.USER_ALREADY_ACTIVATED,
+                () -> authService.generateVerificationToken(user));
         user.setActivated(false);
         TokenData token = Assertions.assertDoesNotThrow(() -> authService.generateVerificationToken(user));
         assertThat(token.getType()).isEqualTo(TokenData.TokenType.VERIFICATION);
@@ -143,9 +154,6 @@ class AuthServiceUnitTest {
 
     @Test
     void testSendVerificationToken() {
-        when(tokenRepository.existsByUserIdAndType(1L, TokenData.TokenType.VERIFICATION)).thenReturn(false);
-        when(tokenRepository.existsByUserIdAndType(2L, TokenData.TokenType.VERIFICATION)).thenReturn(true);
-        when(tokenRepository.existsByUserIdAndType(3L, TokenData.TokenType.VERIFICATION)).thenReturn(false);
         MessageData message = new MessageData();
         message.setStatus(MessageData.Status.PENDING);
         when(messageRepository.findFirstByUserEmailTemplateCodeNewest("usermain@abc.com", "COMPLETE_REGISTRATION")).thenReturn(message);
@@ -160,12 +168,12 @@ class AuthServiceUnitTest {
         userMain.setId(2L);
         userMain.setEmail("usermain@abc.com");
 
-        Assertions.assertThrows(ApplicationException.class,
+        AssertHelper.assertException(AuthError.TOKEN_INVALID,
                 () -> authService.sendVerificationToken(userMain, token, false));
 
         token.setUser(userMain);
         token.setType("NOTEXISTINGTOKENTYPE");
-        Assertions.assertThrows(ApplicationException.class,
+        AssertHelper.assertException(AuthError.TOKEN_INVALID,
                 () -> authService.sendVerificationToken(userMain, token, false));
 
         token.setType(TokenData.TokenType.VERIFICATION);
@@ -198,11 +206,11 @@ class AuthServiceUnitTest {
         when(tokenRepository.findByUserIdAndType(4L, TokenData.TokenType.VERIFICATION))
                 .thenReturn(buildToken(user, DateUtil.addMinutes(DateUtil.now(), -AuthService.TOKEN_RESEND_TIME_MIN)));
 
-        Assertions.assertThrows(ApplicationException.class,
+        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND_VALUE,
                 () -> authService.resendVerificationToken("nonexisting"));
-        Assertions.assertThrows(ApplicationException.class,
+        AssertHelper.assertException(AuthError.TOKEN_INVALID,
                 () -> authService.resendVerificationToken("notoken"));
-        Assertions.assertThrows(ApplicationException.class,
+        AssertHelper.assertException(AuthError.TOKEN_TOO_EARLY,
                 () -> authService.resendVerificationToken("resendTooEarly"));
 
         Assertions.assertDoesNotThrow(() -> authService.resendVerificationToken("resend1"));
@@ -226,14 +234,13 @@ class AuthServiceUnitTest {
         notExpired.setExpireDate(DateUtil.addMinutes(DateUtil.now(), 1000));
         when(tokenRepository.findByValue("notExpired")).thenReturn(notExpired);
 
-        Assertions.assertThrows(ApplicationException.class,
+        AssertHelper.assertException(AuthError.TOKEN_INVALID,
                 () -> authService.confirmUser("nonexisting"));
-        Assertions.assertThrows(ApplicationException.class,
+        AssertHelper.assertException(AuthError.TOKEN_INVALID,
                 () -> authService.confirmUser("notVerification"));
 
-
-        Assertions.assertThrows(ApplicationException.class,
-                () -> authService.confirmUser("expired")); //TODO: proper exception
+        AssertHelper.assertException(AuthError.TOKEN_EXPIRED,
+                () -> authService.confirmUser("expired"));
 
         Assertions.assertDoesNotThrow(() -> authService.confirmUser("notExpired"));
         assertThat(user.isActivated()).isTrue();
