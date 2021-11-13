@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @PasswordMatch
-public class UserDTO { //TODO: validation messages?
+public class RegistrationDTO { //TODO: validation messages?
 
     @NotNull
     @Size(min = 4, max = 25)
@@ -30,6 +30,10 @@ public class UserDTO { //TODO: validation messages?
     @Size(min = 8, max = 50)
     @Email
     private String email;
+
+    @NotNull
+    @Size(min = 4, max = 30)
+    private String country;
 
     @NotNull
     @ValidPassword

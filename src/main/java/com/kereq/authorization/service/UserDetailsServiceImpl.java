@@ -16,7 +16,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        UserData user = userRepo.findByLogin(s); //TODO: privileges?
+        UserData user = userRepo.findByEmailIgnoreCase(s); //TODO: privileges?
         if (user == null) {
             throw new UsernameNotFoundException("User with that login not found");
         }

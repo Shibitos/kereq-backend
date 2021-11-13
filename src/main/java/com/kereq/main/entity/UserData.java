@@ -60,6 +60,10 @@ public class UserData extends AuditableEntity implements UserDetails {
     @NotNull
     private boolean activated;
 
+    @Column(name = "USER_COUNTRY", length = 30)
+    @NotNull
+    private String country; //TODO: dictionary
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "USERS_ROLES",

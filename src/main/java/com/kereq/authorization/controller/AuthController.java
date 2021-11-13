@@ -2,7 +2,7 @@ package com.kereq.authorization.controller;
 
 import com.kereq.authorization.dto.ConfirmDTO;
 import com.kereq.authorization.dto.ResendTokenDTO;
-import com.kereq.authorization.dto.UserDTO;
+import com.kereq.authorization.dto.RegistrationDTO;
 import com.kereq.authorization.entity.TokenData;
 import com.kereq.authorization.service.AuthService;
 import com.kereq.main.entity.UserData;
@@ -27,8 +27,8 @@ public class AuthController {
     private ModelMapper modelMapper;
 
     @PostMapping("/register")
-    public ResponseEntity<Object> registerUser(@Valid @RequestBody UserDTO userDTO) {
-        UserData user = modelMapper.map(userDTO, UserData.class); //TODO: captcha?
+    public ResponseEntity<Object> registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
+        UserData user = modelMapper.map(registrationDTO, UserData.class); //TODO: captcha?
         user = authService.registerUser(user);
         TokenData token = authService.generateVerificationToken(user);
         authService.sendVerificationToken(user, token, false);

@@ -71,7 +71,7 @@ public class ApplicationErrorControllerAdvice {
     public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException exception,
                                                                     final HttpServletRequest request) {
         HttpStatus status = exception.getStatus();
-        if (CommonError.OTHER_ERROR.getMessage().equals(exception.getErrorCode())) {
+        if (!CommonError.OTHER_ERROR.getMessage().equals(exception.getErrorCode())) {
             LOG.error(exception.getMessage(), exception);
         }
 

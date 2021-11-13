@@ -10,8 +10,10 @@ public interface UserRepository extends JpaRepository<UserData, Long> {
 
     boolean existsByLoginIgnoreCase(String login);
 
-    UserData findByLogin(String login);
+    UserData findByLoginIgnoreCase(String login);
 
-    @Query("SELECT u FROM UserData u WHERE u.login=?1 OR u.email=?1")
+    UserData findByEmailIgnoreCase(String email);
+
+    @Query("SELECT u FROM UserData u WHERE UPPER(u.login)=UPPER(?1) OR UPPER(u.email)=UPPER(?1)")
     UserData findByLoginOrEmail(String loginOrEmail);
 }

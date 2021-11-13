@@ -26,12 +26,12 @@ public class JSONObjectAuthenticationFilter extends UsernamePasswordAuthenticati
             }
             LoginDTO authRequest = objectMapper.readValue(sb.toString(), LoginDTO.class);
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    authRequest.getLogin(), authRequest.getPassword()
+                    authRequest.getEmail(), authRequest.getPassword()
             );
             setDetails(request, token);
             return this.getAuthenticationManager().authenticate(token);
         } catch (IOException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new IllegalArgumentException(e.getMessage()); //TODO: handling
         }
     }
 }
