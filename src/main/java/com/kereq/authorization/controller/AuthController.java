@@ -44,8 +44,8 @@ public class AuthController {
     }
 
     @PostMapping("/resend-confirm")
-    public ResponseEntity<Object> resendConfirmUser(@Valid @RequestBody ResendTokenDTO loginOrEmailDTO) {
-        authService.resendVerificationToken(loginOrEmailDTO.getLoginOrEmail()); //TODO: security?
+    public ResponseEntity<Object> resendConfirmUser(@Valid @RequestBody ResendTokenDTO resendTokenDTO) {
+        authService.resendVerificationToken(resendTokenDTO.getEmail()); //TODO: security?
 
         return ResponseEntity.ok().build();
     }

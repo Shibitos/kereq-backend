@@ -55,11 +55,8 @@ public class AuthService {
     public static final int TOKEN_RESEND_TIME_MIN = 1; //TODO: always lower than tokenExpirationTime
 
     public UserData registerUser(UserData user) {
-        if (userRepository.existsByLoginIgnoreCase(user.getLogin())) {
-            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getLogin(), "Login");
-        }
         if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
-            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getLogin(), "Email");
+            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getEmail(), "Email");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Collections.singleton(roleRepository.findByCode("ROLE_USER")));
@@ -104,10 +101,10 @@ public class AuthService {
         tokenRepository.save(token);
     }
 
-    public void resendVerificationToken(final String loginOrEmail) {
-        UserData user = userRepository.findByLoginOrEmail(loginOrEmail);
+    public void resendVerificationToken(final String email) {
+        UserData user = userRepository.findByEmailIgnoreCase(email);
         if (user == null) {
-            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_VALUE, loginOrEmail);
+            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_VALUE, email);
         }
         TokenData token = tokenRepository.findByUserIdAndType(user.getId(), TokenData.TokenType.VERIFICATION);
         if (token == null) {

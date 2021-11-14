@@ -30,11 +30,6 @@ public class UserData extends AuditableEntity implements UserDetails {
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name = "USER_LOGIN", length = 25, unique = true)
-    @NotNull
-    @Size(min = 4, max = 25)
-    private String login;
-
     @Column(name = "USER_FIRST_NAME", length = 25)
     @NotNull
     @Size(min = 4, max = 25)
@@ -81,7 +76,7 @@ public class UserData extends AuditableEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override

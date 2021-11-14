@@ -85,8 +85,6 @@ class AuthServiceUnitTest {
 
     @Test
     void testRegisterUser() {
-        when(userRepository.existsByLoginIgnoreCase("testFound")).thenReturn(true);
-        when(userRepository.existsByLoginIgnoreCase("testNotFound")).thenReturn(false);
         when(userRepository.existsByEmailIgnoreCase("testFound@abc.com")).thenReturn(true);
         when(userRepository.existsByEmailIgnoreCase("testNotFound@abc.com")).thenReturn(false);
         when(userRepository.save(Mockito.any(UserData.class))).thenAnswer(i -> i.getArguments()[0]);
@@ -96,7 +94,6 @@ class AuthServiceUnitTest {
         when(roleRepository.findByCode("ROLE_USER")).thenReturn(defaultRole);
 
         UserData user = new UserData();
-        user.setLogin("testFound");
         user.setEmail("testFound@abc.com");
         user.setPassword("pass");
         user.setFirstName("John");
@@ -105,14 +102,9 @@ class AuthServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE,
                 () -> authService.registerUser(userAtt1));
 
-        user.setLogin("testNotFound");
-        UserData userAtt2 = user;
-        AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE,
-                () -> authService.registerUser(userAtt2));
-
         user.setEmail("testNotFound@abc.com");
-        UserData userAtt3 = user;
-        user = Assertions.assertDoesNotThrow(() -> authService.registerUser(userAtt3));
+        UserData userAtt2 = user;
+        user = Assertions.assertDoesNotThrow(() -> authService.registerUser(userAtt2));
 
         assertThat(user.getPassword()).isEqualTo("encoded");
         assertThat(user.getRoles().size()).isEqualTo(1);
@@ -185,23 +177,23 @@ class AuthServiceUnitTest {
 
     @Test
     void testResendVerificationToken() {
-        when(userRepository.findByLoginOrEmail("nonexisting")).thenReturn(null);
+        when(userRepository.findByEmailIgnoreCase("nonexisting")).thenReturn(null);
         UserData user = buildUserWithId(1L);
-        when(userRepository.findByLoginOrEmail("notoken")).thenReturn(user);
+        when(userRepository.findByEmailIgnoreCase("notoken")).thenReturn(user);
         when(tokenRepository.findByUserIdAndType(1L, TokenData.TokenType.VERIFICATION)).thenReturn(null);
 
         user = buildUserWithId(2L);
-        when(userRepository.findByLoginOrEmail("resendTooEarly")).thenReturn(user);
+        when(userRepository.findByEmailIgnoreCase("resendTooEarly")).thenReturn(user);
         when(tokenRepository.findByUserIdAndType(2L, TokenData.TokenType.VERIFICATION))
                 .thenReturn(buildToken(user, DateUtil.now()));
 
         user = buildUserWithId(3L);
-        when(userRepository.findByLoginOrEmail("resend1")).thenReturn(user);
+        when(userRepository.findByEmailIgnoreCase("resend1")).thenReturn(user);
         when(tokenRepository.findByUserIdAndType(3L, TokenData.TokenType.VERIFICATION))
                 .thenReturn(buildToken(user, null));
 
         user = buildUserWithId(4L);
-        when(userRepository.findByLoginOrEmail("resend2")).thenReturn(user);
+        when(userRepository.findByEmailIgnoreCase("resend2")).thenReturn(user);
         when(tokenRepository.findByUserIdAndType(4L, TokenData.TokenType.VERIFICATION))
                 .thenReturn(buildToken(user, DateUtil.addMinutes(DateUtil.now(), -AuthService.TOKEN_RESEND_TIME_MIN)));
 

@@ -23,7 +23,7 @@ public class UserProfileController {
 
     @GetMapping("/me")
     public UserDTO getLoggedUser(Principal principal) {
-        UserData user = userRepository.findByLoginIgnoreCase(principal.getName());
+        UserData user = userRepository.findByEmailIgnoreCase(principal.getName());
         return modelMapper.map(user, UserDTO.class);
     }
 }

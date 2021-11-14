@@ -16,10 +16,6 @@ public class RegistrationDTO { //TODO: validation messages?
 
     @NotNull
     @Size(min = 4, max = 25)
-    private String login;
-
-    @NotNull
-    @Size(min = 4, max = 25)
     private String firstName;
 
     @NotNull
