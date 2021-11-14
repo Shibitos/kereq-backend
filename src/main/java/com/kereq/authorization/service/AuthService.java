@@ -15,9 +15,9 @@ import com.kereq.messaging.repository.MessageRepository;
 import com.kereq.messaging.repository.MessageTemplateRepository;
 import com.kereq.messaging.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,6 +47,9 @@ public class AuthService {
 
     @Autowired
     private EmailService emailService;
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     public static final String VERIFICATION_TEMPLATE_CODE = "COMPLETE_REGISTRATION";
 
@@ -148,9 +151,7 @@ public class AuthService {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_VALUE, VERIFICATION_TEMPLATE_CODE);
         }
         Map<String, String> params = new HashMap<>();
-        final String baseUrl =
-                ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString(); //TODO: frontend url
-        params.put("CONFIRM_URL", baseUrl + "/auth/confirm?token=" + token.getValue());
+        params.put("CONFIRM_URL", frontendUrl + "/confirm-account?token=" + token.getValue());
         return emailService.createMessageFromTemplate(template, user.getEmail(), params);
     }
 }
