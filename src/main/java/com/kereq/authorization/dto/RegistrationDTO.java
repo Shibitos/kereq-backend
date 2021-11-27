@@ -2,6 +2,7 @@ package com.kereq.authorization.dto;
 
 import com.kereq.authorization.validation.annotation.PasswordMatch;
 import com.kereq.authorization.validation.annotation.ValidPassword;
+import com.kereq.main.validation.annotation.ValidDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,6 +31,14 @@ public class RegistrationDTO { //TODO: validation messages?
     @NotNull
     @Size(min = 4, max = 30)
     private String country;
+
+    @NotNull
+    @ValidDate
+    private String birthDate;
+
+    @NotNull
+    @Size(min = 1, max = 1)
+    private String gender;
 
     @NotNull
     @ValidPassword

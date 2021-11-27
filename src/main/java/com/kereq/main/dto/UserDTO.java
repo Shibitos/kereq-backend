@@ -15,6 +15,7 @@ public class UserDTO {
     private String lastName;
     private String email;
     private String country;
+    private String birthDate;
 
     @JsonProperty("joinDate")
     private Date auditCD;

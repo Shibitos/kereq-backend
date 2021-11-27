@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,15 @@ public class UserData extends AuditableEntity implements UserDetails {
     @Column(name = "USER_ACTIVATED")
     @NotNull
     private boolean activated;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "USER_BIRTH_DATE")
+    @NotNull
+    private Date birthDate;
+
+    @Column(name = "USER_GENDER")
+    @NotNull
+    private String gender; //TODO: dictionary
 
     @Column(name = "USER_COUNTRY", length = 30)
     @NotNull

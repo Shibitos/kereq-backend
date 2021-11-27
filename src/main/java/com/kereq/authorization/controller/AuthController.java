@@ -1,8 +1,8 @@
 package com.kereq.authorization.controller;
 
 import com.kereq.authorization.dto.ConfirmDTO;
-import com.kereq.authorization.dto.ResendTokenDTO;
 import com.kereq.authorization.dto.RegistrationDTO;
+import com.kereq.authorization.dto.ResendTokenDTO;
 import com.kereq.authorization.entity.TokenData;
 import com.kereq.authorization.service.AuthService;
 import com.kereq.main.entity.UserData;

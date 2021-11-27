@@ -12,7 +12,7 @@ public class DateUtil {
 
     public static Date now() {
         return new Date();
-    }
+    } //TODO: upgrade to newer api?
 
     public static long timeDiffSince(Date date) {
         return now().getTime() - date.getTime();
