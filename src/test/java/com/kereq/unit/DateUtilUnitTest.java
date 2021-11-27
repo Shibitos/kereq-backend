@@ -36,4 +36,19 @@ class DateUtilUnitTest {
         assertThat(DateUtil.isExpired(plusFiveMinutes)).isFalse();
         assertThat(DateUtil.isExpired(minusFiveMinutes)).isTrue();
     }
+
+    @Test
+    void testYearsBetween() {
+        Date now = new Date();
+        Date minusOne = new Date(now.getTime() - TimeUnit.DAYS.toMillis(367));
+        Date minusTwo = new Date(now.getTime() - TimeUnit.DAYS.toMillis(367 * 2));
+
+        assertThat(DateUtil.yearsBetween(minusOne, now)).isEqualTo(1);
+        assertThat(DateUtil.yearsBetween(now, minusOne)).isEqualTo(-1);
+        assertThat(DateUtil.yearsBetween(minusTwo, now)).isEqualTo(2);
+        assertThat(DateUtil.yearsBetween(now, minusTwo)).isEqualTo(-2);
+        assertThat(DateUtil.yearsBetween(minusTwo, minusOne)).isEqualTo(1);
+        assertThat(DateUtil.yearsBetween(minusOne, minusTwo)).isEqualTo(-1);
+        assertThat(DateUtil.yearsBetween(now, now)).isEqualTo(0);
+    }
 }
