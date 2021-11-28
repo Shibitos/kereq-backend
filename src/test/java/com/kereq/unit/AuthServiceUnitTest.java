@@ -116,7 +116,7 @@ class AuthServiceUnitTest {
     void testGenerateVerificationToken() {
         UserData user = new UserData();
         user.setId(1L);
-        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
+        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND_ID,
                 () -> authService.generateVerificationToken(user));
         user.setId(2L);
         AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,

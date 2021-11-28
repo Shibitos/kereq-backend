@@ -44,7 +44,7 @@ public class FindFriendService {
     public FindFriendData getFindFriendAdByUserId(Long userId) {
         FindFriendData findFriendData = findFriendRepository.findByUserId(userId);
         if (findFriendData == null) {
-            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
+            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_ID);
         }
         return findFriendData;
     }

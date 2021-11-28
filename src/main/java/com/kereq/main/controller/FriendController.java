@@ -64,13 +64,13 @@ public class FriendController {
 
     @GetMapping("/invitations")
     public List<UserDTO> getInvitations(@AuthenticationPrincipal UserData user) { //TODO: paging?
-        return userService.getInvitationsUsers(user)
+        return userService.getInvitationsUsers(user.getId())
                 .stream().map(i -> modelMapper.map(i, UserDTO.class)).collect(Collectors.toList());
     }
 
     @GetMapping("/friends")
     public List<UserDTO> getFriends(@AuthenticationPrincipal UserData user) { //TODO: paging
-        return userService.getFriends(user)
+        return userService.getFriends(user.getId())
                 .stream().map(i -> modelMapper.map(i, UserDTO.class)).collect(Collectors.toList());
     }
 }

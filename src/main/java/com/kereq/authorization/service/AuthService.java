@@ -70,7 +70,7 @@ public class AuthService {
 
     public TokenData generateVerificationToken(UserData user) {
         if (!userRepository.existsById(user.getId())) {
-            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND, user.getId());
+            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_ID, user.getId());
         }
         if (user.isActivated()) {
             throw new ApplicationException(AuthError.USER_ALREADY_ACTIVATED);

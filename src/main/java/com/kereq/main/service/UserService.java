@@ -23,10 +23,6 @@ public class UserService {
 
     private static final String STATUS_FIELD = "status";
 
-    public UserData getUserByEmail(String email) {
-        return userRepository.findByEmailIgnoreCase(email);
-    }
-
     public void inviteFriend(Long userId, Long receiverId) {
         if (friendshipRepository.existsByUserIdAndFriendId(userId, receiverId)) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
@@ -92,11 +88,17 @@ public class UserService {
         friendshipRepository.delete(friendEntry);
     }
 
-    public Set<UserData> getFriends(UserData user) {
+    public Set<UserData> getFriends(Long userId) {
+        UserData user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+
         return user.getFriends(); //TODO: move to repo, paging
     }
 
-    public Set<UserData> getInvitationsUsers(UserData user) {
+    public Set<UserData> getInvitationsUsers(Long userId) {
+        UserData user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+
         return user.getInvitations(); //TODO: move to repo
     }
 }

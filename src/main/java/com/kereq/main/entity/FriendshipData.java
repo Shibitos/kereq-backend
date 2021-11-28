@@ -22,13 +22,19 @@ public class FriendshipData extends AuditableEntity {
     @Column(name = "FRS_ID")
     private Long id;
 
-    @OneToOne(targetEntity = UserData.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "FRS_USER_ID")
+    @Column(name = "FRS_USER_ID")
     private Long userId;
 
-    @OneToOne(targetEntity = UserData.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "FRS_FRIEND_ID")
+    @Column(name = "FRS_FRIEND_ID")
     private Long friendId;
+
+    @OneToOne(targetEntity = UserData.class, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "FRS_USER_ID", insertable = false, updatable = false)
+    private UserData user;
+
+    @OneToOne(targetEntity = UserData.class, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "FRS_FRIEND_ID", insertable = false, updatable = false)
+    private UserData friend;
 
     @Column(name = "FRS_STATUS")
     @NotNull
