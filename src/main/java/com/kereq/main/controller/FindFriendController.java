@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/find-friend")
 public class FindFriendController {
@@ -29,7 +31,8 @@ public class FindFriendController {
     }
 
     @PostMapping("/ad")
-    public ResponseEntity<Object> addAd(FindFriendDTO findFriendDTO, @AuthenticationPrincipal UserData user) {
+    public ResponseEntity<Object> addAd(@Valid @RequestBody FindFriendDTO findFriendDTO,
+                                        @AuthenticationPrincipal UserData user) {
         FindFriendData findFriendData = modelMapper.map(findFriendDTO, FindFriendData.class);
         findFriendData.setUser(user);
         findFriendService.createFindFriendAd(findFriendData);
@@ -37,7 +40,8 @@ public class FindFriendController {
     }
 
     @PutMapping("/ad")
-    public ResponseEntity<Object> modifyAd(FindFriendDTO findFriendDTO, @AuthenticationPrincipal UserData user) {
+    public ResponseEntity<Object> modifyAd(@Valid @RequestBody FindFriendDTO findFriendDTO,
+                                           @AuthenticationPrincipal UserData user) {
         FindFriendData findFriendData = modelMapper.map(findFriendDTO, FindFriendData.class);
         findFriendData.setUser(user);
         findFriendService.createFindFriendAd(findFriendData);
