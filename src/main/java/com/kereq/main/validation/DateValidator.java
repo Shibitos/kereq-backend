@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class DateValidator implements ConstraintValidator<ValidDate, Object> {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
+    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
 
     @Override
     public boolean isValid(final Object obj, final ConstraintValidatorContext context) {

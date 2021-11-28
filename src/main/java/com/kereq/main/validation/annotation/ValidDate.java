@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface ValidDate {
 
-    String message() default "Invalid date";
+    String message() default "Invalid date. Expected format: " + DateValidator.DATE_FORMAT;
 
     Class<?>[] groups() default {};
 

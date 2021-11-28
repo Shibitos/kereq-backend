@@ -3,6 +3,7 @@ package com.kereq.main.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -75,6 +76,21 @@ public class UserData extends AuditableEntity implements UserDetails {
             joinColumns = {@JoinColumn(name = "UR_USER_ID", referencedColumnName = "USER_ID")},
             inverseJoinColumns = {@JoinColumn(name = "UR_ROLE_ID", referencedColumnName = "ROLE_ID")})
     private Set<RoleData> roles;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "FRIENDSHIPS",
+            joinColumns = {@JoinColumn(name = "FRS_USER_ID", referencedColumnName = "USER_ID")},
+            inverseJoinColumns = {@JoinColumn(name = "FRS_FRIEND_ID", referencedColumnName = "USER_ID")})
+    private Set<UserData> friends;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "FRIENDSHIPS",
+            joinColumns = {@JoinColumn(name = "FRS_FRIEND_ID", referencedColumnName = "USER_ID")},
+            inverseJoinColumns = {@JoinColumn(name = "FRS_USER_ID", referencedColumnName = "USER_ID")})
+    @Where(clause = "status = " + FriendshipData.FriendshipStatus.INVITED)
+    private Set<UserData> invitations;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
