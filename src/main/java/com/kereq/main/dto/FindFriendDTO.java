@@ -7,8 +7,9 @@ import lombok.Setter;
 @Setter
 public class FindFriendDTO {
 
-    private UserDTO user;
+    private UserDTO user; //TODO: only for browse
     private Integer minAge;
     private Integer maxAge;
     private String gender;
+    private String description;
 }

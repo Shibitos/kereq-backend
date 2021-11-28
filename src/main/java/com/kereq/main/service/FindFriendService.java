@@ -41,10 +41,15 @@ public class FindFriendService {
         findFriendRepository.save(original);
     }
 
+    public void removeFindFriendAd(Long userId) {
+        FindFriendData findFriendData = getFindFriendAdByUserId(userId);
+        findFriendRepository.delete(findFriendData);
+    }
+
     public FindFriendData getFindFriendAdByUserId(Long userId) {
         FindFriendData findFriendData = findFriendRepository.findByUserId(userId);
         if (findFriendData == null) {
-            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_ID);
+            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
         return findFriendData;
     }

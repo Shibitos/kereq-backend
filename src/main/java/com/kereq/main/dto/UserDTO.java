@@ -11,6 +11,7 @@ import java.util.Set;
 @Setter
 public class UserDTO {
 
+    private Long id; //TODO: structure variant with modelmapper?
     private String firstName;
     private String lastName;
     private String email;

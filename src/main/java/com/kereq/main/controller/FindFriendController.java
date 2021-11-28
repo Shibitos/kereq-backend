@@ -22,25 +22,31 @@ public class FindFriendController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/my")
+    @GetMapping("/ad")
     public FindFriendDTO getMyAd(@AuthenticationPrincipal UserData user) {
         FindFriendData findFriendData = findFriendService.getFindFriendAdByUserId(user.getId());
-
         return modelMapper.map(findFriendData, FindFriendDTO.class);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Object> addAd(FindFriendDTO findFriendDTO) {
+    @PostMapping("/ad")
+    public ResponseEntity<Object> addAd(FindFriendDTO findFriendDTO, @AuthenticationPrincipal UserData user) {
         FindFriendData findFriendData = modelMapper.map(findFriendDTO, FindFriendData.class);
+        findFriendData.setUser(user);
         findFriendService.createFindFriendAd(findFriendData);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/modify")
+    @PutMapping("/ad")
     public ResponseEntity<Object> modifyAd(FindFriendDTO findFriendDTO, @AuthenticationPrincipal UserData user) {
         FindFriendData findFriendData = modelMapper.map(findFriendDTO, FindFriendData.class);
         findFriendData.setUser(user);
         findFriendService.createFindFriendAd(findFriendData);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/ad")
+    public ResponseEntity<Object> modifyAd(@AuthenticationPrincipal UserData user) {
+        findFriendService.removeFindFriendAd(user.getId());
         return ResponseEntity.ok().build();
     }
 

@@ -12,8 +12,10 @@ public interface FindFriendRepository extends JpaRepository<FindFriendData, Long
 
     FindFriendData findByUserId(Long userId);
 
-    @Query(value = "SELECT ff FROM FindFriendData ff JOIN UserData u " +
-            "WHERE u.id = :userId AND ff.minAge <= :age AND ff.maxAge >= :age" +
+    @Query(value = "SELECT ff FROM FindFriendData ff JOIN UserData u ON u.id = :userId" +
+            " WHERE ff.user.id != :userId" +
+            " AND (ff.minAge IS NULL OR ff.minAge <= :age)" +
+            " AND (ff.maxAge IS NULL OR ff.maxAge >= :age)" +
             " AND (ff.gender IS NULL OR ff.gender = u.gender)")
     Page<FindFriendData> findAdsForUserId(Long userId, int age, Pageable page);
 }

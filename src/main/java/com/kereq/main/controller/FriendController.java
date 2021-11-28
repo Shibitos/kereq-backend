@@ -26,7 +26,6 @@ public class FriendController {
     public ResponseEntity<Object> inviteFriend(@PathVariable("receiverId") Long receiverId,
                                                @AuthenticationPrincipal UserData user) {
         userService.inviteFriend(user.getId(), receiverId);
-
         return ResponseEntity.ok().build();
     }
 
@@ -34,7 +33,6 @@ public class FriendController {
     public ResponseEntity<Object> removeInvitation(@PathVariable("receiverId") Long receiverId,
                                                @AuthenticationPrincipal UserData user) {
         userService.removeInvitation(user.getId(), receiverId);
-
         return ResponseEntity.ok().build();
     }
 
@@ -42,7 +40,6 @@ public class FriendController {
     public ResponseEntity<Object> acceptInvitation(@PathVariable("senderId") Long senderId,
                                                    @AuthenticationPrincipal UserData user) {
         userService.acceptInvitation(user.getId(), senderId);
-
         return ResponseEntity.ok().build();
     }
 
@@ -50,7 +47,6 @@ public class FriendController {
     public ResponseEntity<Object> declineInvitation(@PathVariable("senderId") Long senderId,
                                                    @AuthenticationPrincipal UserData user) {
         userService.declineInvitation(user.getId(), senderId);
-
         return ResponseEntity.ok().build();
     }
 
@@ -58,7 +54,6 @@ public class FriendController {
     public ResponseEntity<Object> removeFriend(@PathVariable("friendId") Long friendId,
                                                @AuthenticationPrincipal UserData user) {
         userService.removeFriend(user.getId(), friendId);
-
         return ResponseEntity.ok().build();
     }
 
