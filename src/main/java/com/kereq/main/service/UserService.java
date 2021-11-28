@@ -93,10 +93,10 @@ public class UserService {
     }
 
     public Set<UserData> getFriends(UserData user) {
-        return user.getFriends();
+        return user.getFriends(); //TODO: move to repo, paging
     }
 
     public Set<UserData> getInvitationsUsers(UserData user) {
-        return user.getInvitations();
+        return user.getInvitations(); //TODO: move to repo
     }
 }
