@@ -17,5 +17,5 @@ public interface FindFriendRepository extends JpaRepository<FindFriendData, Long
             " AND (ff.minAge IS NULL OR ff.minAge <= :age)" +
             " AND (ff.maxAge IS NULL OR ff.maxAge >= :age)" +
             " AND (ff.gender IS NULL OR ff.gender = u.gender)")
-    Page<FindFriendData> findAdsForUserId(Long userId, int age, Pageable page);
+    Page<FindFriendData> findAdsForUserId(Long userId, int age, Pageable page); //TODO: not in friends
 }

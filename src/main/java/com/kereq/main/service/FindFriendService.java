@@ -19,7 +19,7 @@ public class FindFriendService {
     @Autowired
     private FindFriendRepository findFriendRepository;
 
-    public void createFindFriendAd(FindFriendData findFriendData) {
+    public void createFindFriendAd(FindFriendData findFriendData) { //TODO: sanitize html
         if (findFriendData.getUser() == null) {
             throw new ApplicationException(CommonError.MISSING_ERROR, "user");
         }
@@ -29,11 +29,11 @@ public class FindFriendService {
         findFriendRepository.save(findFriendData);
     }
 
-    public void updateFindFriendAd(Long id, Long userId, FindFriendData findFriendData) {
+    public void modifyFindFriendAd(FindFriendData findFriendData) {
         FindFriendData original = findFriendRepository
-                .findById(id).orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
-        if (!userId.equals(original.getUser().getId())) {
-            throw new ApplicationException(AuthError.NO_ACCESS);
+                .findByUserId(findFriendData.getUser().getId());
+        if (original == null) {
+            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
         original.setMinAge(findFriendData.getMinAge());
         original.setMaxAge(findFriendData.getMaxAge());

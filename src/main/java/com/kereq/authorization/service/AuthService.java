@@ -126,7 +126,6 @@ public class AuthService {
 
     public TokenData renewVerificationToken(TokenData token) {
         token.setValue(UUID.randomUUID().toString());
-
         return tokenRepository.save(token);
     }
 
