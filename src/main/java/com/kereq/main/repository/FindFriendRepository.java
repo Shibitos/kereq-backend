@@ -14,6 +14,7 @@ public interface FindFriendRepository extends JpaRepository<FindFriendData, Long
 
     @Query(value = "SELECT ff FROM FindFriendData ff JOIN UserData u ON u.id = :userId" +
             " WHERE ff.user.id <> :userId" +
+            " AND ff.user.id NOT IN (SELECT fs.friendId FROM FriendshipData fs WHERE fs.userId = :userId)" +
             " AND (ff.minAge IS NULL OR ff.minAge <= :age)" +
             " AND (ff.maxAge IS NULL OR ff.maxAge >= :age)" +
             " AND (ff.gender IS NULL OR ff.gender = u.gender)")
