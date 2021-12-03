@@ -1,5 +1,6 @@
 package com.kereq.main.service;
 
+import com.kereq.main.dto.FriendshipDTO;
 import com.kereq.main.entity.FriendshipData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.error.CommonError;
@@ -8,6 +9,8 @@ import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.FriendshipRepository;
 import com.kereq.main.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -88,17 +91,11 @@ public class UserService {
         friendshipRepository.delete(friendEntry);
     }
 
-    public Set<UserData> getFriends(Long userId) {
-        UserData user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
-
-        return user.getFriends(); //TODO: move to repo, paging
+    public Page<FriendshipData> getFriends(Long userId, Pageable page) {
+        return friendshipRepository.findUserFriends(userId, page);
     }
 
-    public Set<UserData> getInvitationsUsers(Long userId) {
-        UserData user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
-
-        return user.getInvitations(); //TODO: move to repo
+    public Page<FriendshipData> getInvitationsUsers(Long userId, Pageable page) {
+        return friendshipRepository.findUserInvitations(userId, page);
     }
 }

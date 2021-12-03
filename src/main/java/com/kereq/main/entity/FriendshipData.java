@@ -1,16 +1,20 @@
 package com.kereq.main.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
 @Table(name = "FRIENDSHIPS")
 @AttributeOverride(name = "auditCD", column = @Column(name = "FRS_AUDIT_CD"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "FRS_AUDIT_MD"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "FRS_AUDIT_RD"))
+@NoArgsConstructor
 @Getter
 @Setter
 public class FriendshipData extends AuditableEntity {
@@ -23,9 +27,11 @@ public class FriendshipData extends AuditableEntity {
     private Long id;
 
     @Column(name = "FRS_USER_ID")
+    //@NotNull
     private Long userId;
 
     @Column(name = "FRS_FRIEND_ID")
+    //@NotNull
     private Long friendId;
 
     @OneToOne(targetEntity = UserData.class, fetch = FetchType.LAZY)
@@ -46,5 +52,14 @@ public class FriendshipData extends AuditableEntity {
         String ACCEPTED = "A";
 
         String ALL = "I|D|A";
+    }
+
+    public FriendshipData(UserData user, boolean isFriend, Date auditMD) {
+        if (isFriend) {
+            this.friend = user;
+        } else {
+            this.user = user;
+        }
+        this.setAuditMD(auditMD);
     }
 }
