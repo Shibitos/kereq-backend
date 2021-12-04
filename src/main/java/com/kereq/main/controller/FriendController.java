@@ -1,9 +1,6 @@
 package com.kereq.main.controller;
 
 import com.kereq.main.dto.FriendshipDTO;
-import com.kereq.main.dto.UserDTO;
-import com.kereq.main.entity.FindFriendData;
-import com.kereq.main.entity.FriendshipData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -13,9 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/friends")
@@ -48,10 +42,10 @@ public class FriendController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/decline/{senderId}")
-    public ResponseEntity<Object> declineInvitation(@PathVariable("senderId") Long senderId,
+    @PostMapping("/reject/{senderId}")
+    public ResponseEntity<Object> rejectInvitation(@PathVariable("senderId") Long senderId,
                                                    @AuthenticationPrincipal UserData user) {
-        userService.declineInvitation(user.getId(), senderId);
+        userService.rejectInvitation(user.getId(), senderId);
         return ResponseEntity.ok().build();
     }
 
@@ -64,24 +58,11 @@ public class FriendController {
 
     @GetMapping("/invitations")
     public Page<FriendshipDTO> getInvitations(Pageable page, @AuthenticationPrincipal UserData user) {
-        return userService.getInvitationsUsers(user.getId(), page).map(this::convertToDTO);
+        return userService.getInvitationsUsers(user.getId(), page).map(f -> modelMapper.map(f, FriendshipDTO.class));
     }
 
     @GetMapping("/friends")
     public Page<FriendshipDTO> getFriends(Pageable page, @AuthenticationPrincipal UserData user) {
-        return userService.getFriends(user.getId(), page).map(this::convertToDTO);
-    }
-
-    private FriendshipDTO convertToDTO(FriendshipData findFriendData) {
-        FriendshipDTO test = new FriendshipDTO();
-        if (findFriendData.getUser() != null) {
-            test.setUser(modelMapper.map(findFriendData.getUser(), UserDTO.class));
-        }
-        if (findFriendData.getFriend() != null) {
-            test.setFriend(modelMapper.map(findFriendData.getFriend(), UserDTO.class));
-        }
-        test.setAuditMD(findFriendData.getAuditMD());
-        return test;
-//        return modelMapper.map(findFriendData, FriendshipDTO.class); //TODO: fix
+        return userService.getFriends(user.getId(), page).map(f -> modelMapper.map(f, FriendshipDTO.class));
     }
 }

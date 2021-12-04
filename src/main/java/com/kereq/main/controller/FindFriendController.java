@@ -60,10 +60,6 @@ public class FindFriendController {
     @GetMapping("/browse")
     public Page<FindFriendDTO> getAdsForUser(@PageableDefault(sort = { "auditMD" }, value = ADS_PER_PAGE) Pageable page,
                                              @AuthenticationPrincipal UserData user) {
-        return findFriendService.getFindFriendAdsForUser(user, page).map(this::convertToDTO);
-    }
-
-    private FindFriendDTO convertToDTO(FindFriendData findFriendData) {
-        return modelMapper.map(findFriendData, FindFriendDTO.class);
+        return findFriendService.getFindFriendAdsForUser(user, page).map(f -> modelMapper.map(f, FindFriendDTO.class));
     }
 }

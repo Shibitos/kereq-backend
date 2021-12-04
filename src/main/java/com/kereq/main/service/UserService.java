@@ -1,8 +1,6 @@
 package com.kereq.main.service;
 
-import com.kereq.main.dto.FriendshipDTO;
 import com.kereq.main.entity.FriendshipData;
-import com.kereq.main.entity.UserData;
 import com.kereq.main.error.CommonError;
 import com.kereq.main.error.RepositoryError;
 import com.kereq.main.exception.ApplicationException;
@@ -12,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -66,7 +62,7 @@ public class UserService {
         friendshipRepository.save(accepted);
     }
 
-    public void declineInvitation(Long userId, Long senderId) {
+    public void rejectInvitation(Long userId, Long senderId) {
         FriendshipData invitation = friendshipRepository.findByUserIdAndFriendId(senderId, userId);
         if (invitation == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);

@@ -1,6 +1,5 @@
 package com.kereq.main.service;
 
-import com.kereq.authorization.error.AuthError;
 import com.kereq.main.entity.FindFriendData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.error.CommonError;
