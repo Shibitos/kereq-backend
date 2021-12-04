@@ -65,4 +65,9 @@ public class FriendController {
     public Page<FriendshipDTO> getFriends(Pageable page, @AuthenticationPrincipal UserData user) {
         return userService.getFriends(user.getId(), page).map(f -> modelMapper.map(f, FriendshipDTO.class));
     }
+
+    @GetMapping("/friends/{userId}")
+    public Page<FriendshipDTO> getFriends(Pageable page, @PathVariable("userId") Long userId) {
+        return userService.getFriends(userId, page).map(f -> modelMapper.map(f, FriendshipDTO.class));
+    }
 }

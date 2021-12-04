@@ -1,6 +1,7 @@
 package com.kereq.main.service;
 
 import com.kereq.main.entity.FriendshipData;
+import com.kereq.main.entity.UserData;
 import com.kereq.main.error.CommonError;
 import com.kereq.main.error.RepositoryError;
 import com.kereq.main.exception.ApplicationException;
@@ -93,5 +94,10 @@ public class UserService {
 
     public Page<FriendshipData> getInvitationsUsers(Long userId, Pageable page) {
         return friendshipRepository.findUserInvitations(userId, page);
+    }
+
+    public UserData getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
     }
 }
