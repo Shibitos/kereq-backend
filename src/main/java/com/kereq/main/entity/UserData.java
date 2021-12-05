@@ -1,6 +1,10 @@
 package com.kereq.main.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kereq.common.constant.Dictionaries;
+import com.kereq.common.constant.Genders;
+import com.kereq.common.validation.annotation.AllowedStrings;
+import com.kereq.common.validation.annotation.DictionaryValue;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -62,12 +66,12 @@ public class UserData extends AuditableEntity implements UserDetails {
     private Date birthDate;
 
     @Column(name = "USER_GENDER")
-    @NotNull
-    private String gender; //TODO: dictionary
+    @AllowedStrings(allowedValues = {Genders.MEN, Genders.WOMAN})
+    private String gender;
 
     @Column(name = "USER_COUNTRY", length = 30)
-    @NotNull
-    private String country; //TODO: dictionary
+    @DictionaryValue(code = Dictionaries.COUNTRIES)
+    private String country;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
