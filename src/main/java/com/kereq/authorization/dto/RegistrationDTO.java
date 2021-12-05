@@ -2,6 +2,8 @@ package com.kereq.authorization.dto;
 
 import com.kereq.authorization.validation.annotation.PasswordMatch;
 import com.kereq.authorization.validation.annotation.ValidPassword;
+import com.kereq.common.constant.Dictionaries;
+import com.kereq.common.validation.annotation.DictionaryValue;
 import com.kereq.main.validation.annotation.ValidDate;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +31,7 @@ public class RegistrationDTO { //TODO: validation messages?
     private String email;
 
     @NotNull
-    @Size(min = 4, max = 30)
+    @DictionaryValue(code = Dictionaries.COUNTRIES)
     private String country;
 
     @NotNull
