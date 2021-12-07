@@ -7,8 +7,6 @@ import com.kereq.main.error.RepositoryError;
 import com.kereq.main.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

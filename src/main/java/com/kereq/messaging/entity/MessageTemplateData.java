@@ -1,6 +1,6 @@
 package com.kereq.messaging.entity;
 
-import com.kereq.main.entity.AuditableEntity;
+import com.kereq.common.entity.AuditableEntity;
 import lombok.Getter;
 import lombok.Setter;
 

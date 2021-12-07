@@ -1,12 +1,12 @@
 package com.kereq.main.repository;
 
+import com.kereq.common.repository.BaseRepository;
 import com.kereq.main.entity.FriendshipData;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface FriendshipRepository extends JpaRepository<FriendshipData, Long> {
+public interface FriendshipRepository extends BaseRepository<FriendshipData> {
 
     boolean existsByUserIdAndFriendId(Long userId, Long friendId);
 

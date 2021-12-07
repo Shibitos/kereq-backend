@@ -3,6 +3,7 @@ package com.kereq.main.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kereq.common.constant.Dictionaries;
 import com.kereq.common.constant.Genders;
+import com.kereq.common.entity.AuditableEntity;
 import com.kereq.common.validation.annotation.AllowedStrings;
 import com.kereq.common.validation.annotation.DictionaryValue;
 import lombok.Getter;

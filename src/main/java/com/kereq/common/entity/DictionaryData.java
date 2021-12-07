@@ -1,6 +1,5 @@
 package com.kereq.common.entity;
 
-import com.kereq.main.entity.AuditableEntity;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,9 +1,8 @@
 package com.kereq.common.repository;
 
 import com.kereq.common.entity.DictionaryData;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DictionaryRepository extends JpaRepository<DictionaryData, Long> {
+public interface DictionaryRepository extends BaseRepository<DictionaryData> {
 
     boolean existsByCode(String code);
 }

@@ -1,11 +1,10 @@
 package com.kereq.common.repository;
 
 import com.kereq.common.entity.DictionaryItemData;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface DictionaryItemRepository extends JpaRepository<DictionaryItemData, Long> {
+public interface DictionaryItemRepository extends BaseRepository<DictionaryItemData> {
 
     List<DictionaryItemData> findAllByDictionaryCode(String code);
 

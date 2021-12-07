@@ -23,11 +23,11 @@ public class ApplicationErrorControllerAdvice {
     @Autowired
     private ObjectMapper mapper;
 
-    private static final Logger LOG = LoggerFactory.getLogger(ApplicationErrorControllerAdvice.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationErrorControllerAdvice.class);
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception, final HttpServletRequest request) {
-        LOG.error("Exception occurred", exception);
+        logger.error("Exception occurred", exception);
         return handleApplicationException(new ApplicationException(), request);
     }
 
@@ -72,7 +72,7 @@ public class ApplicationErrorControllerAdvice {
                                                                     final HttpServletRequest request) {
         HttpStatus status = exception.getStatus();
         if (!CommonError.OTHER_ERROR.getMessage().equals(exception.getErrorCode())) {
-            LOG.error(exception.getMessage(), exception);
+            logger.error(exception.getMessage(), exception);
         }
 
         return new ResponseEntity<>(
