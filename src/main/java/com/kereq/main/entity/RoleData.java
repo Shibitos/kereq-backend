@@ -18,7 +18,8 @@ public class RoleData extends AuditableEntity {
     private static final long serialVersionUID = -5210912422426143296L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ROLE_ID")
+    @SequenceGenerator(name = "SEQ_ROLE_ID", sequenceName = "SEQ_ROLE_ID", allocationSize = 50)
     @Column(name = "ROLE_ID")
     private Long id;
 

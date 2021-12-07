@@ -21,7 +21,8 @@ public class FriendshipData extends AuditableEntity {
     private static final long serialVersionUID = 5309937945164911089L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FRS_ID")
+    @SequenceGenerator(name = "SEQ_FRS_ID", sequenceName = "SEQ_FRS_ID", allocationSize = 50)
     @Column(name = "FRS_ID")
     private Long id;
 

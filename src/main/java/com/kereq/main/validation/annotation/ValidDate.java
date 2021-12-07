@@ -17,10 +17,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface ValidDate {
 
-    String message() default "Invalid date. Expected format: " + DateValidator.DATE_FORMAT;
+    String message() default "Invalid date. Expected format: ";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
+    String format() default DateValidator.DATE_FORMAT;
 }

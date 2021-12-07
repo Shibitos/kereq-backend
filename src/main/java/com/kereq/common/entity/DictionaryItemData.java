@@ -19,7 +19,8 @@ public class DictionaryItemData {
     private static final long serialVersionUID = 2929483954401454121L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_DICT_ITEM_ID")
+    @SequenceGenerator(name = "SEQ_DICT_ITEM_ID", sequenceName = "SEQ_DICT_ITEM_ID", allocationSize = 50)
     @Column(name = "DICT_ITEM_ID")
     private Long id;
 

@@ -31,18 +31,19 @@ public class UserData extends AuditableEntity implements UserDetails {
     private static final long serialVersionUID = 4675228760392277493L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USER_ID")
+    @SequenceGenerator(name = "SEQ_USER_ID", sequenceName = "SEQ_USER_ID", allocationSize = 50)
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name = "USER_FIRST_NAME", length = 25)
+    @Column(name = "USER_FIRST_NAME", length = 35)
     @NotNull
-    @Size(min = 4, max = 25)
+    @Size(min = 2, max = 35)
     private String firstName;
 
-    @Column(name = "USER_LAST_NAME", length = 25)
+    @Column(name = "USER_LAST_NAME", length = 40)
     @NotNull
-    @Size(min = 4, max = 25)
+    @Size(min = 2, max = 40)
     private String lastName;
 
     @Column(name = "USER_EMAIL", length = 50, unique = true)
@@ -66,7 +67,7 @@ public class UserData extends AuditableEntity implements UserDetails {
     private Date birthDate;
 
     @Column(name = "USER_GENDER")
-    @AllowedStrings(allowedValues = {Genders.MEN, Genders.WOMAN})
+    @AllowedStrings(allowedValues = {Genders.MALE, Genders.FEMALE})
     private String gender;
 
     @Column(name = "USER_COUNTRY", length = 30)

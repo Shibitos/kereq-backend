@@ -44,7 +44,7 @@ public class EmailService {
         message.setFrom(env.getProperty("email.support"));
         message.setTo(to);
         message.setSubject(appendParameters(template.getSubject(), data));
-        message.setBody(appendParameters(template.getBody(), data));
+        message.setBody(appendParameters(template.getBody(), data)); //TODO: sanitizing
         message.setTemplate(template);
         message.setStatus(MessageData.Status.PENDING);
         message.setRetryCount(0);

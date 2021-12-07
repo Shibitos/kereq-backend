@@ -37,15 +37,16 @@ public class RegistrationDTO { //TODO: validation messages?
     private String country;
 
     @NotNull
-    @ValidDate
-    private String birthDate;
+    @ValidDate(format = "yyyy-MM-dd")
+    private String birthDate; //TODO: minimal value?
 
     @NotNull
-    @AllowedStrings(allowedValues = {Genders.MEN, Genders.WOMAN})
+    @AllowedStrings(allowedValues = {Genders.MALE, Genders.FEMALE})
     private String gender;
 
     @NotNull
     @ValidPassword
+    @Size(min = 8, max = 24)
     private String password;
 
     @NotNull

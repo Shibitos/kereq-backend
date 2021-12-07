@@ -21,7 +21,8 @@ public class DictionaryData extends AuditableEntity {
     private static final long serialVersionUID = 8416881672476204258L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_DICT_ID")
+    @SequenceGenerator(name = "SEQ_DICT_ID", sequenceName = "SEQ_DICT_ID", allocationSize = 50)
     @Column(name = "DICT_ID")
     private Long id;
 

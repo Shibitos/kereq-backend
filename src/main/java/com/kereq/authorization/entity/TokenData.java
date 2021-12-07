@@ -18,13 +18,14 @@ public class TokenData {
     private static final long serialVersionUID = -3364805981914373200L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_TKN_ID")
+    @SequenceGenerator(name = "SEQ_TKN_ID", sequenceName = "SEQ_TKN_ID", allocationSize = 50)
     @Column(name = "TKN_ID")
     private Long id;
 
     @Column(name = "TKN_VALUE", length = 36)
     @NotNull
-    private String value; //TODO: UUID?
+    private String value;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TKN_EXPIRE_DATE")

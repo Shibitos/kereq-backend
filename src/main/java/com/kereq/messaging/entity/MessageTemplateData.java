@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "MESSAGE_TEMPLATES")
@@ -19,7 +20,8 @@ public class MessageTemplateData extends AuditableEntity {
     private static final long serialVersionUID = 3920250129891131537L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_MSG_TMP_ID")
+    @SequenceGenerator(name = "SEQ_MSG_TMP_ID", sequenceName = "SEQ_MSG_TMP_ID", allocationSize = 50)
     @Column(name = "MSG_TMP_ID")
     private Long id;
 
@@ -27,7 +29,8 @@ public class MessageTemplateData extends AuditableEntity {
     @NotNull
     private String code;
 
-    @Column(name = "MSG_TMP_SUBJECT")
+    @Column(name = "MSG_TMP_SUBJECT", length = 100)
+    @Size(min = 8, max = 100)
     @NotNull
     private String subject;
 

@@ -17,7 +17,8 @@ public class FindFriendData extends AuditableEntity {
     private static final long serialVersionUID = 6034153620373743304L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FFA_ID")
+    @SequenceGenerator(name = "SEQ_FFA_ID", sequenceName = "SEQ_FFA_ID", allocationSize = 50)
     @Column(name = "FFA_ID")
     private Long id;
 
