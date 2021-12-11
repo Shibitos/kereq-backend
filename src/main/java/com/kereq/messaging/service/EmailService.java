@@ -1,6 +1,6 @@
 package com.kereq.messaging.service;
 
-import com.kereq.main.error.CommonError;
+import com.kereq.common.error.CommonError;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.messaging.entity.MessageData;
 import com.kereq.messaging.entity.MessageTemplateData;

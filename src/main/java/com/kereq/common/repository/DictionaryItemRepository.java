@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DictionaryItemRepository extends BaseRepository<DictionaryItemData> {
 
-    List<DictionaryItemData> findAllByDictionaryCode(String code);
+    List<DictionaryItemData> findByDictionaryCode(String code);
 
     DictionaryItemData findByCode(String code);
 

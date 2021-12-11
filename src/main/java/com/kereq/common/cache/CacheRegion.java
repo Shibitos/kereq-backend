@@ -2,7 +2,7 @@ package com.kereq.common.cache;
 
 import com.kereq.common.entity.BaseEntity;
 import com.kereq.common.repository.BaseRepository;
-import com.kereq.main.error.CommonError;
+import com.kereq.common.error.CommonError;
 import com.kereq.main.exception.ApplicationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

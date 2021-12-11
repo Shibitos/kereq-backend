@@ -4,7 +4,7 @@ import com.kereq.common.constant.CacheRegions;
 import com.kereq.common.entity.DictionaryItemData;
 import com.kereq.common.repository.DictionaryItemRepository;
 import com.kereq.common.repository.DictionaryRepository;
-import com.kereq.main.error.RepositoryError;
+import com.kereq.common.error.RepositoryError;
 import com.kereq.main.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,16 +24,17 @@ public class DictionaryService {
     @Autowired
     private DictionaryService self; //TODO: aspecj? spring aop?
 
-    public List<DictionaryItemData> getAllDictionaryValues(String code) { //TODO: cache
+    @Cacheable(value = CacheRegions.Names.DICTIONARY_ITEMS, key="#code")
+    public List<DictionaryItemData> getAllDictionaryValues(String code) { //TODO: better cache?
         if (!dictionaryRepository.existsByCode(code)) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
-        return dictionaryItemRepository.findAllByDictionaryCode(code);
+        return dictionaryItemRepository.findByDictionaryCode(code);
     }
 
     @Cacheable(value = CacheRegions.Names.DICTIONARY_ITEMS, key="#code")
     public DictionaryItemData getItemByCode(String code) {
-        return null;
+        return dictionaryItemRepository.findByCode(code);
     }
 
     public boolean isItemInDictionary(String dictionaryCode, String code) {

@@ -1,6 +1,6 @@
 package com.kereq.helper;
 
-import com.kereq.main.error.ApplicationError;
+import com.kereq.common.error.ApplicationError;
 import com.kereq.main.exception.ApplicationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.function.Executable;

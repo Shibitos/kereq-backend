@@ -15,7 +15,7 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private String country;
+    private String country; //TODO: val instead of code?
     private String birthDate;
 
     @JsonProperty("joinDate")

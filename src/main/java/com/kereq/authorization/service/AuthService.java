@@ -3,9 +3,10 @@ package com.kereq.authorization.service;
 import com.kereq.authorization.entity.TokenData;
 import com.kereq.authorization.error.AuthError;
 import com.kereq.authorization.repository.TokenRepository;
+import com.kereq.common.error.ValidationError;
 import com.kereq.main.entity.RoleData;
 import com.kereq.main.entity.UserData;
-import com.kereq.main.error.RepositoryError;
+import com.kereq.common.error.RepositoryError;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.RoleRepository;
 import com.kereq.main.repository.UserRepository;
@@ -66,7 +67,10 @@ public class AuthService {
     @Transactional
     public UserData registerUser(UserData user) {
         if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
-            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getEmail(), "Email");
+            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
+        }
+        if (user.getBirthDate().after(DateUtil.now())) {
+            throw new ApplicationException(ValidationError.DATE_NOT_PAST);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Collections.singleton(getDefaultRole()));

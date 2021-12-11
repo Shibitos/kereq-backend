@@ -1,7 +1,7 @@
 package com.kereq.main.exception;
 
-import com.kereq.main.error.ApplicationError;
-import com.kereq.main.error.CommonError;
+import com.kereq.common.error.ApplicationError;
+import com.kereq.common.error.CommonError;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;

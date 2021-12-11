@@ -1,4 +1,4 @@
-package com.kereq.main.error;
+package com.kereq.common.error;
 
 import java.text.MessageFormat;
 

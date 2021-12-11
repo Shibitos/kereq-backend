@@ -11,11 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DateUtilUnitTest {
 
-    @BeforeEach
-    public void setup() {
-        //MockitoAnnotations.initMocks(this);
-    }
-
     @Test
     void testAddMinutes() {
         Date now = new Date();
@@ -49,6 +44,6 @@ class DateUtilUnitTest {
         assertThat(DateUtil.yearsBetween(now, minusTwo)).isEqualTo(-2);
         assertThat(DateUtil.yearsBetween(minusTwo, minusOne)).isEqualTo(1);
         assertThat(DateUtil.yearsBetween(minusOne, minusTwo)).isEqualTo(-1);
-        assertThat(DateUtil.yearsBetween(now, now)).isEqualTo(0);
+        assertThat(DateUtil.yearsBetween(now, now)).isZero();
     }
 }

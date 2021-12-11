@@ -4,10 +4,11 @@ import com.kereq.authorization.entity.TokenData;
 import com.kereq.authorization.error.AuthError;
 import com.kereq.authorization.repository.TokenRepository;
 import com.kereq.authorization.service.AuthService;
+import com.kereq.common.error.ValidationError;
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.RoleData;
 import com.kereq.main.entity.UserData;
-import com.kereq.main.error.RepositoryError;
+import com.kereq.common.error.RepositoryError;
 import com.kereq.main.repository.RoleRepository;
 import com.kereq.main.repository.UserRepository;
 import com.kereq.main.util.DateUtil;
@@ -91,7 +92,7 @@ class AuthServiceUnitTest {
         when(passwordEncoder.encode(Mockito.any(CharSequence.class))).thenReturn("encoded");
         RoleData defaultRole = new RoleData();
         defaultRole.setCode("ROLE_USER");
-        when(roleRepository.findByCode("ROLE_USER")).thenReturn(defaultRole);
+        when(roleRepository.findByCode("ROLE_USER")).thenReturn(defaultRole); //TODO: role default param
 
         UserData user = new UserData();
         user.setEmail("testFound@abc.com");
@@ -99,12 +100,20 @@ class AuthServiceUnitTest {
         user.setFirstName("John");
         user.setLastName("Test");
         UserData userAtt1 = user;
-        AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE,
+        AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
                 () -> authService.registerUser(userAtt1));
 
+        Date past = DateUtil.addMinutes(DateUtil.now(), 1000);
+        Date future = DateUtil.addMinutes(DateUtil.now(), -1000);
         user.setEmail("testNotFound@abc.com");
+        user.setBirthDate(future);
         UserData userAtt2 = user;
-        user = Assertions.assertDoesNotThrow(() -> authService.registerUser(userAtt2));
+        AssertHelper.assertException(ValidationError.DATE_NOT_PAST,
+                () -> authService.registerUser(userAtt2));
+
+        user.setBirthDate(past);
+        UserData userAtt3 = user;
+        user = Assertions.assertDoesNotThrow(() -> authService.registerUser(userAtt3));
 
         assertThat(user.getPassword()).isEqualTo("encoded");
         assertThat(user.getRoles().size()).isEqualTo(1);

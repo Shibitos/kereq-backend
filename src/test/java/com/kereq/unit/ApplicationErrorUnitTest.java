@@ -1,7 +1,7 @@
 package com.kereq.unit;
 
-import com.kereq.main.error.ApplicationError;
-import com.kereq.main.error.CommonError;
+import com.kereq.common.error.ApplicationError;
+import com.kereq.common.error.CommonError;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

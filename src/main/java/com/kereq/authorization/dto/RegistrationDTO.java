@@ -37,8 +37,8 @@ public class RegistrationDTO { //TODO: validation messages?
     private String country;
 
     @NotNull
-    @ValidDate(format = "yyyy-MM-dd")
-    private String birthDate; //TODO: minimal value?
+    @ValidDate(format = "yyyy-MM-dd", allowFuture = false)
+    private String birthDate;
 
     @NotNull
     @AllowedStrings(allowedValues = {Genders.MALE, Genders.FEMALE})

@@ -1,6 +1,6 @@
 package com.kereq.authorization.error;
 
-import com.kereq.main.error.ApplicationError;
+import com.kereq.common.error.ApplicationError;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

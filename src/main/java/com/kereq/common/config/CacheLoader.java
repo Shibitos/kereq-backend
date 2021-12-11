@@ -2,9 +2,11 @@ package com.kereq.common.config;
 
 import com.kereq.common.cache.CacheRegion;
 import com.kereq.common.constant.CacheRegions;
+import com.kereq.common.constant.Dictionaries;
 import com.kereq.common.entity.BaseEntity;
 import com.kereq.common.entity.CodeEntity;
-import com.kereq.main.error.CommonError;
+import com.kereq.common.repository.DictionaryItemRepository;
+import com.kereq.common.error.CommonError;
 import com.kereq.main.exception.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
@@ -28,6 +33,9 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired
     private ApplicationContext applicationContext;
+
+    @Autowired
+    private DictionaryItemRepository dictionaryItemRepository;
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
@@ -53,6 +61,22 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
                 }
             }
         }
+        loadDictionariesLists();
         logger.info("All caches loaded");
+    }
+
+    private void loadDictionariesLists() {
+        logger.info("Loading dictionaries lists");
+        Cache cache = cacheManager.getCache(CacheRegions.Names.DICTIONARY_ITEMS);
+        if (cache == null) {
+            throw new ApplicationException(CommonError.OTHER_ERROR);
+        }
+        List<String> dictionaries = Arrays.stream(Dictionaries.class.getFields())
+                .map(Field::getName).collect(Collectors.toList());
+        for (String dictionary : dictionaries) {
+            logger.info("Loading dictionary list: {}", dictionary);
+            cache.put(dictionary, dictionaryItemRepository.findByDictionaryCode(dictionary));
+        }
+        logger.info("All dictionaries lists loaded");
     }
 }

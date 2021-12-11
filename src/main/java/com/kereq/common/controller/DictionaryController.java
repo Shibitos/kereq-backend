@@ -25,7 +25,7 @@ public class DictionaryController {
 
     @GetMapping("/{code}")
     public List<DictionaryItemDTO> getDictionaryValues(@PathVariable("code") String code) {
-        List<DictionaryItemData> items = dictionaryService.getAllDictionaryValues(code);
+        List<DictionaryItemData> items = dictionaryService.getAllDictionaryValues(code.toUpperCase());
         return items.stream().map(i -> modelMapper.map(i, DictionaryItemDTO.class)).collect(Collectors.toList());
     }
 }
