@@ -2,6 +2,11 @@ package com.kereq.authorization.dto;
 
 import com.kereq.authorization.validation.annotation.PasswordMatch;
 import com.kereq.authorization.validation.annotation.ValidPassword;
+import com.kereq.common.constant.Dictionaries;
+import com.kereq.common.constant.Genders;
+import com.kereq.common.validation.annotation.AllowedStrings;
+import com.kereq.common.validation.annotation.DictionaryValue;
+import com.kereq.main.validation.annotation.ValidDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,11 +17,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @PasswordMatch
-public class UserDTO { //TODO: validation messages?
-
-    @NotNull
-    @Size(min = 4, max = 25)
-    private String login;
+public class RegistrationDTO { //TODO: validation messages?
 
     @NotNull
     @Size(min = 4, max = 25)
@@ -32,7 +33,20 @@ public class UserDTO { //TODO: validation messages?
     private String email;
 
     @NotNull
+    @DictionaryValue(code = Dictionaries.COUNTRIES)
+    private String country;
+
+    @NotNull
+    @ValidDate(format = "yyyy-MM-dd")
+    private String birthDate; //TODO: minimal value?
+
+    @NotNull
+    @AllowedStrings(allowedValues = {Genders.MALE, Genders.FEMALE})
+    private String gender;
+
+    @NotNull
     @ValidPassword
+    @Size(min = 8, max = 24)
     private String password;
 
     @NotNull

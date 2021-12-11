@@ -1,11 +1,11 @@
 package com.kereq.authorization.repository;
 
 import com.kereq.authorization.entity.TokenData;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.kereq.common.repository.BaseRepository;
 
 import java.util.Date;
 
-public interface TokenRepository extends JpaRepository<TokenData, Long> {
+public interface TokenRepository extends BaseRepository<TokenData> {
 
     boolean existsByUserIdAndType(Long userId, String tokenType);
 

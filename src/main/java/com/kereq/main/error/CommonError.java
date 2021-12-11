@@ -1,10 +1,10 @@
 package com.kereq.main.error;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
+@AllArgsConstructor
 @Getter
-@RequiredArgsConstructor
 public enum CommonError implements ApplicationError {
 
     OTHER_ERROR(500, "Error occurred."),

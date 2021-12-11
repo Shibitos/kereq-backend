@@ -3,6 +3,7 @@ package com.kereq.authorization.service;
 import com.kereq.authorization.entity.TokenData;
 import com.kereq.authorization.error.AuthError;
 import com.kereq.authorization.repository.TokenRepository;
+import com.kereq.main.entity.RoleData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.error.RepositoryError;
 import com.kereq.main.exception.ApplicationException;
@@ -15,9 +16,11 @@ import com.kereq.messaging.repository.MessageRepository;
 import com.kereq.messaging.repository.MessageTemplateRepository;
 import com.kereq.messaging.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +29,9 @@ import java.util.UUID;
 
 @Service
 public class AuthService {
+
+    @Autowired
+    private ApplicationContext ctx;
 
     @Autowired
     private UserRepository userRepository;
@@ -48,29 +54,34 @@ public class AuthService {
     @Autowired
     private EmailService emailService;
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
     public static final String VERIFICATION_TEMPLATE_CODE = "COMPLETE_REGISTRATION";
 
     public static final int TOKEN_EXPIRATION_TIME_MIN = 60 * 24; //TODO: move to app parameters (and create them)
 
     public static final int TOKEN_RESEND_TIME_MIN = 1; //TODO: always lower than tokenExpirationTime
 
+    @Transactional
     public UserData registerUser(UserData user) {
-        if (userRepository.existsByLoginIgnoreCase(user.getLogin())) {
-            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getLogin(), "Login");
-        }
         if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
-            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getLogin(), "Email");
+            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getEmail(), "Email");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Collections.singleton(roleRepository.findByCode("ROLE_USER")));
+        user.setRoles(Collections.singleton(getDefaultRole()));
         user.setActivated(false);
 
         return userRepository.save(user);
     }
 
+    public RoleData getDefaultRole() {
+        return roleRepository.findByCode("ROLE_USER"); //TODO: param default role?
+    }
+
     public TokenData generateVerificationToken(UserData user) {
         if (!userRepository.existsById(user.getId())) {
-            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND, user.getId());
+            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_ID, user.getId());
         }
         if (user.isActivated()) {
             throw new ApplicationException(AuthError.USER_ALREADY_ACTIVATED);
@@ -104,10 +115,10 @@ public class AuthService {
         tokenRepository.save(token);
     }
 
-    public void resendVerificationToken(final String loginOrEmail) {
-        UserData user = userRepository.findByLoginOrEmail(loginOrEmail);
+    public void resendVerificationToken(final String email) {
+        UserData user = userRepository.findByEmailIgnoreCase(email);
         if (user == null) {
-            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_VALUE, loginOrEmail);
+            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_VALUE, email);
         }
         TokenData token = tokenRepository.findByUserIdAndType(user.getId(), TokenData.TokenType.VERIFICATION);
         if (token == null) {
@@ -126,7 +137,6 @@ public class AuthService {
 
     public TokenData renewVerificationToken(TokenData token) {
         token.setValue(UUID.randomUUID().toString());
-
         return tokenRepository.save(token);
     }
 
@@ -151,9 +161,7 @@ public class AuthService {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_VALUE, VERIFICATION_TEMPLATE_CODE);
         }
         Map<String, String> params = new HashMap<>();
-        final String baseUrl =
-                ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString(); //TODO: frontend url
-        params.put("CONFIRM_URL", baseUrl + "/auth/confirm?token=" + token.getValue());
+        params.put("CONFIRM_URL", frontendUrl + "/confirm-account?token=" + token.getValue());
         return emailService.createMessageFromTemplate(template, user.getEmail(), params);
     }
 }
