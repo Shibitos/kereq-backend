@@ -42,4 +42,18 @@ public abstract class AuditableEntity extends BaseEntity { //TODO: search criter
 //    @LastModifiedBy
 //    @JsonIgnore
 //    private String updatedBy;
+
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "auditCD = " + auditCD + ", " +
+                "auditMD = " + auditMD + ", " +
+                "auditRD = " + auditRD + ")";
+    }
 }

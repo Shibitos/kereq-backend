@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "FRIENDSHIPS")
@@ -57,12 +59,37 @@ public class FriendshipData extends AuditableEntity {
         String ALL = "I|D|A";
     }
 
-    public FriendshipData(UserData user, boolean isFriend, Date auditMD) {
+    public FriendshipData(UserData user, boolean isFriend, Date auditMD) { //TODO: think of it
         if (isFriend) {
             this.friend = user;
         } else {
             this.user = user;
         }
         this.setAuditMD(auditMD);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        FriendshipData that = (FriendshipData) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + getId() + ", " +
+                "auditCD = " + getAuditCD() + ", " +
+                "auditMD = " + getAuditMD() + ", " +
+                "auditRD = " + getAuditRD() + ", " +
+                "userId = " + getUserId() + ", " +
+                "friendId = " + getFriendId() + ", " +
+                "status = " + getStatus() + ")";
     }
 }

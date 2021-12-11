@@ -6,9 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @Entity
 @Table(name = "ROLES")
@@ -36,4 +38,28 @@ public class RoleData extends AuditableEntity implements CodeEntity {
     @Column(name = "ROLE_NAME", length = 50)
     @NotNull
     private String name;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        RoleData roleData = (RoleData) o;
+        return id != null && Objects.equals(id, roleData.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + getId() + ", " +
+                "auditCD = " + getAuditCD() + ", " +
+                "auditMD = " + getAuditMD() + ", " +
+                "auditRD = " + getAuditRD() + ", " +
+                "code = " + getCode() + ", " +
+                "name = " + getName() + ")";
+    }
 }

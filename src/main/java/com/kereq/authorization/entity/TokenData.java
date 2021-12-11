@@ -7,10 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "USER_TOKENS")
@@ -54,5 +56,29 @@ public class TokenData extends BaseEntity {
         String PASSWORD_RESET = "R";
 
         String ALL = "V|R";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        TokenData tokenData = (TokenData) o;
+        return id != null && Objects.equals(id, tokenData.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "value = " + value + ", " +
+                "expireDate = " + expireDate + ", " +
+                "lastSendDate = " + lastSendDate + ", " +
+                "type = " + type + ", " +
+                "user = " + user.getId() + ")";
     }
 }

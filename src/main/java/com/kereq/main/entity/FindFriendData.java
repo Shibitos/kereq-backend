@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "FIND_FRIEND_ADS")
@@ -42,4 +44,31 @@ public class FindFriendData extends AuditableEntity {
     @OneToOne(targetEntity = UserData.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "FFA_USER_ID")
     private UserData user;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        FindFriendData that = (FindFriendData) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + getId() + ", " +
+                "auditCD = " + getAuditCD() + ", " +
+                "auditMD = " + getAuditMD() + ", " +
+                "auditRD = " + getAuditRD() + ", " +
+                "minAge = " + getMinAge() + ", " +
+                "maxAge = " + getMaxAge() + ", " +
+                "gender = " + getGender() + ", " +
+                "description = " + getDescription() + ", " +
+                "user = " + getUser() + ")";
+    }
 }

@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -133,5 +135,34 @@ public class UserData extends AuditableEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return activated;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        UserData userData = (UserData) o;
+        return id != null && Objects.equals(id, userData.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + getId() + ", " +
+                "auditCD = " + getAuditCD() + ", " +
+                "auditMD = " + getAuditMD() + ", " +
+                "auditRD = " + getAuditRD() + ", " +
+                "firstName = " + getFirstName() + ", " +
+                "lastName = " + getLastName() + ", " +
+                "email = " + getEmail() + ", " +
+                "activated = " + isActivated() + ", " +
+                "birthDate = " + getBirthDate() + ", " +
+                "gender = " + getGender() + ", " +
+                "country = " + getCountry() + ")";
     }
 }

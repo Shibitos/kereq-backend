@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity
 @Table(name = "DICTIONARY_ITEMS")
@@ -41,4 +43,29 @@ public class DictionaryItemData extends AuditableEntity implements CodeEntity {
     @ManyToOne
     @JoinColumn(name="DICT_ITEM_DICT_ID", nullable=false)
     private DictionaryData dictionary;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        DictionaryItemData that = (DictionaryItemData) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + getId() + ", " +
+                "auditCD = " + getAuditCD() + ", " +
+                "auditMD = " + getAuditMD() + ", " +
+                "auditRD = " + getAuditRD() + ", " +
+                "code = " + getCode() + ", " +
+                "value = " + getValue() + ", " +
+                "dictionary = " + getDictionary() + ")";
+    }
 }
