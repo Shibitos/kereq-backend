@@ -53,7 +53,7 @@ public class TokenData extends BaseEntity {
     @JoinColumn(nullable = false, name = "TKN_USER_ID")
     private UserData user;
 
-    public interface TokenType { //TODO: validation?
+    public interface TokenType {
         String VERIFICATION = "V";
         String PASSWORD_RESET = "R";
 

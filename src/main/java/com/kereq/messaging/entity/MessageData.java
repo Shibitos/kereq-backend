@@ -1,6 +1,7 @@
 package com.kereq.messaging.entity;
 
 import com.kereq.common.entity.AuditableEntity;
+import com.kereq.common.validation.annotation.AllowedStrings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,6 +51,7 @@ public class MessageData extends AuditableEntity {
     private String to;
 
     @Column(name = "MSG_STATUS")
+    @AllowedStrings(allowedValues = Status.ALL, delimiter = "|")
     private String status;
 
     @Column(name = "MSG_RETRY_COUNT")
