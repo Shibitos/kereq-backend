@@ -1,7 +1,9 @@
 package com.kereq.common.controller;
 
+import com.kereq.common.dto.DictionaryItemDTO;
 import com.kereq.common.entity.DictionaryItemData;
 import com.kereq.common.service.DictionaryService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +20,12 @@ public class DictionaryController {
     @Autowired
     private DictionaryService dictionaryService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @GetMapping("/{code}")
-    public List<String> getDictionaryValues(@PathVariable("code") String code) {
+    public List<DictionaryItemDTO> getDictionaryValues(@PathVariable("code") String code) {
         List<DictionaryItemData> items = dictionaryService.getAllDictionaryValues(code);
-        return items.stream().map(DictionaryItemData::getValue).collect(Collectors.toList());
+        return items.stream().map(i -> modelMapper.map(i, DictionaryItemDTO.class)).collect(Collectors.toList());
     }
 }

@@ -28,12 +28,12 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException {
         UserData principal = (UserData) authentication.getPrincipal();
         String token = JWT.create()
                 .withSubject(principal.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
                 .sign(Algorithm.HMAC256(secret));
-        response.getOutputStream().print("{\"access_token\": \"" + token + "\"}"); //TODO: think of it
+        response.getOutputStream().print("{\"access_token\": \"" + token + "\"}"); //TODO: think of it, refresh
     }
 }
