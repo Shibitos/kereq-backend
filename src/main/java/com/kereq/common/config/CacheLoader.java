@@ -1,12 +1,12 @@
 package com.kereq.common.config;
 
 import com.kereq.common.cache.CacheRegion;
-import com.kereq.common.constant.CacheRegions;
-import com.kereq.common.constant.Dictionaries;
+import com.kereq.common.constant.CacheProvider;
+import com.kereq.common.constant.Dictionary;
 import com.kereq.common.entity.BaseEntity;
 import com.kereq.common.entity.CodeEntity;
-import com.kereq.common.repository.DictionaryItemRepository;
 import com.kereq.common.error.CommonError;
+import com.kereq.common.repository.DictionaryItemRepository;
 import com.kereq.main.exception.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +44,12 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
 
     private void loadCaches() {
         logger.info("Loading caches");
-        List<CacheRegions> cacheRegions = List.of(CacheRegions.values());
-        for (CacheRegions ent : cacheRegions) {
+        List<CacheProvider> cacheRegions = List.of(CacheProvider.values());
+        for (CacheProvider ent : cacheRegions) {
             CacheRegion<?> region = ent.getCacheRegion();
+            if (!region.isPreloaded()) {
+                continue;
+            }
             logger.info("Loading cache: {}", region.getName());
             for (Object obj : applicationContext.getBean(region.getRepositoryClass()).findAll()) {
                 Cache cache = cacheManager.getCache(region.getName());
@@ -67,11 +70,11 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
 
     private void loadDictionariesLists() {
         logger.info("Loading dictionaries lists");
-        Cache cache = cacheManager.getCache(CacheRegions.Names.DICTIONARY_ITEMS);
+        Cache cache = cacheManager.getCache(CacheProvider.CacheName.DICTIONARY_ITEMS);
         if (cache == null) {
             throw new ApplicationException(CommonError.OTHER_ERROR);
         }
-        List<String> dictionaries = Arrays.stream(Dictionaries.class.getFields())
+        List<String> dictionaries = Arrays.stream(Dictionary.class.getFields())
                 .map(Field::getName).collect(Collectors.toList());
         for (String dictionary : dictionaries) {
             logger.info("Loading dictionary list: {}", dictionary);

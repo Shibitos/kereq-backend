@@ -1,8 +1,8 @@
 package com.kereq.main.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kereq.common.constant.Dictionaries;
-import com.kereq.common.constant.Genders;
+import com.kereq.common.constant.Dictionary;
+import com.kereq.common.constant.Gender;
 import com.kereq.common.entity.AuditableEntity;
 import com.kereq.common.validation.annotation.AllowedStrings;
 import com.kereq.common.validation.annotation.DictionaryValue;
@@ -74,11 +74,11 @@ public class UserData extends AuditableEntity implements UserDetails {
     private Date birthDate;
 
     @Column(name = "USER_GENDER")
-    @AllowedStrings(allowedValues = {Genders.MALE, Genders.FEMALE})
+    @AllowedStrings(allowedValues = {Gender.MALE, Gender.FEMALE})
     private String gender;
 
     @Column(name = "USER_COUNTRY", length = 30)
-    @DictionaryValue(code = Dictionaries.COUNTRIES)
+    @DictionaryValue(code = Dictionary.COUNTRIES)
     private String country;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

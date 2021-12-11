@@ -2,6 +2,7 @@ package com.kereq.authorization.entity;
 
 
 import com.kereq.common.entity.BaseEntity;
+import com.kereq.common.validation.annotation.AllowedStrings;
 import com.kereq.main.entity.UserData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,6 +46,7 @@ public class TokenData extends BaseEntity {
 
     @Column(name = "TKN_TYPE", length = 1)
     @NotNull
+    @AllowedStrings(allowedValues = TokenType.ALL, delimiter = "|")
     private String type;
 
     @OneToOne(targetEntity = UserData.class, fetch = FetchType.EAGER)

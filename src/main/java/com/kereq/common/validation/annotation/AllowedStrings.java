@@ -23,4 +23,6 @@ public @interface AllowedStrings {
     Class<? extends Payload>[] payload() default {};
 
     String[] allowedValues();
+
+    String delimiter() default "";
 }

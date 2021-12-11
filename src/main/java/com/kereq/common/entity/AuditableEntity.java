@@ -50,6 +50,11 @@ public abstract class AuditableEntity extends BaseEntity { //TODO: search criter
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +
                 "auditCD = " + auditCD + ", " +

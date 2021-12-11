@@ -2,8 +2,8 @@ package com.kereq.authorization.dto;
 
 import com.kereq.authorization.validation.annotation.PasswordMatch;
 import com.kereq.authorization.validation.annotation.ValidPassword;
-import com.kereq.common.constant.Dictionaries;
-import com.kereq.common.constant.Genders;
+import com.kereq.common.constant.Dictionary;
+import com.kereq.common.constant.Gender;
 import com.kereq.common.validation.annotation.AllowedStrings;
 import com.kereq.common.validation.annotation.DictionaryValue;
 import com.kereq.main.validation.annotation.ValidDate;
@@ -33,7 +33,7 @@ public class RegistrationDTO { //TODO: validation messages?
     private String email;
 
     @NotNull
-    @DictionaryValue(code = Dictionaries.COUNTRIES)
+    @DictionaryValue(code = Dictionary.COUNTRIES)
     private String country;
 
     @NotNull
@@ -41,7 +41,7 @@ public class RegistrationDTO { //TODO: validation messages?
     private String birthDate;
 
     @NotNull
-    @AllowedStrings(allowedValues = {Genders.MALE, Genders.FEMALE})
+    @AllowedStrings(allowedValues = {Gender.MALE, Gender.FEMALE})
     private String gender;
 
     @NotNull

@@ -20,7 +20,6 @@ public class DateValidator implements ConstraintValidator<ValidDate, Object> {
 
     @Override
     public void initialize(ValidDate constraintAnnotation) {
-        ConstraintValidator.super.initialize(constraintAnnotation);
         format = constraintAnnotation.format();
         messageFormat = constraintAnnotation.messageFormat();
         allowFuture = constraintAnnotation.allowFuture();

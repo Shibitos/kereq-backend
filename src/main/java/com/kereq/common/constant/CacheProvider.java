@@ -13,15 +13,15 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum CacheRegions {
+public enum CacheProvider {
 
-    DICTIONARY_ITEMS(new CacheRegion<DictionaryItemData>(Names.DICTIONARY_ITEMS, DictionaryItemRepository.class, true)), //TODO: handle preload flag
-    MESSAGE_TEMPLATES(new CacheRegion<MessageTemplateData>(Names.MESSAGE_TEMPLATES, MessageTemplateRepository.class, true)),
-    ROLES(new CacheRegion<RoleData>(Names.ROLES, RoleRepository.class, true));
+    DICTIONARY_ITEMS(new CacheRegion<DictionaryItemData>(CacheName.DICTIONARY_ITEMS, DictionaryItemRepository.class, true)),
+    MESSAGE_TEMPLATES(new CacheRegion<MessageTemplateData>(CacheName.MESSAGE_TEMPLATES, MessageTemplateRepository.class, true)),
+    ROLES(new CacheRegion<RoleData>(CacheName.ROLES, RoleRepository.class, true));
 
     private CacheRegion<? extends BaseEntity> cacheRegion;
 
-    public interface Names { //TODO: refactor
+    public interface CacheName { //TODO: refactor
 
         String DICTIONARY_ITEMS = "DICTIONARY_ITEMS";
         String MESSAGE_TEMPLATES = "MESSAGE_TEMPLATES";

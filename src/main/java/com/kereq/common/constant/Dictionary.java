@@ -1,5 +1,5 @@
 package com.kereq.common.constant;
 
-public interface Dictionaries {
+public interface Dictionary {
     String COUNTRIES = "COUNTRIES";
 }
