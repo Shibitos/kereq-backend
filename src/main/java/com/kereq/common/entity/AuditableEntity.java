@@ -1,6 +1,8 @@
 package com.kereq.common.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -9,13 +11,14 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.io.Serializable;
 import java.util.Date;
 
 @MappedSuperclass
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class AuditableEntity implements Serializable { //TODO: search criteria?
+public abstract class AuditableEntity extends BaseEntity { //TODO: search criteria?
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

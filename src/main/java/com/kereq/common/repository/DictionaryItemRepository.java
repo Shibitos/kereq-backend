@@ -8,5 +8,7 @@ public interface DictionaryItemRepository extends BaseRepository<DictionaryItemD
 
     List<DictionaryItemData> findAllByDictionaryCode(String code);
 
-    boolean existsByDictionaryCodeAndValue(String code, String value);
+    DictionaryItemData findByCode(String code);
+
+    boolean existsByDictionaryCodeAndCode(String dictionaryCode, String code);
 }

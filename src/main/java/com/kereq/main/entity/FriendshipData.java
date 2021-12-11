@@ -1,6 +1,7 @@
 package com.kereq.main.entity;
 
 import com.kereq.common.entity.AuditableEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.Date;
 @AttributeOverride(name = "auditCD", column = @Column(name = "FRS_AUDIT_CD"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "FRS_AUDIT_MD"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "FRS_AUDIT_RD"))
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter

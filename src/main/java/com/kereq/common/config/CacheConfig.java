@@ -1,5 +1,6 @@
 package com.kereq.common.config;
 
+import com.kereq.common.constant.CacheRegions;
 import org.ehcache.config.CacheConfiguration;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
@@ -14,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.cache.CacheManager;
 import javax.cache.Caching;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -43,7 +46,8 @@ public class CacheConfig extends CachingConfigurerSupport {
 
     private Map<String, org.ehcache.config.CacheConfiguration<?, ?>> createCacheConfigurations(
             org.ehcache.config.CacheConfiguration<Object, Object> cacheConfiguration) {
-        return CacheLoader.getCacheNames().stream().collect(Collectors.toMap(name -> name, name -> cacheConfiguration));
+        return Arrays.stream(CacheRegions.Names.class.getFields())
+                .collect(Collectors.toMap(Field::getName, field -> cacheConfiguration));
     }
 
     private EhcacheCachingProvider getCachingProvider() {

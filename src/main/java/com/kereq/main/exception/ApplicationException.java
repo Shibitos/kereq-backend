@@ -2,10 +2,12 @@ package com.kereq.main.exception;
 
 import com.kereq.main.error.ApplicationError;
 import com.kereq.main.error.CommonError;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
+@AllArgsConstructor
 @Getter
 @Setter
 public class ApplicationException extends RuntimeException {

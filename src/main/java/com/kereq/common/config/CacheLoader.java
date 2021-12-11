@@ -1,27 +1,27 @@
 package com.kereq.common.config;
 
-import com.kereq.common.repository.BaseRepository;
-import com.kereq.common.repository.DictionaryRepository;
-import com.kereq.main.repository.RoleRepository;
-import com.kereq.messaging.repository.MessageTemplateRepository;
+import com.kereq.common.cache.CacheRegion;
+import com.kereq.common.constant.CacheRegions;
+import com.kereq.common.entity.BaseEntity;
+import com.kereq.common.entity.CodeEntity;
+import com.kereq.main.error.CommonError;
+import com.kereq.main.exception.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
 
-    private final Logger logger = LoggerFactory.getLogger(CacheLoader.class);
+    private static final Logger logger = LoggerFactory.getLogger(CacheLoader.class);
 
     @Autowired
     CacheManager cacheManager;
@@ -29,35 +29,30 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private final static Map<String, Class<? extends BaseRepository<?>>> caches;
-    static {
-        caches = new LinkedHashMap<>();
-        addCache("DICTIONARIES", DictionaryRepository.class);
-        addCache("MESSAGE_TEMPLATES", MessageTemplateRepository.class);
-        addCache("ROLES", RoleRepository.class);
-    }
-
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
         loadCaches();
     }
 
-    public static List<String> getCacheNames() {
-        return new ArrayList<>(caches.keySet());
-    }
-
     private void loadCaches() {
         logger.info("Loading caches");
-        for (Map.Entry<String, Class<? extends BaseRepository<?>>> entry : caches.entrySet()) {
-            logger.info("Loading cache: {}", entry.getKey());
-            for (Object obj : applicationContext.getBean(entry.getValue()).findAll()) {
-                //cacheManager.getCache(entry.getKey()).put(obj, obj); //TODO: key
+        List<CacheRegions> cacheRegions = List.of(CacheRegions.values());
+        for (CacheRegions ent : cacheRegions) {
+            CacheRegion<?> region = ent.getCacheRegion();
+            logger.info("Loading cache: {}", region.getName());
+            for (Object obj : applicationContext.getBean(region.getRepositoryClass()).findAll()) {
+                Cache cache = cacheManager.getCache(region.getName());
+                if (cache == null) {
+                    throw new ApplicationException(CommonError.OTHER_ERROR);
+                }
+                if (obj instanceof CodeEntity) {
+                    cache.put(((CodeEntity) obj).getCode(), obj);
+                }
+                else if (obj instanceof BaseEntity) {
+                    cache.put(((BaseEntity) obj).getId(), obj);
+                }
             }
         }
         logger.info("All caches loaded");
-    }
-
-    private static void addCache(String name, Class<? extends BaseRepository<?>> repositoryClass) {
-        caches.put(name, repositoryClass);
     }
 }

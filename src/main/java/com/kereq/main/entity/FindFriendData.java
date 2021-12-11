@@ -1,7 +1,9 @@
 package com.kereq.main.entity;
 
 import com.kereq.common.entity.AuditableEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,6 +13,8 @@ import javax.persistence.*;
 @AttributeOverride(name = "auditCD", column = @Column(name = "FFA_AUDIT_CD"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "FFA_AUDIT_MD"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "FFA_AUDIT_RD"))
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class FindFriendData extends AuditableEntity {

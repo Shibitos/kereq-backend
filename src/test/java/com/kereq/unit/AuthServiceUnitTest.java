@@ -108,7 +108,7 @@ class AuthServiceUnitTest {
 
         assertThat(user.getPassword()).isEqualTo("encoded");
         assertThat(user.getRoles().size()).isEqualTo(1);
-        assertThat(user.getRoles().stream().anyMatch(r -> r.getCode().equals("ROLE_USER"))).isTrue();
+        assertThat(user.getRoles().stream().anyMatch(r -> r.getCode().equals("ROLE_USER"))).isTrue(); //TODO: param default
         assertThat(user.isActivated()).isFalse();
     }
 

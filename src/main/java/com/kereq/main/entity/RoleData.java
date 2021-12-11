@@ -1,7 +1,10 @@
 package com.kereq.main.entity;
 
 import com.kereq.common.entity.AuditableEntity;
+import com.kereq.common.entity.CodeEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,9 +15,11 @@ import javax.validation.constraints.NotNull;
 @AttributeOverride(name = "auditCD", column = @Column(name = "ROLE_AUDIT_CD"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "ROLE_AUDIT_MD"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "ROLE_AUDIT_RD"))
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class RoleData extends AuditableEntity {
+public class RoleData extends AuditableEntity implements CodeEntity {
 
     private static final long serialVersionUID = -5210912422426143296L;
 

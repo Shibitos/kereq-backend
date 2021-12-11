@@ -3,6 +3,7 @@ package com.kereq.authorization.service;
 import com.kereq.authorization.entity.TokenData;
 import com.kereq.authorization.error.AuthError;
 import com.kereq.authorization.repository.TokenRepository;
+import com.kereq.main.entity.RoleData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.error.RepositoryError;
 import com.kereq.main.exception.ApplicationException;
@@ -16,8 +17,10 @@ import com.kereq.messaging.repository.MessageTemplateRepository;
 import com.kereq.messaging.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +29,9 @@ import java.util.UUID;
 
 @Service
 public class AuthService {
+
+    @Autowired
+    private ApplicationContext ctx;
 
     @Autowired
     private UserRepository userRepository;
@@ -57,15 +63,20 @@ public class AuthService {
 
     public static final int TOKEN_RESEND_TIME_MIN = 1; //TODO: always lower than tokenExpirationTime
 
+    @Transactional
     public UserData registerUser(UserData user) {
         if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS_VALUE, user.getEmail(), "Email");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Collections.singleton(roleRepository.findByCode("ROLE_USER")));
+        user.setRoles(Collections.singleton(getDefaultRole()));
         user.setActivated(false);
 
         return userRepository.save(user);
+    }
+
+    public RoleData getDefaultRole() {
+        return roleRepository.findByCode("ROLE_USER"); //TODO: param default role?
     }
 
     public TokenData generateVerificationToken(UserData user) {

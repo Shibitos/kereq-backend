@@ -1,6 +1,8 @@
 package com.kereq.common.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -13,6 +15,8 @@ import java.util.Set;
 @AttributeOverride(name = "auditCD", column = @Column(name = "DICT_AUDIT_CD"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "DICT_AUDIT_MD"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "DICT_AUDIT_RD"))
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class DictionaryData extends AuditableEntity {

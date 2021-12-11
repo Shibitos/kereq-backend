@@ -6,7 +6,9 @@ import com.kereq.common.constant.Genders;
 import com.kereq.common.entity.AuditableEntity;
 import com.kereq.common.validation.annotation.AllowedStrings;
 import com.kereq.common.validation.annotation.DictionaryValue;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
 @AttributeOverride(name = "auditCD", column = @Column(name = "USER_AUDIT_CD"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "USER_AUDIT_MD"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "USER_AUDIT_RD"))
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class UserData extends AuditableEntity implements UserDetails {

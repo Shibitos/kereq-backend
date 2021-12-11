@@ -1,11 +1,11 @@
 package com.kereq.authorization.error;
 
 import com.kereq.main.error.ApplicationError;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
+@AllArgsConstructor
 @Getter
-@RequiredArgsConstructor
 public enum AuthError implements ApplicationError {
 
     TOKEN_INVALID(404, "Invalid token."),

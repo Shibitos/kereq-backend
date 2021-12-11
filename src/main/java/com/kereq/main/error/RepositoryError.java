@@ -1,10 +1,10 @@
 package com.kereq.main.error;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
+@AllArgsConstructor
 @Getter
-@RequiredArgsConstructor
 public enum RepositoryError implements ApplicationError {
 
     RESOURCE_NOT_FOUND(404, "Resource not found."),

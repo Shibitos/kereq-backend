@@ -1,8 +1,11 @@
 package com.kereq.authorization.entity;
 
 
+import com.kereq.common.entity.BaseEntity;
 import com.kereq.main.entity.UserData;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,9 +14,11 @@ import java.util.Date;
 
 @Entity
 @Table(name = "USER_TOKENS")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class TokenData {
+public class TokenData extends BaseEntity {
 
     private static final long serialVersionUID = -3364805981914373200L;
 
