@@ -46,8 +46,7 @@ public class FindFriendController {
     public ResponseEntity<Object> modifyAd(@Valid @RequestBody FindFriendDTO findFriendDTO,
                                            @AuthenticationPrincipal UserData user) {
         FindFriendData findFriendData = modelMapper.map(findFriendDTO, FindFriendData.class);
-        findFriendData.setUser(user);
-        findFriendService.modifyFindFriendAd(findFriendData);
+        findFriendService.modifyFindFriendAd(user.getId(), findFriendData);
         return ResponseEntity.ok().build();
     }
 

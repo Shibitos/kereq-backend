@@ -18,5 +18,5 @@ public interface FindFriendRepository extends BaseRepository<FindFriendData> {
             " AND (ff.minAge IS NULL OR ff.minAge <= :age)" +
             " AND (ff.maxAge IS NULL OR ff.maxAge >= :age)" +
             " AND (ff.gender IS NULL OR ff.gender = u.gender)")
-    Page<FindFriendData> findAdsForUserId(Long userId, int age, Pageable page); //TODO: not in friends
+    Page<FindFriendData> findAdsForUserId(Long userId, int age, Pageable page);
 }

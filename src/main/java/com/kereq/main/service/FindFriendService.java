@@ -28,9 +28,8 @@ public class FindFriendService {
         findFriendRepository.save(findFriendData);
     }
 
-    public void modifyFindFriendAd(FindFriendData findFriendData) {
-        FindFriendData original = findFriendRepository
-                .findByUserId(findFriendData.getUser().getId());
+    public void modifyFindFriendAd(Long userId, FindFriendData findFriendData) {
+        FindFriendData original = findFriendRepository.findByUserId(userId);
         if (original == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
