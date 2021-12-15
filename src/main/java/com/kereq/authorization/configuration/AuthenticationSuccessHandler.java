@@ -1,9 +1,12 @@
 package com.kereq.authorization.configuration;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kereq.authorization.dto.JWTTokenDTO;
+import com.kereq.authorization.service.JWTService;
 import com.kereq.main.entity.UserData;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -11,28 +14,28 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 @Component
 public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final int expirationTime;
-    private final String secret;
+    @Autowired
+    private JWTService jwtService;
 
-    public AuthenticationSuccessHandler(@Value("${jwt.expirationTime}") int expirationTime,
-                                            @Value("${jwt.secret}") String secret) {
-        this.expirationTime = expirationTime;
-        this.secret = secret;
-    }
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         UserData principal = (UserData) authentication.getPrincipal();
-        String token = JWT.create()
-                .withSubject(principal.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
-                .sign(Algorithm.HMAC256(secret));
-        response.getOutputStream().print("{\"access_token\": \"" + token + "\"}"); //TODO: think of it, refresh
+        String accessToken = jwtService.generateToken(principal);
+        String refreshToken = jwtService.generateRefreshToken(principal);
+        JWTTokenDTO tokenResponse = JWTTokenDTO.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+        response.setStatus(HttpStatus.OK.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        mapper.writeValue(response.getWriter(), tokenResponse);
     }
 }

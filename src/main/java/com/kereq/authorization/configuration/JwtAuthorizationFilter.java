@@ -1,7 +1,6 @@
 package com.kereq.authorization.configuration;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import com.kereq.authorization.service.JWTService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,13 +19,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private static final String TOKEN_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
     private final UserDetailsService userDetailsService;
-    private final String secret;
+    //private final String secret;
+
+    private JWTService jwtService;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
-                                  String secret) {
+                                  JWTService jwtService) {
         super(authenticationManager);
         this.userDetailsService = userDetailsService;
-        this.secret = secret;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -44,10 +45,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(TOKEN_HEADER);
         if (token != null && token.startsWith(TOKEN_PREFIX)) {
-            String email = JWT.require(Algorithm.HMAC256(secret))
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
-                    .getSubject();
+            String email = jwtService.verifyToken(token.replace(TOKEN_PREFIX, "")).getSubject();
             if (email != null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

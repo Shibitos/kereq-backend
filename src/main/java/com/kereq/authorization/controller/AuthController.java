@@ -1,10 +1,12 @@
 package com.kereq.authorization.controller;
 
 import com.kereq.authorization.dto.ConfirmDTO;
+import com.kereq.authorization.dto.JWTTokenDTO;
 import com.kereq.authorization.dto.RegistrationDTO;
 import com.kereq.authorization.dto.ResendTokenDTO;
 import com.kereq.authorization.entity.TokenData;
 import com.kereq.authorization.service.AuthService;
+import com.kereq.authorization.service.JWTService;
 import com.kereq.main.entity.UserData;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class AuthController {
     private AuthService authService;
 
     @Autowired
+    private JWTService jwtService;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @PostMapping("/register")
@@ -37,7 +42,7 @@ public class AuthController {
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity<Object> confirmUser(@Valid @RequestBody  ConfirmDTO confirmDTO) {
+    public ResponseEntity<Object> confirmUser(@Valid @RequestBody ConfirmDTO confirmDTO) {
         authService.confirmUser(confirmDTO.getToken());
 
         return ResponseEntity.ok().build();
@@ -48,5 +53,10 @@ public class AuthController {
         authService.resendVerificationToken(resendTokenDTO.getEmail()); //TODO: security?
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/refresh-token")
+    public JWTTokenDTO refreshToken(@RequestBody JWTTokenDTO jwtTokenDTO) {
+        return jwtService.refreshToken(jwtTokenDTO.getRefreshToken());
     }
 }

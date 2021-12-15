@@ -103,8 +103,8 @@ class AuthServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
                 () -> authService.registerUser(userAtt1));
 
-        Date past = DateUtil.addMinutes(DateUtil.now(), 1000);
-        Date future = DateUtil.addMinutes(DateUtil.now(), -1000);
+        Date past = DateUtil.addMinutes(DateUtil.now(), -1000);
+        Date future = DateUtil.addMinutes(DateUtil.now(), 1000);
         user.setEmail("testNotFound@abc.com");
         user.setBirthDate(future);
         UserData userAtt2 = user;

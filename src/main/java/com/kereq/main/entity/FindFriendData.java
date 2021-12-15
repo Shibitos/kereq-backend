@@ -38,7 +38,7 @@ public class FindFriendData extends AuditableEntity {
     @Column(name = "FFA_GENDER")
     private String gender;
 
-    @Column(name = "FFA_DESCRIPTION")
+    @Column(name = "FFA_DESCRIPTION", length = 400)
     private String description;
 
     @OneToOne(targetEntity = UserData.class, fetch = FetchType.EAGER)

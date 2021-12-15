@@ -25,4 +25,6 @@ public @interface AllowedStrings {
     String[] allowedValues();
 
     String delimiter() default "";
+
+    boolean nullable() default false;
 }
