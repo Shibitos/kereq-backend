@@ -3,7 +3,6 @@ package com.kereq.main.service;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.main.entity.PostData;
-import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ public class PostService {
     private PostRepository postRepository;
 
     public PostData createPost(PostData post) { //TODO: sanitize html
-        if (post.getUser() == null) {
+        if (post.getUser() == null) { //TODO: needed?
             throw new ApplicationException(CommonError.MISSING_ERROR, "user");
         }
         return postRepository.save(post);
@@ -43,7 +42,11 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public Page<PostData> getPostsForUser(UserData user, Pageable page) {
-        return postRepository.findPostsForUserId(user.getId(), page);
+    public Page<PostData> getBrowsePosts(Long userId, Pageable page) {
+        return postRepository.findPostsForUser(userId, page);
+    }
+
+    public Page<PostData> getUserPosts(Long userId, Pageable page) {
+        return postRepository.findByUserId(userId, page);
     }
 }

@@ -2,6 +2,7 @@ package com.kereq.authorization.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.kereq.authorization.dto.JWTTokenDTO;
 import com.kereq.authorization.error.AuthError;
 import com.kereq.main.entity.UserData;
@@ -40,14 +41,18 @@ public class JWTService {
     }
 
     public JWTTokenDTO refreshToken(String token) {
-        String subject = verifyToken(token).getSubject();
-        if (subject == null) {
+        try {
+            String subject = verifyToken(token).getSubject();
+            if (subject == null) {
+                throw new ApplicationException(AuthError.TOKEN_INVALID);
+            }
+            return JWTTokenDTO.builder()
+                    .accessToken(generateToken(subject))
+                    .refreshToken(generateRefreshToken(subject))
+                    .build();
+        } catch (TokenExpiredException e) {
             throw new ApplicationException(AuthError.TOKEN_INVALID);
         }
-        return JWTTokenDTO.builder()
-                .accessToken(generateToken(subject))
-                .refreshToken(generateRefreshToken(subject))
-                .build();
     }
 
     private String generateToken(String subject) {

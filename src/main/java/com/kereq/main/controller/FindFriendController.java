@@ -19,8 +19,6 @@ import javax.validation.Valid;
 @RequestMapping("/find-friends")
 public class FindFriendController {
 
-    private static final int ADS_PER_PAGE = 6; //TODO: move?
-
     @Autowired
     private FindFriendService findFriendService;
 
@@ -57,7 +55,7 @@ public class FindFriendController {
     }
 
     @GetMapping("/browse")
-    public Page<FindFriendDTO> getAdsForUser(@PageableDefault(sort = { "auditMD" }, value = ADS_PER_PAGE) Pageable page,
+    public Page<FindFriendDTO> getAdsForUser(@PageableDefault(sort = { "auditMD" }) Pageable page,
                                              @AuthenticationPrincipal UserData user) {
         return findFriendService.getFindFriendAdsForUser(user, page).map(f -> modelMapper.map(f, FindFriendDTO.class));
     }

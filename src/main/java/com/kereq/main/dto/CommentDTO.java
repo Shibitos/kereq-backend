@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class PostDTO {
+public class CommentDTO {
 
     private UserDTO user; //TODO: only for browse
 

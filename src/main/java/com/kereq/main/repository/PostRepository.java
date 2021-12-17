@@ -12,5 +12,7 @@ public interface PostRepository extends BaseRepository<PostData> {
             " WHERE p.user.id = :userId OR p.user.id IN (" +
             " SELECT f.friendId FROM FriendshipData f WHERE f.userId = :userId " +
             " ) ")
-    Page<PostData> findPostsForUserId(Long userId, Pageable page);
+    Page<PostData> findPostsForUser(Long userId, Pageable page);
+
+    Page<PostData> findByUserId(Long userId, Pageable page);
 }

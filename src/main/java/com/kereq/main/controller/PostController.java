@@ -1,6 +1,5 @@
 package com.kereq.main.controller;
 
-import com.kereq.main.dto.FindFriendDTO;
 import com.kereq.main.dto.PostDTO;
 import com.kereq.main.entity.PostData;
 import com.kereq.main.entity.UserData;
@@ -20,8 +19,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/posts")
 public class PostController {
-
-    private static final int POSTS_PER_PAGE = 6; //TODO: move?
 
     @Autowired
     private PostService postService;
@@ -54,10 +51,18 @@ public class PostController {
     }
 
     @GetMapping("/browse")
-    public Page<PostDTO> getAdsForUser(
-            @PageableDefault(sort = { "auditMD" }, direction = Sort.Direction.DESC, value = POSTS_PER_PAGE)
+    public Page<PostDTO> browsePosts(
+            @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
                     Pageable page,
             @AuthenticationPrincipal UserData user) {
-        return postService.getPostsForUser(user, page).map(p -> modelMapper.map(p, PostDTO.class));
+        return postService.getBrowsePosts(user.getId(), page).map(p -> modelMapper.map(p, PostDTO.class));
+    }
+
+    @GetMapping("/posts/{userId}")
+    public Page<PostDTO> getUserPosts(
+            @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
+                    Pageable page,
+            @PathVariable("userId") Long userId) {
+        return postService.getUserPosts(userId, page).map(p -> modelMapper.map(p, PostDTO.class));
     }
 }
