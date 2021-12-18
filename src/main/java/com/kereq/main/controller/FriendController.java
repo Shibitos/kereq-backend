@@ -21,14 +21,19 @@ public class FriendController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping("/invite/{receiverId}")
+    @GetMapping("/invitations")
+    public Page<FriendshipDTO> getInvitations(Pageable page, @AuthenticationPrincipal UserData user) {
+        return userService.getInvitationsUsers(user.getId(), page).map(f -> modelMapper.map(f, FriendshipDTO.class));
+    }
+
+    @PostMapping("/invitations/{receiverId}")
     public ResponseEntity<Object> inviteFriend(@PathVariable("receiverId") Long receiverId,
                                                @AuthenticationPrincipal UserData user) {
         userService.inviteFriend(user.getId(), receiverId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/invite/{receiverId}")
+    @DeleteMapping("/invitations/{receiverId}")
     public ResponseEntity<Object> removeInvitation(@PathVariable("receiverId") Long receiverId,
                                                @AuthenticationPrincipal UserData user) {
         userService.removeInvitation(user.getId(), receiverId);
@@ -49,24 +54,19 @@ public class FriendController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/friend/{friendId}")
+    @DeleteMapping("/{friendId}")
     public ResponseEntity<Object> removeFriend(@PathVariable("friendId") Long friendId,
                                                @AuthenticationPrincipal UserData user) {
         userService.removeFriend(user.getId(), friendId);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/invitations")
-    public Page<FriendshipDTO> getInvitations(Pageable page, @AuthenticationPrincipal UserData user) {
-        return userService.getInvitationsUsers(user.getId(), page).map(f -> modelMapper.map(f, FriendshipDTO.class));
-    }
-
-    @GetMapping("/friends")
+    @GetMapping
     public Page<FriendshipDTO> getFriends(Pageable page, @AuthenticationPrincipal UserData user) {
         return userService.getFriends(user.getId(), page).map(f -> modelMapper.map(f, FriendshipDTO.class));
     }
 
-    @GetMapping("/friends/{userId}")
+    @GetMapping("/{userId}")
     public Page<FriendshipDTO> getFriends(Pageable page, @PathVariable("userId") Long userId) {
         return userService.getFriends(userId, page).map(f -> modelMapper.map(f, FriendshipDTO.class));
     }

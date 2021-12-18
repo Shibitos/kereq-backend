@@ -26,7 +26,7 @@ public class PostController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping("/post")
+    @PostMapping
     public PostDTO addPost(@Valid @RequestBody PostDTO postDTO,
                                         @AuthenticationPrincipal UserData user) {
         PostData post = modelMapper.map(postDTO, PostData.class);
@@ -35,7 +35,7 @@ public class PostController {
         return modelMapper.map(saved, PostDTO.class);
     }
 
-    @PutMapping("/post/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Object> modifyPost(@Valid @RequestBody PostDTO postDTO,
                                            @PathVariable("id") Long postId,
                                            @AuthenticationPrincipal UserData user) {
@@ -44,7 +44,7 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/post/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> removePost(@PathVariable("id") Long postId, @AuthenticationPrincipal UserData user) {
         postService.removePost(postId, user.getId());
         return ResponseEntity.ok().build();
@@ -58,7 +58,7 @@ public class PostController {
         return postService.getBrowsePosts(user.getId(), page).map(p -> modelMapper.map(p, PostDTO.class));
     }
 
-    @GetMapping("/posts/{userId}")
+    @GetMapping("/user/{userId}")
     public Page<PostDTO> getUserPosts(
             @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
                     Pageable page,
