@@ -1,6 +1,7 @@
 package com.kereq.main.entity;
 
 import com.kereq.common.entity.AuditableEntity;
+import com.kereq.common.entity.DictionaryItemData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "POSTS")
@@ -37,6 +39,11 @@ public class PostData extends AuditableEntity {
     @Column(name = "POST_CONTENT", length = 1000)
     @NotNull
     private String content;
+
+    @OneToMany(targetEntity = CommentData.class, mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<CommentData> comments;
+
+    private transient Long commentsCount;
 
     @Override
     public boolean equals(Object o) {

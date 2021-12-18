@@ -2,6 +2,7 @@ package com.kereq.main.service;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
+import com.kereq.main.entity.CommentData;
 import com.kereq.main.entity.PostData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.PostRepository;
@@ -15,6 +16,9 @@ public class PostService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private CommentService commentService;
 
     public PostData createPost(PostData post) { //TODO: sanitize html
         if (post.getUser() == null) { //TODO: needed?
@@ -43,7 +47,13 @@ public class PostService {
     }
 
     public Page<PostData> getBrowsePosts(Long userId, Pageable page) {
-        return postRepository.findPostsForUser(userId, page);
+        Page<PostData> posts = postRepository.findPostsForUser(userId, page);
+        posts.forEach(post -> {
+            Page<CommentData> comments = commentService.getPostComments(post.getId(), Pageable.ofSize(3));
+            post.setComments(comments.toSet());
+            post.setCommentsCount(comments.getTotalElements());
+        });
+        return posts;
     }
 
     public Page<PostData> getUserPosts(Long userId, Pageable page) {

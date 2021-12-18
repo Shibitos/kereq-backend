@@ -11,11 +11,13 @@ import java.util.Date;
 @Setter
 public class CommentDTO {
 
+    private Long id;
+
     private UserDTO user; //TODO: only for browse
 
     @JsonProperty("createdAt")
     private Date auditCD;
 
-    @Size(min = 15, max = 1000)
+    @Size(min = 1, max = 1000)
     private String content;
 }
