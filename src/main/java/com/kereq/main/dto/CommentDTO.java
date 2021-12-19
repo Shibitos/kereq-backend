@@ -20,4 +20,6 @@ public class CommentDTO {
 
     @Size(min = 1, max = 1000)
     private String content;
+
+    private CommentStatisticsDTO statistics;
 }

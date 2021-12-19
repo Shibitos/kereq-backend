@@ -3,6 +3,7 @@ package com.kereq.main.service;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.main.entity.CommentData;
+import com.kereq.main.entity.PostData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,18 @@ public class CommentService {
     @Autowired
     private PostStatisticsService postStatisticsService;
 
+    @Autowired
+    private CommentStatisticsService commentStatisticsService;
+
     @Transactional
     public CommentData createComment(CommentData comment) { //TODO: sanitize html
         if (comment.getUser() == null) {
             throw new ApplicationException(CommonError.MISSING_ERROR, "user");
         }
+        CommentData saved = commentRepository.save(comment);
+        saved.setStatistics(commentStatisticsService.initialize(saved.getId()));
         postStatisticsService.addComment(comment.getPostId());
-        return commentRepository.save(comment);
+        return saved;
     }
 
     public void modifyComment(Long commentId, Long userId, CommentData comment) { //TODO: sanitize html
@@ -46,11 +52,14 @@ public class CommentService {
         if (!comment.getUser().getId().equals(userId)) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
-        commentRepository.delete(comment);
         postStatisticsService.removeComment(comment.getPostId());
+        commentStatisticsService.remove(commentId);
+        commentRepository.delete(comment);
     }
 
-    public Page<CommentData> getPostComments(Long postId, Pageable page) {
-        return commentRepository.findByPostId(postId, page);
+    public Page<CommentData> getPostComments(Long userId, Long postId, Pageable page) {
+        Page<CommentData> comments = commentRepository.findByPostId(postId, page);
+        comments.forEach(c -> c.setStatistics(commentStatisticsService.getStatistics(userId, c.getId())));
+        return comments;
     }
 }

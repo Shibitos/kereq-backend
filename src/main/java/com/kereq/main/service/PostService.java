@@ -58,9 +58,9 @@ public class PostService {
     public Page<PostData> getBrowsePosts(Long userId, Pageable page) {
         Page<PostData> posts = postRepository.findPostsForUser(userId, page);
         posts.forEach(post -> {
-            Page<CommentData> comments = commentService.getPostComments(post.getId(), Pageable.ofSize(3));
+            Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3));
             post.setComments(comments.toSet());
-            post.setStatistics(postStatisticsService.getStatistics(post.getId()));
+            post.setStatistics(postStatisticsService.getStatistics(userId, post.getId()));
         });
         return posts;
     }
@@ -68,9 +68,9 @@ public class PostService {
     public Page<PostData> getUserPosts(Long userId, Pageable page) {
         Page<PostData> posts = postRepository.findByUserId(userId, page);
         posts.forEach(post -> {
-            Page<CommentData> comments = commentService.getPostComments(post.getId(), Pageable.ofSize(3));
+            Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3));
             post.setComments(comments.toSet());
-            post.setStatistics(postStatisticsService.getStatistics(post.getId()));
+            post.setStatistics(postStatisticsService.getStatistics(userId, post.getId()));
         });
         return posts;
     }

@@ -62,7 +62,7 @@ public class PostController {
             @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
                     Pageable page,
             @AuthenticationPrincipal UserData user) {
-        return postService.getBrowsePosts(user.getId(), page).map(p -> convertPostToDTO(user.getId(), p));
+        return postService.getBrowsePosts(user.getId(), page).map(p -> modelMapper.map(p, PostDTO.class));
     }
 
     @GetMapping("/user/{userId}")
@@ -71,7 +71,7 @@ public class PostController {
                     Pageable page,
             @PathVariable("userId") Long userId,
             @AuthenticationPrincipal UserData principal) {
-        return postService.getUserPosts(userId, page).map(p -> convertPostToDTO(principal.getId(), p));
+        return postService.getUserPosts(userId, page).map(p -> modelMapper.map(p, PostDTO.class));
     }
 
     @PostMapping("/{id}/like")
@@ -100,14 +100,5 @@ public class PostController {
                                         @AuthenticationPrincipal UserData user) {
         PostStatisticsData postStatistics = postLikeService.removeDislike(user.getId(), postId);
         return modelMapper.map(postStatistics, PostStatisticsDTO.class);
-    }
-
-    private PostDTO convertPostToDTO(Long userId, PostData post) {
-        PostDTO postDTO = modelMapper.map(post, PostDTO.class);
-        PostLikeData postLikeData = postLikeService.getUserLike(userId, post.getId());
-        if (postLikeData != null) {
-            postDTO.getStatistics().setUserLikeType(postLikeData.getType());
-        }
-        return postDTO;
     }
 }

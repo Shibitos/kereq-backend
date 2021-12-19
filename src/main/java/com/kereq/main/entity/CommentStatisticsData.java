@@ -12,40 +12,36 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
-@Table(name = "POSTS_STATISTICS")
+@Table(name = "COMMENTS_STATISTICS")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class PostStatisticsData extends BaseEntity {
+public class CommentStatisticsData extends BaseEntity {
 
     private static final long serialVersionUID = 7233435208764441318L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_POSTAT_ID")
-    @SequenceGenerator(name = "SEQ_POSTAT_ID", sequenceName = "SEQ_POSTAT_ID", allocationSize = 50)
-    @Column(name = "POSTAT_ID")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_COSTAT_ID")
+    @SequenceGenerator(name = "SEQ_COSTAT_ID", sequenceName = "SEQ_COSTAT_ID", allocationSize = 50)
+    @Column(name = "COSTAT_ID")
     private Long id;
     
-    @Column(name = "POSTAT_POST_ID")
+    @Column(name = "COSTAT_COMM_ID")
     //@NotNull
-    private Long postId;
+    private Long commentId;
 
     @OneToOne(targetEntity = PostData.class, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "POSTAT_POST_ID", insertable = false, updatable = false)
-    private PostData post;
+    @JoinColumn(nullable = false, name = "COSTAT_COMM_ID", insertable = false, updatable = false)
+    private PostData comment;
 
-    @Column(name = "POSTAT_LIKES_COUNT")
+    @Column(name = "COSTAT_LIKES_COUNT")
     @NotNull
     private int likesCount;
 
-    @Column(name = "POSTAT_DISLIKES_COUNT")
+    @Column(name = "COSTAT_DISLIKES_COUNT")
     @NotNull
     private int dislikesCount;
-
-    @Column(name = "POSTAT_COMMENTS_COUNT")
-    @NotNull
-    private int commentsCount;
 
     @Transient
     private Integer userLikeType;
@@ -54,7 +50,7 @@ public class PostStatisticsData extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        PostStatisticsData that = (PostStatisticsData) o;
+        CommentStatisticsData that = (CommentStatisticsData) o;
         return id != null && Objects.equals(id, that.id);
     }
 
@@ -67,9 +63,8 @@ public class PostStatisticsData extends BaseEntity {
     public String toString() {
         return getClass().getSimpleName() + "(" +
                 "id = " + id + ", " +
-                "postId = " + postId + ", " +
+                "commentId = " + commentId + ", " +
                 "likesCount = " + likesCount + ", " +
-                "dislikesCount = " + dislikesCount + ", " +
-                "commentsCount = " + commentsCount + ")";
+                "dislikesCount = " + dislikesCount + ")";
     }
 }

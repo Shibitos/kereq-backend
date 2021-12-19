@@ -1,8 +1,12 @@
 package com.kereq.main.controller;
 
 import com.kereq.main.dto.CommentDTO;
+import com.kereq.main.dto.CommentStatisticsDTO;
 import com.kereq.main.entity.CommentData;
+import com.kereq.main.entity.CommentLikeData;
+import com.kereq.main.entity.CommentStatisticsData;
 import com.kereq.main.entity.UserData;
+import com.kereq.main.service.CommentLikeService;
 import com.kereq.main.service.CommentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,9 @@ public class CommentController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private CommentLikeService commentLikeService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -47,7 +54,8 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> removeComment(@PathVariable("id") Long commentId, @AuthenticationPrincipal UserData user) {
+    public ResponseEntity<Object> removeComment(@PathVariable("id") Long commentId,
+                                                @AuthenticationPrincipal UserData user) {
         commentService.removeComment(commentId, user.getId());
         return ResponseEntity.ok().build();
     }
@@ -56,7 +64,37 @@ public class CommentController {
     public Page<CommentDTO> getUserComments(
             @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
                     Pageable page,
-            @PathVariable("postId") Long postId) {
-        return commentService.getPostComments(postId, page).map(p -> modelMapper.map(p, CommentDTO.class));
+            @PathVariable("postId") Long postId,
+            @AuthenticationPrincipal UserData user) {
+        return commentService.getPostComments(user.getId(), postId, page)
+                .map(c -> modelMapper.map(c, CommentDTO.class));
+    }
+
+    @PostMapping("/{id}/like")
+    public CommentStatisticsDTO addLike(@PathVariable("id") Long commentId,
+                                     @AuthenticationPrincipal UserData user) {
+        CommentStatisticsData commentStatistics = commentLikeService.addLike(user.getId(), commentId);
+        return modelMapper.map(commentStatistics, CommentStatisticsDTO.class);
+    }
+
+    @DeleteMapping("/{id}/like")
+    public CommentStatisticsDTO removeLike(@PathVariable("id") Long commentId,
+                                           @AuthenticationPrincipal UserData user) {
+        CommentStatisticsData commentStatistics = commentLikeService.removeLike(user.getId(), commentId);
+        return modelMapper.map(commentStatistics, CommentStatisticsDTO.class);
+    }
+
+    @PostMapping("/{id}/dislike")
+    public CommentStatisticsDTO addDislike(@PathVariable("id") Long commentId,
+                                        @AuthenticationPrincipal UserData user) {
+        CommentStatisticsData commentStatistics = commentLikeService.addDislike(user.getId(), commentId);
+        return modelMapper.map(commentStatistics, CommentStatisticsDTO.class);
+    }
+
+    @DeleteMapping("/{id}/dislike")
+    public CommentStatisticsDTO removeDislike(@PathVariable("id") Long commentId,
+                                           @AuthenticationPrincipal UserData user) {
+        CommentStatisticsData commentStatistics = commentLikeService.removeDislike(user.getId(), commentId);
+        return modelMapper.map(commentStatistics, CommentStatisticsDTO.class);
     }
 }

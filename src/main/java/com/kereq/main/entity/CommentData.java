@@ -46,6 +46,9 @@ public class CommentData extends AuditableEntity {
     @NotNull
     private String content;
 
+    @Transient
+    private CommentStatisticsData statistics;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

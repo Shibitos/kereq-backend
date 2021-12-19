@@ -1,7 +1,6 @@
 package com.kereq.main.entity;
 
 import com.kereq.common.entity.AuditableEntity;
-import com.kereq.common.entity.DictionaryItemData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
