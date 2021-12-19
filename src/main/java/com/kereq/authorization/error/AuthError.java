@@ -12,7 +12,8 @@ public enum AuthError implements ApplicationError {
     TOKEN_EXPIRED(410, "Token expired."),
     TOKEN_TOO_EARLY(400, "It is too early to resend token."),
     USER_ALREADY_ACTIVATED(400, "User already activated."),
-    NO_ACCESS(403, "You have no access to this resource");
+    NO_ACCESS(403, "You have no access to this resource"),
+    BAD_CREDENTIALS(401, "Invalid user email or password.");
 
     private final int httpCode;
     private final String message;

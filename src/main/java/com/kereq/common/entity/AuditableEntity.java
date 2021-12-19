@@ -18,7 +18,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
-public abstract class AuditableEntity extends BaseEntity { //TODO: search criteria?
+public abstract class AuditableEntity extends BaseEntity {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

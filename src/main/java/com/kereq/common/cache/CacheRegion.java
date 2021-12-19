@@ -21,12 +21,12 @@ public class CacheRegion<T extends BaseEntity> {
 
     public T getItem(ApplicationContext ctx, Long id) {
         Cache.ValueWrapper item = getCache(ctx).get(id);
-        return item != null ? (T) item.get() : null; //TODO: refactor?
+        return item != null ? (T) item.get() : null;
     }
 
     public T getItem(ApplicationContext ctx, String code) {
         Cache.ValueWrapper item = getCache(ctx).get(code);
-        return item != null ? (T) item.get() : null; //TODO: refactor?
+        return item != null ? (T) item.get() : null;
     }
 
     public T getItemAttached(ApplicationContext ctx, Long id) {

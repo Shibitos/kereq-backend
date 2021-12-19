@@ -25,7 +25,7 @@ public class DictionaryService {
     private DictionaryService self; //TODO: aspecj? spring aop?
 
     @Cacheable(value = CacheProvider.CacheName.DICTIONARY_ITEMS, key="#code")
-    public List<DictionaryItemData> getAllDictionaryValues(String code) { //TODO: better cache?
+    public List<DictionaryItemData> getAllDictionaryValues(String code) {
         if (!dictionaryRepository.existsByCode(code)) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }

@@ -21,7 +21,7 @@ public enum CacheProvider {
 
     private CacheRegion<? extends BaseEntity> cacheRegion;
 
-    public interface CacheName { //TODO: refactor
+    public interface CacheName {
 
         String DICTIONARY_ITEMS = "DICTIONARY_ITEMS";
         String MESSAGE_TEMPLATES = "MESSAGE_TEMPLATES";

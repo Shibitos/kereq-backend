@@ -1,6 +1,7 @@
 package com.kereq.authorization.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kereq.authorization.error.AuthError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,13 +24,14 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        HttpStatus httpStatus = HttpStatus.UNAUTHORIZED; //TODO: security?
+        HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
 
         Map<String, Object> data = new HashMap<>();
         data.put("timestamp", new Date());
         data.put("code", httpStatus.value());
         data.put("status", httpStatus.name());
-        data.put("message", exception.getMessage());
+        data.put("message", AuthError.BAD_CREDENTIALS);
+
         response.setStatus(httpStatus.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         mapper.writeValue(response.getWriter(), data);

@@ -31,7 +31,7 @@ public class JSONObjectAuthenticationFilter extends UsernamePasswordAuthenticati
             setDetails(request, token);
             return this.getAuthenticationManager().authenticate(token);
         } catch (IOException e) {
-            throw new IllegalArgumentException(e.getMessage()); //TODO: handling
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 }

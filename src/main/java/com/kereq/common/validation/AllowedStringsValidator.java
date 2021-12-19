@@ -27,7 +27,7 @@ public class AllowedStringsValidator implements ConstraintValidator<AllowedStrin
         }
         if (delimiter.length() > 0) {
             return Arrays.stream(allowedValues)
-                    .anyMatch(v -> Arrays.asList(v.split(Pattern.quote(delimiter))).contains(value)); //TODO: without regex?
+                    .anyMatch(v -> Arrays.asList(v.split(Pattern.quote(delimiter))).contains(value));
         }
         return Arrays.asList(allowedValues).contains(value);
     }
