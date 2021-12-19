@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -16,10 +17,15 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private PostStatisticsService postStatisticsService;
+
+    @Transactional
     public CommentData createComment(CommentData comment) { //TODO: sanitize html
         if (comment.getUser() == null) {
             throw new ApplicationException(CommonError.MISSING_ERROR, "user");
         }
+        postStatisticsService.addComment(comment.getPostId());
         return commentRepository.save(comment);
     }
 
@@ -33,6 +39,7 @@ public class CommentService {
         commentRepository.save(original);
     }
 
+    @Transactional
     public void removeComment(Long commentId, Long userId) {
         CommentData comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
@@ -40,6 +47,7 @@ public class CommentService {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
         commentRepository.delete(comment);
+        postStatisticsService.removeComment(comment.getPostId());
     }
 
     public Page<CommentData> getPostComments(Long postId, Pageable page) {

@@ -24,5 +24,5 @@ public class PostDTO {
 
     List<CommentDTO> comments;
 
-    Long commentsCount;
+    PostStatisticsDTO statistics;
 }

@@ -1,0 +1,93 @@
+package com.kereq.main.service;
+
+import com.kereq.common.error.RepositoryError;
+import com.kereq.main.constant.LikeType;
+import com.kereq.main.entity.PostStatisticsData;
+import com.kereq.main.exception.ApplicationException;
+import com.kereq.main.repository.PostRepository;
+import com.kereq.main.repository.PostStatisticsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PostStatisticsService {
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private PostStatisticsRepository postStatisticsRepository;
+
+    public PostStatisticsData getStatistics(Long postId) {
+        return postStatisticsRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+    }
+
+    public PostStatisticsData initialize(Long postId) {
+        if (postStatisticsRepository.existsByPostId(postId)) {
+            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
+        }
+        PostStatisticsData postStatistics = new PostStatisticsData();
+        postStatistics.setPostId(postId);
+        postStatistics.setLikesCount(0);
+        postStatistics.setDislikesCount(0);
+        postStatistics.setCommentsCount(0);
+        return postStatisticsRepository.save(postStatistics);
+    }
+
+    public void remove(Long postId) {
+        PostStatisticsData postStatistics = postStatisticsRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+        postStatisticsRepository.delete(postStatistics);
+    }
+
+    public PostStatisticsData convertLike(Long postId, boolean toLike) {
+        PostStatisticsData postStatistics = postStatisticsRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+        postStatistics.setLikesCount(postStatistics.getLikesCount() + (toLike ? 1 : -1));
+        postStatistics.setDislikesCount(postStatistics.getDislikesCount() + (toLike ? -1 : 1));
+        return postStatistics;
+    }
+
+    public PostStatisticsData addLike(Long postId) {
+        PostStatisticsData postStatistics = postStatisticsRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+        postStatistics.setLikesCount(postStatistics.getLikesCount() + 1);
+        return postStatistics;
+    }
+
+    public PostStatisticsData removeLike(Long postId) {
+        PostStatisticsData postStatistics = postStatisticsRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+        postStatistics.setLikesCount(postStatistics.getLikesCount() - 1);
+        return postStatistics;
+    }
+
+    public PostStatisticsData addDislike(Long postId) {
+        PostStatisticsData postStatistics = postStatisticsRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+        postStatistics.setDislikesCount(postStatistics.getDislikesCount() + 1);
+        return postStatistics;
+    }
+
+    public PostStatisticsData removeDislike(Long postId) {
+        PostStatisticsData postStatistics = postStatisticsRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+        postStatistics.setDislikesCount(postStatistics.getDislikesCount() - 1);
+        return postStatistics;
+    }
+
+    public PostStatisticsData addComment(Long postId) {
+        PostStatisticsData postStatistics = postStatisticsRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+        postStatistics.setCommentsCount(postStatistics.getCommentsCount() + 1);
+        return postStatistics;
+    }
+
+    public PostStatisticsData removeComment(Long postId) {
+        PostStatisticsData postStatistics = postStatisticsRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+        postStatistics.setCommentsCount(postStatistics.getCommentsCount() - 1);
+        return postStatistics;
+    }
+}

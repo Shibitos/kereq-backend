@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostService {
@@ -20,11 +21,17 @@ public class PostService {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private PostStatisticsService postStatisticsService;
+
+    @Transactional
     public PostData createPost(PostData post) { //TODO: sanitize html
         if (post.getUser() == null) { //TODO: needed?
             throw new ApplicationException(CommonError.MISSING_ERROR, "user");
         }
-        return postRepository.save(post);
+        PostData saved = postRepository.save(post);
+        saved.setStatistics(postStatisticsService.initialize(saved.getId()));
+        return saved;
     }
 
     public void modifyPost(Long postId, Long userId, PostData post) { //TODO: sanitize html
@@ -37,12 +44,14 @@ public class PostService {
         postRepository.save(original);
     }
 
+    @Transactional
     public void removePost(Long postId, Long userId) {
         PostData post = postRepository.findById(postId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
         if (!post.getUser().getId().equals(userId)) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
+        postStatisticsService.remove(post.getId());
         postRepository.delete(post);
     }
 
@@ -51,12 +60,18 @@ public class PostService {
         posts.forEach(post -> {
             Page<CommentData> comments = commentService.getPostComments(post.getId(), Pageable.ofSize(3));
             post.setComments(comments.toSet());
-            post.setCommentsCount(comments.getTotalElements());
+            post.setStatistics(postStatisticsService.getStatistics(post.getId()));
         });
         return posts;
     }
 
     public Page<PostData> getUserPosts(Long userId, Pageable page) {
-        return postRepository.findByUserId(userId, page);
+        Page<PostData> posts = postRepository.findByUserId(userId, page);
+        posts.forEach(post -> {
+            Page<CommentData> comments = commentService.getPostComments(post.getId(), Pageable.ofSize(3));
+            post.setComments(comments.toSet());
+            post.setStatistics(postStatisticsService.getStatistics(post.getId()));
+        });
+        return posts;
     }
 }

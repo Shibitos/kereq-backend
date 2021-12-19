@@ -43,7 +43,8 @@ public class PostData extends AuditableEntity {
     @OneToMany(targetEntity = CommentData.class, mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CommentData> comments;
 
-    private transient Long commentsCount;
+    @Transient
+    private PostStatisticsData statistics;
 
     @Override
     public boolean equals(Object o) {

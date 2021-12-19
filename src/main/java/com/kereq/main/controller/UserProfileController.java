@@ -21,7 +21,7 @@ public class UserProfileController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/me")
+    @GetMapping
     public UserDTO getLoggedUser(@AuthenticationPrincipal UserData user) {
         return modelMapper.map(user, UserDTO.class);
     }
