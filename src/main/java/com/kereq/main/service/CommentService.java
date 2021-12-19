@@ -3,7 +3,6 @@ package com.kereq.main.service;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.main.entity.CommentData;
-import com.kereq.main.entity.PostData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;

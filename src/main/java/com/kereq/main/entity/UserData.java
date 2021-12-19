@@ -13,7 +13,6 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -33,7 +32,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserData extends AuditableEntity implements UserDetails {
+public class UserData extends AuditableEntity implements UserDataInfo {
 
     private static final long serialVersionUID = 4675228760392277493L;
 

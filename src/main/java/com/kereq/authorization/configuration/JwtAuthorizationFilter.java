@@ -19,9 +19,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private static final String TOKEN_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
     private final UserDetailsService userDetailsService;
-    //private final String secret;
-
-    private JWTService jwtService;
+    private final JWTService jwtService;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
                                   JWTService jwtService) {

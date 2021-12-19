@@ -43,7 +43,6 @@ public abstract class AuditableEntity extends BaseEntity { //TODO: search criter
 //    @JsonIgnore
 //    private String updatedBy;
 
-
     @Override
     public boolean equals(Object o) {
         return super.equals(o);

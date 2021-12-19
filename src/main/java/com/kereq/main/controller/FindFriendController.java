@@ -3,6 +3,7 @@ package com.kereq.main.controller;
 import com.kereq.main.dto.FindFriendDTO;
 import com.kereq.main.entity.FindFriendData;
 import com.kereq.main.entity.UserData;
+import com.kereq.main.entity.UserDataInfo;
 import com.kereq.main.service.FindFriendService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,37 +27,38 @@ public class FindFriendController {
     private ModelMapper modelMapper;
 
     @GetMapping
-    public FindFriendDTO getMyAd(@AuthenticationPrincipal UserData user) {
+    public FindFriendDTO getMyAd(@AuthenticationPrincipal UserDataInfo user) {
         FindFriendData findFriendData = findFriendService.getFindFriendAdByUserId(user.getId());
         return modelMapper.map(findFriendData, FindFriendDTO.class);
     }
 
     @PostMapping
     public ResponseEntity<Object> addAd(@Valid @RequestBody FindFriendDTO findFriendDTO,
-                                        @AuthenticationPrincipal UserData user) {
+                                        @AuthenticationPrincipal UserDataInfo user) {
         FindFriendData findFriendData = modelMapper.map(findFriendDTO, FindFriendData.class);
-        findFriendData.setUser(user);
+        findFriendData.setUser((UserData) user);
         findFriendService.createFindFriendAd(findFriendData);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping
     public ResponseEntity<Object> modifyAd(@Valid @RequestBody FindFriendDTO findFriendDTO,
-                                           @AuthenticationPrincipal UserData user) {
+                                           @AuthenticationPrincipal UserDataInfo user) {
         FindFriendData findFriendData = modelMapper.map(findFriendDTO, FindFriendData.class);
         findFriendService.modifyFindFriendAd(user.getId(), findFriendData);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Object> removeAd(@AuthenticationPrincipal UserData user) {
+    public ResponseEntity<Object> removeAd(@AuthenticationPrincipal UserDataInfo user) {
         findFriendService.removeFindFriendAd(user.getId());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/browse")
     public Page<FindFriendDTO> getAdsForUser(@PageableDefault(sort = { "auditMD" }) Pageable page,
-                                             @AuthenticationPrincipal UserData user) {
-        return findFriendService.getFindFriendAdsForUser(user, page).map(f -> modelMapper.map(f, FindFriendDTO.class));
+                                             @AuthenticationPrincipal UserDataInfo user) {
+        return findFriendService.getFindFriendAdsForUser((UserData) user, page)
+                .map(f -> modelMapper.map(f, FindFriendDTO.class));
     }
 }

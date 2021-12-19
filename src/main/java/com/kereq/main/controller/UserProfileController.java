@@ -2,6 +2,7 @@ package com.kereq.main.controller;
 
 import com.kereq.main.dto.UserDTO;
 import com.kereq.main.entity.UserData;
+import com.kereq.main.entity.UserDataInfo;
 import com.kereq.main.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class UserProfileController {
     private ModelMapper modelMapper;
 
     @GetMapping
-    public UserDTO getLoggedUser(@AuthenticationPrincipal UserData user) {
+    public UserDTO getLoggedUser(@AuthenticationPrincipal UserDataInfo user) {
         return modelMapper.map(user, UserDTO.class);
     }
 

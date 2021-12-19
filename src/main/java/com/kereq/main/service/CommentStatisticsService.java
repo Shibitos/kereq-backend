@@ -3,12 +3,10 @@ package com.kereq.main.service;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.main.entity.CommentLikeData;
 import com.kereq.main.entity.CommentStatisticsData;
-import com.kereq.main.entity.PostLikeData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.CommentLikeRepository;
 import com.kereq.main.repository.CommentRepository;
 import com.kereq.main.repository.CommentStatisticsRepository;
-import com.kereq.main.repository.PostLikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
