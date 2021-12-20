@@ -21,9 +21,6 @@ public class DictionaryService {
     @Autowired
     private DictionaryItemRepository dictionaryItemRepository;
 
-    @Autowired
-    private DictionaryService self; //TODO: aspecj? spring aop?
-
     @Cacheable(value = CacheProvider.CacheName.DICTIONARY_ITEMS, key="#code")
     public List<DictionaryItemData> getAllDictionaryValues(String code) {
         if (!dictionaryRepository.existsByCode(code)) {
@@ -38,7 +35,7 @@ public class DictionaryService {
     }
 
     public boolean isItemInDictionary(String dictionaryCode, String code) {
-        DictionaryItemData item = self.getItemByCode(code);
+        DictionaryItemData item = getItemByCode(code);
         return !(item == null || !item.getDictionary().getCode().equals(dictionaryCode));
     }
 }

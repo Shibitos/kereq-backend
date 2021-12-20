@@ -10,6 +10,7 @@ import org.ehcache.jsr107.EhcacheCachingProvider;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.jcache.JCacheCacheManager;
+import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Configuration
-@EnableCaching
+@EnableCaching(mode = AdviceMode.ASPECTJ)
 public class CacheConfig extends CachingConfigurerSupport {
 
     private static final long DEFAULT_CACHE_MB_SIZE = 10L;
