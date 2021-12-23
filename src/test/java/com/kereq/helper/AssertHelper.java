@@ -14,8 +14,15 @@ public class AssertHelper {
     }
 
     public static void assertException(ApplicationError error, Executable func, String param) {
-        ApplicationException e;
-        e = Assertions.assertThrows(ApplicationException.class, func, param);
+        ApplicationException e = Assertions.assertThrows(ApplicationException.class, func, param);
         assertThat(e.getErrorCode()).isEqualTo(error.name());
+    }
+
+    public static void assertException(Class<? extends Exception> exception, Executable func) {
+        assertException(exception, func, null);
+    }
+
+    public static void assertException(Class<? extends Exception> exception, Executable func, String param) {
+        Assertions.assertThrows(exception, func, param);
     }
 }

@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BackendApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="ALTERNATIVE_JRE_PATH" value="corretto-11" />
+    <option name="MAIN_CLASS_NAME" value="com.kereq.BackendApplication" />
+    <module name="backend" />
+    <option name="PROGRAM_PARAMETERS" value="-Dspring-boot.run.profiles=dev" />
+    <method v="2" />
+  </configuration>
+</component>

@@ -120,10 +120,11 @@ class AuthServiceUnitTest {
 
     @Test
     void testSendVerificationToken() {
+        final String mainUserEmail = "usermain@abc.com";
         MessageData message = new MessageData();
         message.setStatus(MessageData.Status.PENDING);
         when(messageRepository
-                .findFirstByUserEmailTemplateCodeNewest("usermain@abc.com", "COMPLETE_REGISTRATION"))
+                .findFirstByUserEmailTemplateCodeNewest(mainUserEmail, "COMPLETE_REGISTRATION"))
                 .thenReturn(message);
 
         UserData otherOwnerUser = new UserData();
@@ -134,7 +135,7 @@ class AuthServiceUnitTest {
 
         UserData mainUser = new UserData();
         mainUser.setId(2L);
-        mainUser.setEmail("usermain@abc.com");
+        mainUser.setEmail(mainUserEmail);
 
         AssertHelper.assertException(AuthError.TOKEN_INVALID,
                 () -> authService.sendVerificationToken(mainUser, token, false));
@@ -152,7 +153,7 @@ class AuthServiceUnitTest {
         Assertions.assertDoesNotThrow(() -> authService.sendVerificationToken(mainUser, token, true));
         assertThat(token.getLastSendDate()).isNotEqualTo(lastSendDate);
         Mockito.verify(messageRepository, times(1))
-                .findFirstByUserEmailTemplateCodeNewest(mainUser.getEmail(), "COMPLETE_REGISTRATION");
+                .findFirstByUserEmailTemplateCodeNewest(mainUserEmail, "COMPLETE_REGISTRATION");
     }
 
     @Test

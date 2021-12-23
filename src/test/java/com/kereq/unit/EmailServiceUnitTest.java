@@ -83,10 +83,12 @@ class EmailServiceUnitTest {
     void testEmailValidation() {
         MessageTemplateData template = getTestTemplate("t", "S", "B");
         for (String validEmail : validEmails) {
-            Assertions.assertDoesNotThrow(() -> emailService.createMessageFromTemplate(template, validEmail, null), validEmail);
+            Assertions.assertDoesNotThrow(
+                    () -> emailService.createMessageFromTemplate(template, validEmail, null), validEmail);
         }
         for (String invalidEmail : invalidEmails) {
-            AssertHelper.assertException(CommonError.INVALID_ERROR, () -> emailService.createMessageFromTemplate(template, invalidEmail, null), invalidEmail);
+            AssertHelper.assertException(CommonError.INVALID_ERROR,
+                    () -> emailService.createMessageFromTemplate(template, invalidEmail, null), invalidEmail);
         }
     }
 
@@ -99,7 +101,8 @@ class EmailServiceUnitTest {
                 put("param3", "test3");
             }
         };
-        MessageTemplateData template = getTestTemplate("test_param_1", "Test {{param1}} subject {{param2}}", "{{param1}}Test {{param2}} body{{param3}}");
+        MessageTemplateData template = getTestTemplate("test_param_1",
+                "Test {{param1}} subject {{param2}}", "{{param1}}Test {{param2}} body{{param3}}");
         MessageData message = emailService.createMessageFromTemplate(template, validEmails[0], params);
         assertThat(message.getSubject()).isEqualTo("Test test1 subject test2");
         assertThat(message.getBody()).isEqualTo("test1Test test2 bodytest3");
@@ -112,9 +115,12 @@ class EmailServiceUnitTest {
                 put("param1", "test1");
             }
         };
-        MessageTemplateData template = getTestTemplate("test_param_2", "Test {{param1}} subject", "{{param1}}Test {{param2}}");
-        AssertHelper.assertException(CommonError.MISSING_ERROR, () -> emailService.createMessageFromTemplate(template, validEmails[0], params));
-        AssertHelper.assertException(CommonError.MISSING_ERROR, () -> emailService.createMessageFromTemplate(template, validEmails[0], null));
+        MessageTemplateData template = getTestTemplate("test_param_2",
+                "Test {{param1}} subject", "{{param1}}Test {{param2}}");
+        AssertHelper.assertException(CommonError.MISSING_ERROR,
+                () -> emailService.createMessageFromTemplate(template, validEmails[0], params));
+        AssertHelper.assertException(CommonError.MISSING_ERROR,
+                () -> emailService.createMessageFromTemplate(template, validEmails[0], null));
     }
 
     private MessageTemplateData getTestTemplate(String code, String subject, String body) {
