@@ -20,10 +20,7 @@ import com.kereq.messaging.service.EmailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -32,8 +29,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.util.Date;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class AuthServiceUnitTest {
 
@@ -80,8 +76,6 @@ class AuthServiceUnitTest {
         template.setBody("test{{CONFIRM_URL}}test");
         when(messageTemplateRepository.findByCode(template.getCode())).thenReturn(template);
         doNothing().when(emailService).sendMessage(Mockito.any(MessageData.class));
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     @Test
@@ -99,43 +93,25 @@ class AuthServiceUnitTest {
         user.setPassword("pass");
         user.setFirstName("John");
         user.setLastName("Test");
-        UserData userAtt1 = user;
         AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
-                () -> authService.registerUser(userAtt1));
+                () -> authService.registerUser(user));
 
         Date past = DateUtil.addMinutes(DateUtil.now(), -1000);
         Date future = DateUtil.addMinutes(DateUtil.now(), 1000);
         user.setEmail("testNotFound@abc.com");
         user.setBirthDate(future);
-        UserData userAtt2 = user;
         AssertHelper.assertException(ValidationError.DATE_NOT_PAST,
-                () -> authService.registerUser(userAtt2));
+                () -> authService.registerUser(user));
 
         user.setBirthDate(past);
-        UserData userAtt3 = user;
-        user = Assertions.assertDoesNotThrow(() -> authService.registerUser(userAtt3));
+        user.setActivated(true);
+        TokenData token = Assertions.assertDoesNotThrow(() -> authService.registerUser(user));
 
         assertThat(user.getPassword()).isEqualTo("encoded");
         assertThat(user.getRoles().size()).isEqualTo(1);
         assertThat(user.getRoles().stream().anyMatch(r -> r.getCode().equals("ROLE_USER"))).isTrue(); //TODO: param default
         assertThat(user.isActivated()).isFalse();
-    }
 
-    @Test
-    void testGenerateVerificationToken() {
-        UserData user = new UserData();
-        user.setId(1L);
-        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND_ID,
-                () -> authService.generateVerificationToken(user));
-        user.setId(2L);
-        AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
-                () -> authService.generateVerificationToken(user));
-        user.setId(3L);
-        user.setActivated(true);
-        AssertHelper.assertException(AuthError.USER_ALREADY_ACTIVATED,
-                () -> authService.generateVerificationToken(user));
-        user.setActivated(false);
-        TokenData token = Assertions.assertDoesNotThrow(() -> authService.generateVerificationToken(user));
         assertThat(token.getType()).isEqualTo(TokenData.TokenType.VERIFICATION);
         assertThat(token.getLastSendDate()).isNull();
         assertThat(token.getExpireDate()).isAfter(new Date());
@@ -143,45 +119,40 @@ class AuthServiceUnitTest {
     }
 
     @Test
-    void testRenewVerificationToken() {
-        TokenData token = new TokenData();
-        authService.renewVerificationToken(token);
-        String oldTokenValue = token.getValue();
-        assertThat(token.getValue()).hasSize(TOKEN_LENGTH);
-        authService.renewVerificationToken(token);
-        assertThat(token.getValue()).isNotEqualTo(oldTokenValue);
-    }
-
-    @Test
     void testSendVerificationToken() {
         MessageData message = new MessageData();
         message.setStatus(MessageData.Status.PENDING);
-        when(messageRepository.findFirstByUserEmailTemplateCodeNewest("usermain@abc.com", "COMPLETE_REGISTRATION")).thenReturn(message);
+        when(messageRepository
+                .findFirstByUserEmailTemplateCodeNewest("usermain@abc.com", "COMPLETE_REGISTRATION"))
+                .thenReturn(message);
 
-        UserData userFalse = new UserData();
-        userFalse.setId(1L);
+        UserData otherOwnerUser = new UserData();
+        otherOwnerUser.setId(1L);
         TokenData token = new TokenData();
-        token.setUser(userFalse);
+        token.setUser(otherOwnerUser);
         token.setType(TokenData.TokenType.VERIFICATION);
 
-        UserData userMain = new UserData();
-        userMain.setId(2L);
-        userMain.setEmail("usermain@abc.com");
+        UserData mainUser = new UserData();
+        mainUser.setId(2L);
+        mainUser.setEmail("usermain@abc.com");
 
         AssertHelper.assertException(AuthError.TOKEN_INVALID,
-                () -> authService.sendVerificationToken(userMain, token, false));
+                () -> authService.sendVerificationToken(mainUser, token, false));
 
-        token.setUser(userMain);
+        token.setUser(mainUser);
         token.setType("NOTEXISTINGTOKENTYPE");
         AssertHelper.assertException(AuthError.TOKEN_INVALID,
-                () -> authService.sendVerificationToken(userMain, token, false));
+                () -> authService.sendVerificationToken(mainUser, token, false));
 
         token.setType(TokenData.TokenType.VERIFICATION);
-        Assertions.assertDoesNotThrow(() -> authService.sendVerificationToken(userMain, token, false));
+        Assertions.assertDoesNotThrow(() -> authService.sendVerificationToken(mainUser, token, false));
         assertThat(token.getLastSendDate()).isNotNull();
+
         Date lastSendDate = token.getLastSendDate();
-        Assertions.assertDoesNotThrow(() -> authService.sendVerificationToken(userMain, token, true));
-        assertThat(token.getLastSendDate()).isNotEqualTo(lastSendDate); //TODO: check if old message used
+        Assertions.assertDoesNotThrow(() -> authService.sendVerificationToken(mainUser, token, true));
+        assertThat(token.getLastSendDate()).isNotEqualTo(lastSendDate);
+        Mockito.verify(messageRepository, times(1))
+                .findFirstByUserEmailTemplateCodeNewest(mainUser.getEmail(), "COMPLETE_REGISTRATION");
     }
 
     @Test
@@ -202,11 +173,13 @@ class AuthServiceUnitTest {
                 .thenReturn(buildToken(user, null));
 
         user = buildUserWithId(4L);
+        TokenData resendToken2 = buildToken(user,
+                DateUtil.addMinutes(DateUtil.now(), -AuthService.TOKEN_RESEND_TIME_MIN));
         when(userRepository.findByEmailIgnoreCase("resend2")).thenReturn(user);
         when(tokenRepository.findByUserIdAndType(4L, TokenData.TokenType.VERIFICATION))
-                .thenReturn(buildToken(user, DateUtil.addMinutes(DateUtil.now(), -AuthService.TOKEN_RESEND_TIME_MIN)));
+                .thenReturn(resendToken2);
 
-        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND_VALUE,
+        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> authService.resendVerificationToken("nonexisting"));
         AssertHelper.assertException(AuthError.TOKEN_INVALID,
                 () -> authService.resendVerificationToken("notoken"));
@@ -215,15 +188,20 @@ class AuthServiceUnitTest {
 
         Assertions.assertDoesNotThrow(() -> authService.resendVerificationToken("resend1"));
         Assertions.assertDoesNotThrow(() -> authService.resendVerificationToken("resend2"));
+
+        String firstAttemptValue = resendToken2.getValue();
+        resendToken2.setLastSendDate(null);
+        Assertions.assertDoesNotThrow(() -> authService.resendVerificationToken("resend2"));
+        assertThat(firstAttemptValue).isNotEqualTo(resendToken2.getValue());
     }
 
     @Test
     public void testConfirmUser() {
         when(tokenRepository.findByValue("nonexisting")).thenReturn(null);
 
-        TokenData notVerification = buildToken(null, null);
-        notVerification.setType("nonexistingtype");
-        when(tokenRepository.findByValue("notVerification")).thenReturn(notVerification);
+        TokenData notVerificationType = buildToken(null, null);
+        notVerificationType.setType("nonexistingtype");
+        when(tokenRepository.findByValue("notVerification")).thenReturn(notVerificationType);
 
         TokenData expired = buildToken(null, null);
         when(tokenRepository.findByValue("expired")).thenReturn(expired);
@@ -249,7 +227,6 @@ class AuthServiceUnitTest {
     private UserData buildUserWithId(Long id) {
         UserData user = new UserData();
         user.setId(id);
-
         return user;
     }
 
@@ -259,7 +236,6 @@ class AuthServiceUnitTest {
         token.setLastSendDate(date);
         token.setExpireDate(DateUtil.now()); //TODO: expiration checks
         token.setUser(user);
-
         return token;
     }
 }

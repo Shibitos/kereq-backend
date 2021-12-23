@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -64,8 +65,13 @@ public class AuthService {
 
     public static final int TOKEN_RESEND_TIME_MIN = 1; //TODO: always lower than tokenExpirationTime
 
-    @Transactional
-    public UserData registerUser(UserData user) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public TokenData registerUser(UserData user) {
+        user = createUser(user); //TODO: test without reassigning
+        return generateVerificationToken(user);
+    }
+
+    private UserData createUser(UserData user) {
         if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
         }
@@ -83,25 +89,16 @@ public class AuthService {
         return roleRepository.findByCode("ROLE_USER"); //TODO: param default role?
     }
 
-    public TokenData generateVerificationToken(UserData user) {
-        if (!userRepository.existsById(user.getId())) {
-            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_ID, user.getId());
-        }
-        if (user.isActivated()) {
-            throw new ApplicationException(AuthError.USER_ALREADY_ACTIVATED);
-        }
-        if (tokenRepository.existsByUserIdAndType(user.getId(), TokenData.TokenType.VERIFICATION)) {
-            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
-        }
+    private TokenData generateVerificationToken(UserData user) {
         TokenData token = new TokenData();
         token.setType(TokenData.TokenType.VERIFICATION);
         token.setUser(user);
         token.setValue(UUID.randomUUID().toString());
         token.setExpireDate(DateUtil.addMinutes(DateUtil.now(), TOKEN_EXPIRATION_TIME_MIN));
-
         return tokenRepository.save(token);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void sendVerificationToken(UserData user, TokenData token, boolean useExistingMessage) {
         if (!token.getUser().getId().equals(user.getId())
                 || !TokenData.TokenType.VERIFICATION.equals(token.getType())) {
@@ -109,7 +106,8 @@ public class AuthService {
         }
         MessageData message = null;
         if (useExistingMessage) {
-            message = messageRepository.findFirstByUserEmailTemplateCodeNewest(user.getEmail(), VERIFICATION_TEMPLATE_CODE);
+            message = messageRepository
+                    .findFirstByUserEmailTemplateCodeNewest(user.getEmail(), VERIFICATION_TEMPLATE_CODE);
         }
         if (message == null || !MessageData.Status.PENDING.equals(message.getStatus())) {
             message = generateVerificationMessage(user, token);
@@ -119,10 +117,10 @@ public class AuthService {
         tokenRepository.save(token);
     }
 
-    public void resendVerificationToken(final String email) {
+    public void resendVerificationToken(String email) {
         UserData user = userRepository.findByEmailIgnoreCase(email);
         if (user == null) {
-            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_VALUE, email);
+            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
         TokenData token = tokenRepository.findByUserIdAndType(user.getId(), TokenData.TokenType.VERIFICATION);
         if (token == null) {
@@ -139,13 +137,14 @@ public class AuthService {
         sendVerificationToken(user, token, !expired);
     }
 
-    public TokenData renewVerificationToken(TokenData token) {
+    private TokenData renewVerificationToken(TokenData token) {
         token.setValue(UUID.randomUUID().toString());
         return tokenRepository.save(token);
     }
 
+    @Transactional
     public void confirmUser(String token) {
-        final TokenData verificationToken = tokenRepository.findByValue(token);
+        TokenData verificationToken = tokenRepository.findByValue(token);
         if (verificationToken == null || !TokenData.TokenType.VERIFICATION.equals(verificationToken.getType())) {
             throw new ApplicationException(AuthError.TOKEN_INVALID);
         }
@@ -155,7 +154,6 @@ public class AuthService {
             throw new ApplicationException(AuthError.TOKEN_EXPIRED);
         }
         user.setActivated(true);
-        userRepository.save(user);
         tokenRepository.delete(verificationToken);
     }
 
