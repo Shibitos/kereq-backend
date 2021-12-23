@@ -22,7 +22,7 @@ public class DictionaryService {
     private DictionaryItemRepository dictionaryItemRepository;
 
     @Cacheable(value = CacheProvider.CacheName.DICTIONARY_ITEMS, key="#code")
-    public List<DictionaryItemData> getAllDictionaryValues(String code) {
+    public List<DictionaryItemData> getAllDictionaryItems(String code) {
         if (!dictionaryRepository.existsByCode(code)) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
