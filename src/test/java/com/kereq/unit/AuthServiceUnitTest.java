@@ -175,7 +175,7 @@ class AuthServiceUnitTest {
 
         user = buildUserWithId(4L);
         TokenData resendToken2 = buildToken(user,
-                DateUtil.addMinutes(DateUtil.now(), -AuthService.TOKEN_RESEND_TIME_MIN));
+                DateUtil.addMinutes(DateUtil.now(), -(AuthService.TOKEN_RESEND_TIME_MIN * 2)));
         when(userRepository.findByEmailIgnoreCase("resend2")).thenReturn(user);
         when(tokenRepository.findByUserIdAndType(4L, TokenData.TokenType.VERIFICATION))
                 .thenReturn(resendToken2);
