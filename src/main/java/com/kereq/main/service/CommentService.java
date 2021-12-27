@@ -28,10 +28,10 @@ public class CommentService {
         if (comment.getUser() == null) {
             throw new ApplicationException(CommonError.MISSING_ERROR, "user");
         }
-        CommentData saved = commentRepository.save(comment);
-        saved.setStatistics(commentStatisticsService.initialize(saved.getId()));
+        commentRepository.save(comment);
+        comment.setStatistics(commentStatisticsService.initialize(comment.getId()));
         postStatisticsService.addComment(comment.getPostId());
-        return saved;
+        return comment;
     }
 
     public void modifyComment(Long commentId, Long userId, CommentData comment) { //TODO: sanitize html

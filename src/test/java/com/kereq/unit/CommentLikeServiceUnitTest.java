@@ -1,18 +1,12 @@
 package com.kereq.unit;
 
-import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.constant.LikeType;
 import com.kereq.main.entity.CommentLikeData;
 import com.kereq.main.repository.CommentLikeRepository;
-import com.kereq.main.repository.CommentRepository;
 import com.kereq.main.service.CommentLikeService;
 import com.kereq.main.service.CommentStatisticsService;
-import com.kereq.messaging.entity.MessageData;
-import com.kereq.messaging.entity.MessageTemplateData;
-import com.kereq.messaging.repository.MessageRepository;
-import com.kereq.messaging.service.EmailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,13 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -73,7 +61,7 @@ class CommentLikeServiceUnitTest {
         Assertions.assertDoesNotThrow(() -> commentLikeService.removeLike(2L, 1L));
         Mockito.verify(commentLikeRepository, times(1))
                 .delete(Mockito.any(CommentLikeData.class));
-        Mockito.verify(commentStatisticsService, times(1)).removeLike(Mockito.any(Long.class));
+        Mockito.verify(commentStatisticsService, times(1)).removeLike(1L);
     }
     
     @Test
@@ -98,7 +86,7 @@ class CommentLikeServiceUnitTest {
         Assertions.assertDoesNotThrow(() -> commentLikeService.removeDislike(3L, 1L));
         Mockito.verify(commentLikeRepository, times(1))
                 .delete(Mockito.any(CommentLikeData.class));
-        Mockito.verify(commentStatisticsService, times(1)).removeDislike(Mockito.any(Long.class));
+        Mockito.verify(commentStatisticsService, times(1)).removeDislike(1L);
     }
 
     private CommentLikeData buildCommentLike(int type) {
