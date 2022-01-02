@@ -30,6 +30,14 @@ public class DateUtil {
         return new Date(date.getTime() + TimeUnit.MINUTES.toMillis(minutes));
     }
 
+    public static Date addHours(Date date, long hours) {
+        return new Date(date.getTime() + TimeUnit.HOURS.toMillis(hours));
+    }
+
+    public static Date addDays(Date date, long days) {
+        return new Date(date.getTime() + TimeUnit.DAYS.toMillis(days));
+    }
+
     public static int yearsBetween(Date fromDate, Date toDate) {
         DateTime from = new DateTime(fromDate.getTime());
         DateTime to = new DateTime(toDate.getTime());

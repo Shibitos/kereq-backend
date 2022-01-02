@@ -15,7 +15,30 @@ class DateUtilUnitTest {
     void testAddMinutes() {
         Date now = new Date();
         Date plusFiveMinutes = new Date(now.getTime() + TimeUnit.MINUTES.toMillis(5));
+        Date minusFiveMinutes = new Date(now.getTime() - TimeUnit.MINUTES.toMillis(5));
+
         assertThat(DateUtil.addMinutes(now, 5).getTime()).isEqualTo(plusFiveMinutes.getTime());
+        assertThat(DateUtil.addMinutes(now, -5).getTime()).isEqualTo(minusFiveMinutes.getTime());
+    }
+
+    @Test
+    void testAddHours() {
+        Date now = new Date();
+        Date plusFiveHours = new Date(now.getTime() + TimeUnit.HOURS.toMillis(5));
+        Date minusFiveHours = new Date(now.getTime() - TimeUnit.HOURS.toMillis(5));
+
+        assertThat(DateUtil.addHours(now, 5).getTime()).isEqualTo(plusFiveHours.getTime());
+        assertThat(DateUtil.addHours(now, -5).getTime()).isEqualTo(minusFiveHours.getTime());
+    }
+
+    @Test
+    void testAddDays() {
+        Date now = new Date();
+        Date plusFiveDays = new Date(now.getTime() + TimeUnit.DAYS.toMillis(5));
+        Date minusFiveDays = new Date(now.getTime() - TimeUnit.DAYS.toMillis(5));
+
+        assertThat(DateUtil.addDays(now, 5).getTime()).isEqualTo(plusFiveDays.getTime());
+        assertThat(DateUtil.addDays(now, -5).getTime()).isEqualTo(minusFiveDays.getTime());
     }
 
     @Test

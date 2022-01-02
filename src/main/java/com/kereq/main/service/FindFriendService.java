@@ -28,7 +28,7 @@ public class FindFriendService {
         findFriendRepository.save(findFriendData);
     }
 
-    public void modifyFindFriendAd(Long userId, FindFriendData findFriendData) {
+    public void modifyFindFriendAd(Long userId, FindFriendData findFriendData) { //TODO: sanitize html
         FindFriendData original = findFriendRepository.findByUserId(userId);
         if (original == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -36,6 +36,7 @@ public class FindFriendService {
         original.setMinAge(findFriendData.getMinAge());
         original.setMaxAge(findFriendData.getMaxAge());
         original.setGender(findFriendData.getGender());
+        original.setDescription(findFriendData.getDescription());
         findFriendRepository.save(original);
     }
 
