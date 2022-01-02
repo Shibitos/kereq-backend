@@ -9,6 +9,7 @@ import com.kereq.main.repository.PostRepository;
 import com.kereq.main.repository.PostStatisticsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostStatisticsService {
@@ -54,6 +55,7 @@ public class PostStatisticsService {
         postStatisticsRepository.delete(postStatistics);
     }
 
+    @Transactional
     public PostStatisticsData convertLike(Long postId, boolean toLike) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
@@ -64,6 +66,7 @@ public class PostStatisticsService {
         return postStatistics;
     }
 
+    @Transactional
     public PostStatisticsData addLike(Long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
@@ -73,6 +76,7 @@ public class PostStatisticsService {
         return postStatistics;
     }
 
+    @Transactional
     public PostStatisticsData removeLike(Long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
@@ -82,6 +86,7 @@ public class PostStatisticsService {
         return postStatistics;
     }
 
+    @Transactional
     public PostStatisticsData addDislike(Long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
@@ -91,6 +96,7 @@ public class PostStatisticsService {
         return postStatistics;
     }
 
+    @Transactional
     public PostStatisticsData removeDislike(Long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
@@ -100,6 +106,7 @@ public class PostStatisticsService {
         return postStatistics;
     }
 
+    @Transactional
     public PostStatisticsData addComment(Long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
@@ -109,6 +116,7 @@ public class PostStatisticsService {
         return postStatistics;
     }
 
+    @Transactional
     public PostStatisticsData removeComment(Long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {

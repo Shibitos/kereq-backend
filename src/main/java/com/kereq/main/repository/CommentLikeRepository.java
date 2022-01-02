@@ -5,5 +5,5 @@ import com.kereq.main.entity.CommentLikeData;
 
 public interface CommentLikeRepository extends BaseRepository<CommentLikeData> {
 
-    CommentLikeData findByUserIdAndCommentId(Long userId, Long postId);
+    CommentLikeData findByUserIdAndCommentId(Long userId, Long commentId);
 }

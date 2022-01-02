@@ -5,16 +5,13 @@ import com.kereq.main.entity.CommentLikeData;
 import com.kereq.main.entity.CommentStatisticsData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.CommentLikeRepository;
-import com.kereq.main.repository.CommentRepository;
 import com.kereq.main.repository.CommentStatisticsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentStatisticsService {
-
-    @Autowired
-    private CommentRepository commentRepository;
 
     @Autowired
     private CommentLikeRepository commentLikeRepository;
@@ -53,6 +50,7 @@ public class CommentStatisticsService {
         commentStatisticsRepository.delete(commentStatistics);
     }
 
+    @Transactional
     public CommentStatisticsData convertLike(Long commentId, boolean toLike) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
@@ -63,6 +61,7 @@ public class CommentStatisticsService {
         return commentStatistics;
     }
 
+    @Transactional
     public CommentStatisticsData addLike(Long commentId) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
@@ -72,6 +71,7 @@ public class CommentStatisticsService {
         return commentStatistics;
     }
 
+    @Transactional
     public CommentStatisticsData removeLike(Long commentId) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
@@ -81,6 +81,7 @@ public class CommentStatisticsService {
         return commentStatistics;
     }
 
+    @Transactional
     public CommentStatisticsData addDislike(Long commentId) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
@@ -90,6 +91,7 @@ public class CommentStatisticsService {
         return commentStatistics;
     }
 
+    @Transactional
     public CommentStatisticsData removeDislike(Long commentId) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
