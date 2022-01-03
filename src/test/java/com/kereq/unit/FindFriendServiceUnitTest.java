@@ -4,12 +4,10 @@ import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.FindFriendData;
-import com.kereq.main.entity.PostData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.repository.FindFriendRepository;
 import com.kereq.main.service.FindFriendService;
 import com.kereq.main.util.DateUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
@@ -55,7 +52,7 @@ class FindFriendServiceUnitTest {
                 () -> findFriendService.createFindFriendAd(findFriendAd));
 
         user.setId(2L);
-        Assertions.assertDoesNotThrow(() -> findFriendService.createFindFriendAd(findFriendAd));
+        findFriendService.createFindFriendAd(findFriendAd);
         Mockito.verify(findFriendRepository, times(1)).save(Mockito.any(FindFriendData.class));
     }
 
@@ -73,7 +70,7 @@ class FindFriendServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> findFriendService.modifyFindFriendAd(1L, changed));
 
-        Assertions.assertDoesNotThrow(() -> findFriendService.modifyFindFriendAd(2L, changed));
+        findFriendService.modifyFindFriendAd(2L, changed);
         assertThat(original.getGender()).isEqualTo(changed.getGender());
         assertThat(original.getMaxAge()).isEqualTo(changed.getMaxAge());
         assertThat(original.getMinAge()).isEqualTo(changed.getMinAge());
@@ -90,7 +87,7 @@ class FindFriendServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> findFriendService.removeFindFriendAd(1L));
 
-        Assertions.assertDoesNotThrow(() -> findFriendService.removeFindFriendAd(2L));
+        findFriendService.removeFindFriendAd(2L);
         Mockito.verify(findFriendRepository, times(1)).delete(Mockito.any(FindFriendData.class));
     }
 
@@ -104,7 +101,7 @@ class FindFriendServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> findFriendService.getFindFriendAdByUserId(1L));
 
-        FindFriendData returned = Assertions.assertDoesNotThrow(() -> findFriendService.getFindFriendAdByUserId(2L));
+        FindFriendData returned = findFriendService.getFindFriendAdByUserId(2L);
         assertThat(returned.getId()).isEqualTo(1L);
     }
 
@@ -118,13 +115,11 @@ class FindFriendServiceUnitTest {
         user.setId(1L);
         user.setBirthDate(DateUtil.addDays(DateUtil.now(), -367));
 
-        Page<FindFriendData> returned = Assertions
-                .assertDoesNotThrow(() -> findFriendService.getFindFriendAdsForUser(user, null));
+        Page<FindFriendData> returned = findFriendService.getFindFriendAdsForUser(user, null);
         assertThat(returned).isNull();
 
         user.setBirthDate(DateUtil.addDays(DateUtil.now(), -367 * 2));
-        returned = Assertions
-                .assertDoesNotThrow(() -> findFriendService.getFindFriendAdsForUser(user, null));
+        returned = findFriendService.getFindFriendAdsForUser(user, null);
         assertThat(returned.getTotalElements()).isEqualTo(1);
     }
 }

@@ -8,7 +8,6 @@ import com.kereq.authorization.service.JWTService;
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.util.DateUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,21 +39,21 @@ class JWTServiceUnitTest {
         final String email = "em@em.test";
         UserData user = new UserData();
         user.setEmail(email);
-        String token = Assertions.assertDoesNotThrow(() -> jwtService.generateToken(user));
-        DecodedJWT decoded = Assertions.assertDoesNotThrow(() -> jwtService.verifyToken(token));
+        String token = jwtService.generateToken(user);
+        DecodedJWT decoded = jwtService.verifyToken(token);
         assertThat(decoded.getSubject()).isEqualTo(email);
 
-        String expiredToken = Assertions.assertDoesNotThrow(() -> expiringJwtService.generateToken(user));
+        String expiredToken = expiringJwtService.generateToken(user);
         Date tokenIssueDate = DateUtil.now();
         await().atMost(2, TimeUnit.SECONDS)
                 .until(() -> DateUtil.timeDiffSince(tokenIssueDate) > 1000 * MIN_EXPIRE_TIME);
         AssertHelper.assertException(TokenExpiredException.class, () -> jwtService.verifyToken(expiredToken));
 
-        String refreshToken = Assertions.assertDoesNotThrow(() -> jwtService.generateRefreshToken(user));
-        decoded = Assertions.assertDoesNotThrow(() -> jwtService.verifyToken(refreshToken));
+        String refreshToken = jwtService.generateRefreshToken(user);
+        decoded = jwtService.verifyToken(refreshToken);
         assertThat(decoded.getSubject()).isEqualTo(email);
 
-        String expiredRefreshToken = Assertions.assertDoesNotThrow(() -> expiringJwtService.generateRefreshToken(user));
+        String expiredRefreshToken = expiringJwtService.generateRefreshToken(user);
         Date refreshTokenIssueDate = DateUtil.now();
         await().atMost(2, TimeUnit.SECONDS)
                 .until(() -> DateUtil.timeDiffSince(refreshTokenIssueDate) > 1000 * MIN_EXPIRE_TIME);
@@ -71,7 +70,7 @@ class JWTServiceUnitTest {
         user.setEmail(email);
         String token = jwtService.generateToken(user);
 
-        JWTTokenDTO jwtTokenDTO = Assertions.assertDoesNotThrow(() -> jwtService.refreshToken(token));
+        JWTTokenDTO jwtTokenDTO = jwtService.refreshToken(token);
         DecodedJWT decodedAccess = jwtService.verifyToken(jwtTokenDTO.getAccessToken());
         DecodedJWT decodedRefresh = jwtService.verifyToken(jwtTokenDTO.getAccessToken());
         assertThat(decodedAccess.getSubject()).isEqualTo(email);

@@ -11,8 +11,6 @@ import com.kereq.main.repository.PostRepository;
 import com.kereq.main.service.CommentService;
 import com.kereq.main.service.PostService;
 import com.kereq.main.service.PostStatisticsService;
-import com.kereq.main.service.PostStatisticsService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,7 +19,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +61,7 @@ class PostServiceUnitTest {
         AssertHelper.assertException(CommonError.MISSING_ERROR, () -> postService.createPost(post));
 
         post.setUser(new UserData());
-        Assertions.assertDoesNotThrow(() -> postService.createPost(post));
+        postService.createPost(post);
         assertThat(post.getStatistics()).isNotNull();
         Mockito.verify(postStatisticsService, times(1)).initialize(Mockito.any());
     }
@@ -92,7 +89,7 @@ class PostServiceUnitTest {
         PostData postChange = new PostData();
         postChange.setContent(changedContent);
 
-        Assertions.assertDoesNotThrow(() -> postService.modifyPost(3L, 2L, postChange));
+        postService.modifyPost(3L, 2L, postChange);
         assertThat(postChange.getContent()).isEqualTo(changedContent);
         Mockito.verify(postRepository, times(1)).save(Mockito.any(PostData.class));
     }
@@ -117,7 +114,7 @@ class PostServiceUnitTest {
         post.setUser(owner);
         when(postRepository.findById(3L)).thenReturn(Optional.of(post));
 
-        Assertions.assertDoesNotThrow(() -> postService.removePost(3L, 2L));
+        postService.removePost(3L, 2L);
         Mockito.verify(postStatisticsService, times(1)).remove(3L);
         Mockito.verify(postRepository, times(1)).delete(Mockito.any(PostData.class));
     }
@@ -134,7 +131,7 @@ class PostServiceUnitTest {
         Page<PostData> page = new PageImpl<>(list);
         when(postRepository.findPostsForUser(Mockito.any(), Mockito.any())).thenReturn(page);
 
-        Assertions.assertDoesNotThrow(() -> postService.getBrowsePosts(1L, null));
+        postService.getBrowsePosts(1L, null);
         assertThat(list).allMatch(p -> p.getStatistics() != null && p.getComments().size() == 1);
     }
 
@@ -150,7 +147,7 @@ class PostServiceUnitTest {
         Page<PostData> page = new PageImpl<>(list);
         when(postRepository.findByUserId(Mockito.any(), Mockito.any())).thenReturn(page);
 
-        Assertions.assertDoesNotThrow(() -> postService.getUserPosts(1L, null));
+        postService.getUserPosts(1L, null);
         assertThat(list).allMatch(p -> p.getStatistics() != null && p.getComments().size() == 1);
     }
 }

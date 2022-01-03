@@ -9,7 +9,6 @@ import com.kereq.main.repository.CommentLikeRepository;
 import com.kereq.main.repository.CommentRepository;
 import com.kereq.main.repository.CommentStatisticsRepository;
 import com.kereq.main.service.CommentStatisticsService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -57,9 +56,9 @@ class CommentStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> commentStatisticsService.getStatistics(1L, 1L));
-        Assertions.assertDoesNotThrow(() -> commentStatisticsService.getStatistics(1L, 3L));
+        commentStatisticsService.getStatistics(1L, 3L);
         assertThat(commentStatistics.getUserLikeType()).isNull();
-        Assertions.assertDoesNotThrow(() -> commentStatisticsService.getStatistics(1L, 4L));
+        commentStatisticsService.getStatistics(1L, 4L);
         assertThat(commentStatistics.getUserLikeType()).isEqualTo(LikeType.LIKE);
     }
 
@@ -71,7 +70,7 @@ class CommentStatisticsServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
                 () -> commentStatisticsService.initialize(1L));
         CommentStatisticsData commentStatistics =
-                Assertions.assertDoesNotThrow(() -> commentStatisticsService.initialize(2L));
+                commentStatisticsService.initialize(2L);
         assertThat(commentStatistics.getCommentId()).isEqualTo(2L);
         assertThat(commentStatistics.getLikesCount()).isZero();
         assertThat(commentStatistics.getDislikesCount()).isZero();
@@ -85,7 +84,7 @@ class CommentStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> commentStatisticsService.remove(1L));
-        Assertions.assertDoesNotThrow(() -> commentStatisticsService.remove(2L));
+        commentStatisticsService.remove(2L);
         Mockito.verify(commentStatisticsRepository, times(1))
                 .delete(Mockito.any(CommentStatisticsData.class));
     }
@@ -101,11 +100,11 @@ class CommentStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> commentStatisticsService.convertLike(1L, true));
-        Assertions.assertDoesNotThrow(() -> commentStatisticsService.convertLike(3L, true));
+        commentStatisticsService.convertLike(3L, true);
         assertThat(commentStatistics.getLikesCount()).isEqualTo(startLikesCount + 1);
         assertThat(commentStatistics.getDislikesCount()).isEqualTo(startDislikesCount - 1);
 
-        Assertions.assertDoesNotThrow(() -> commentStatisticsService.convertLike(3L, false));
+        commentStatisticsService.convertLike(3L, false);
         assertThat(commentStatistics.getLikesCount()).isEqualTo(startLikesCount);
         assertThat(commentStatistics.getDislikesCount()).isEqualTo(startDislikesCount);
     }
@@ -119,7 +118,7 @@ class CommentStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> commentStatisticsService.addLike(1L));
-        Assertions.assertDoesNotThrow(() -> commentStatisticsService.addLike(3L));
+        commentStatisticsService.addLike(3L);
         assertThat(commentStatistics.getLikesCount()).isEqualTo(startLikesCount + 1);
     }
 
@@ -132,7 +131,7 @@ class CommentStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> commentStatisticsService.addLike(1L));
-        Assertions.assertDoesNotThrow(() -> commentStatisticsService.removeLike(3L));
+        commentStatisticsService.removeLike(3L);
         assertThat(commentStatistics.getLikesCount()).isEqualTo(startLikesCount - 1);
     }
 
@@ -145,7 +144,7 @@ class CommentStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> commentStatisticsService.addDislike(1L));
-        Assertions.assertDoesNotThrow(() -> commentStatisticsService.addDislike(3L));
+        commentStatisticsService.addDislike(3L);
         assertThat(commentStatistics.getDislikesCount()).isEqualTo(startDislikesCount + 1);
     }
 
@@ -158,7 +157,7 @@ class CommentStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> commentStatisticsService.removeDislike(1L));
-        Assertions.assertDoesNotThrow(() -> commentStatisticsService.removeDislike(3L));
+        commentStatisticsService.removeDislike(3L);
         assertThat(commentStatistics.getDislikesCount()).isEqualTo(startDislikesCount - 1);
     }
 }

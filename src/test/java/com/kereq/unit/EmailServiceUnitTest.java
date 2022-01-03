@@ -1,12 +1,11 @@
 package com.kereq.unit;
 
-import com.kereq.helper.AssertHelper;
 import com.kereq.common.error.CommonError;
+import com.kereq.helper.AssertHelper;
 import com.kereq.messaging.entity.MessageData;
 import com.kereq.messaging.entity.MessageTemplateData;
 import com.kereq.messaging.repository.MessageRepository;
 import com.kereq.messaging.service.EmailService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -83,8 +82,7 @@ class EmailServiceUnitTest {
     void testEmailValidation() {
         MessageTemplateData template = getTestTemplate("t", "S", "B");
         for (String validEmail : validEmails) {
-            Assertions.assertDoesNotThrow(
-                    () -> emailService.createMessageFromTemplate(template, validEmail, null), validEmail);
+            emailService.createMessageFromTemplate(template, validEmail, null);
         }
         for (String invalidEmail : invalidEmails) {
             AssertHelper.assertException(CommonError.INVALID_ERROR,

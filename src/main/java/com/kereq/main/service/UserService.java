@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -21,12 +22,13 @@ public class UserService {
     @Autowired
     private FriendshipRepository friendshipRepository;
 
-    private static final String STATUS_FIELD = "status";
+    private static final String STATUS_FIELD = "status"; //TODO: remove?
 
     public void inviteFriend(Long userId, Long receiverId) {
-        if (friendshipRepository.existsByUserIdAndFriendId(userId, receiverId)) {
+        if (friendshipRepository.existsByUserIdAndFriendId(userId, receiverId)
+                || friendshipRepository.existsByUserIdAndFriendId(receiverId, userId)) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
-        } //TODO: check if users exists? what will happen without check?
+        }
         FriendshipData friendship = new FriendshipData();
         friendship.setUserId(userId);
         friendship.setFriendId(receiverId);
@@ -45,7 +47,8 @@ public class UserService {
         friendshipRepository.delete(invitation);
     }
 
-    public void acceptInvitation(Long userId, Long senderId) { //TODO: transactionals everywhere think
+    @Transactional
+    public void acceptInvitation(Long userId, Long senderId) {
         FriendshipData invitation = friendshipRepository.findByUserIdAndFriendId(senderId, userId);
         if (invitation == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -63,6 +66,7 @@ public class UserService {
         friendshipRepository.save(accepted);
     }
 
+    @Transactional
     public void rejectInvitation(Long userId, Long senderId) {
         FriendshipData invitation = friendshipRepository.findByUserIdAndFriendId(senderId, userId);
         if (invitation == null) {
@@ -75,6 +79,7 @@ public class UserService {
         friendshipRepository.save(invitation);
     }
 
+    @Transactional
     public void removeFriend(Long userId, Long friendId) {
         FriendshipData userEntry = friendshipRepository.findByUserIdAndFriendId(userId, friendId);
         if (userEntry == null) {

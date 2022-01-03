@@ -7,7 +7,6 @@ import com.kereq.main.entity.PostLikeData;
 import com.kereq.main.repository.PostLikeRepository;
 import com.kereq.main.service.PostLikeService;
 import com.kereq.main.service.PostStatisticsService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -41,13 +40,13 @@ class PostLikeServiceUnitTest {
 
     @Test
     void testAddLike() {
-        Assertions.assertDoesNotThrow(() -> postLikeService.addLike(1L, 1L));
+        postLikeService.addLike(1L, 1L);
         Mockito.verify(postLikeRepository, times(1)).save(Mockito.any(PostLikeData.class));
 
         AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
                 () -> postLikeService.addLike(2L, 1L));
 
-        Assertions.assertDoesNotThrow(() -> postLikeService.addLike(3L, 1L));
+        postLikeService.addLike(3L, 1L);
         Mockito.verify(postLikeRepository, times(2)).save(Mockito.any(PostLikeData.class));
     }
 
@@ -58,7 +57,7 @@ class PostLikeServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> postLikeService.removeLike(3L, 1L));
 
-        Assertions.assertDoesNotThrow(() -> postLikeService.removeLike(2L, 1L));
+        postLikeService.removeLike(2L, 1L);
         Mockito.verify(postLikeRepository, times(1))
                 .delete(Mockito.any(PostLikeData.class));
         Mockito.verify(postStatisticsService, times(1)).removeLike(1L);
@@ -66,13 +65,13 @@ class PostLikeServiceUnitTest {
     
     @Test
     void testAddDislike() {
-        Assertions.assertDoesNotThrow(() -> postLikeService.addDislike(1L, 1L));
+        postLikeService.addDislike(1L, 1L);
         Mockito.verify(postLikeRepository, times(1)).save(Mockito.any(PostLikeData.class));
 
         AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
                 () -> postLikeService.addDislike(3L, 1L));
 
-        Assertions.assertDoesNotThrow(() -> postLikeService.addDislike(2L, 1L));
+        postLikeService.addDislike(2L, 1L);
         Mockito.verify(postLikeRepository, times(2)).save(Mockito.any(PostLikeData.class));
     }
 
@@ -83,7 +82,7 @@ class PostLikeServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> postLikeService.removeDislike(2L, 1L));
 
-        Assertions.assertDoesNotThrow(() -> postLikeService.removeDislike(3L, 1L));
+        postLikeService.removeDislike(3L, 1L);
         Mockito.verify(postLikeRepository, times(1))
                 .delete(Mockito.any(PostLikeData.class));
         Mockito.verify(postStatisticsService, times(1)).removeDislike(1L);

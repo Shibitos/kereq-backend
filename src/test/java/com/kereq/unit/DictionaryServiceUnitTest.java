@@ -7,7 +7,6 @@ import com.kereq.common.repository.DictionaryItemRepository;
 import com.kereq.common.repository.DictionaryRepository;
 import com.kereq.common.service.DictionaryService;
 import com.kereq.helper.AssertHelper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -40,7 +39,7 @@ class DictionaryServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> dictionaryService.getAllDictionaryItems("nonexisting"));
-        Assertions.assertDoesNotThrow(() -> dictionaryService.getAllDictionaryItems("existing"));
+        dictionaryService.getAllDictionaryItems("existing");
     }
 
     @Test

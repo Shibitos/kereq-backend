@@ -9,7 +9,6 @@ import com.kereq.main.repository.PostLikeRepository;
 import com.kereq.main.repository.PostRepository;
 import com.kereq.main.repository.PostStatisticsRepository;
 import com.kereq.main.service.PostStatisticsService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -57,9 +56,9 @@ class PostStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> postStatisticsService.getStatistics(1L, 1L));
-        Assertions.assertDoesNotThrow(() -> postStatisticsService.getStatistics(1L, 3L));
+        postStatisticsService.getStatistics(1L, 3L);
         assertThat(postStatistics.getUserLikeType()).isNull();
-        Assertions.assertDoesNotThrow(() -> postStatisticsService.getStatistics(1L, 4L));
+        postStatisticsService.getStatistics(1L, 4L);
         assertThat(postStatistics.getUserLikeType()).isEqualTo(LikeType.LIKE);
     }
 
@@ -71,7 +70,7 @@ class PostStatisticsServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
                 () -> postStatisticsService.initialize(1L));
         PostStatisticsData postStatistics =
-                Assertions.assertDoesNotThrow(() -> postStatisticsService.initialize(2L));
+                postStatisticsService.initialize(2L);
         assertThat(postStatistics.getPostId()).isEqualTo(2L);
         assertThat(postStatistics.getLikesCount()).isZero();
         assertThat(postStatistics.getDislikesCount()).isZero();
@@ -85,7 +84,7 @@ class PostStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> postStatisticsService.remove(1L));
-        Assertions.assertDoesNotThrow(() -> postStatisticsService.remove(2L));
+        postStatisticsService.remove(2L);
         Mockito.verify(postStatisticsRepository, times(1))
                 .delete(Mockito.any(PostStatisticsData.class));
     }
@@ -101,11 +100,11 @@ class PostStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> postStatisticsService.convertLike(1L, true));
-        Assertions.assertDoesNotThrow(() -> postStatisticsService.convertLike(3L, true));
+        postStatisticsService.convertLike(3L, true);
         assertThat(postStatistics.getLikesCount()).isEqualTo(startLikesCount + 1);
         assertThat(postStatistics.getDislikesCount()).isEqualTo(startDislikesCount - 1);
 
-        Assertions.assertDoesNotThrow(() -> postStatisticsService.convertLike(3L, false));
+        postStatisticsService.convertLike(3L, false);
         assertThat(postStatistics.getLikesCount()).isEqualTo(startLikesCount);
         assertThat(postStatistics.getDislikesCount()).isEqualTo(startDislikesCount);
     }
@@ -119,7 +118,7 @@ class PostStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> postStatisticsService.addLike(1L));
-        Assertions.assertDoesNotThrow(() -> postStatisticsService.addLike(3L));
+        postStatisticsService.addLike(3L);
         assertThat(postStatistics.getLikesCount()).isEqualTo(startLikesCount + 1);
     }
 
@@ -132,7 +131,7 @@ class PostStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> postStatisticsService.addLike(1L));
-        Assertions.assertDoesNotThrow(() -> postStatisticsService.removeLike(3L));
+        postStatisticsService.removeLike(3L);
         assertThat(postStatistics.getLikesCount()).isEqualTo(startLikesCount - 1);
     }
 
@@ -145,7 +144,7 @@ class PostStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> postStatisticsService.addDislike(1L));
-        Assertions.assertDoesNotThrow(() -> postStatisticsService.addDislike(3L));
+        postStatisticsService.addDislike(3L);
         assertThat(postStatistics.getDislikesCount()).isEqualTo(startDislikesCount + 1);
     }
 
@@ -158,7 +157,7 @@ class PostStatisticsServiceUnitTest {
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> postStatisticsService.removeDislike(1L));
-        Assertions.assertDoesNotThrow(() -> postStatisticsService.removeDislike(3L));
+        postStatisticsService.removeDislike(3L);
         assertThat(postStatistics.getDislikesCount()).isEqualTo(startDislikesCount - 1);
     }
 }

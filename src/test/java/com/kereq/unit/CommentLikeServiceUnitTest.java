@@ -7,7 +7,6 @@ import com.kereq.main.entity.CommentLikeData;
 import com.kereq.main.repository.CommentLikeRepository;
 import com.kereq.main.service.CommentLikeService;
 import com.kereq.main.service.CommentStatisticsService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -41,13 +40,13 @@ class CommentLikeServiceUnitTest {
 
     @Test
     void testAddLike() {
-        Assertions.assertDoesNotThrow(() -> commentLikeService.addLike(1L, 1L));
+        commentLikeService.addLike(1L, 1L);
         Mockito.verify(commentLikeRepository, times(1)).save(Mockito.any(CommentLikeData.class));
 
         AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
                 () -> commentLikeService.addLike(2L, 1L));
 
-        Assertions.assertDoesNotThrow(() -> commentLikeService.addLike(3L, 1L));
+        commentLikeService.addLike(3L, 1L);
         Mockito.verify(commentLikeRepository, times(2)).save(Mockito.any(CommentLikeData.class));
     }
 
@@ -58,7 +57,7 @@ class CommentLikeServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> commentLikeService.removeLike(3L, 1L));
 
-        Assertions.assertDoesNotThrow(() -> commentLikeService.removeLike(2L, 1L));
+        commentLikeService.removeLike(2L, 1L);
         Mockito.verify(commentLikeRepository, times(1))
                 .delete(Mockito.any(CommentLikeData.class));
         Mockito.verify(commentStatisticsService, times(1)).removeLike(1L);
@@ -66,13 +65,13 @@ class CommentLikeServiceUnitTest {
     
     @Test
     void testAddDislike() {
-        Assertions.assertDoesNotThrow(() -> commentLikeService.addDislike(1L, 1L));
+        commentLikeService.addDislike(1L, 1L);
         Mockito.verify(commentLikeRepository, times(1)).save(Mockito.any(CommentLikeData.class));
 
         AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
                 () -> commentLikeService.addDislike(3L, 1L));
 
-        Assertions.assertDoesNotThrow(() -> commentLikeService.addDislike(2L, 1L));
+        commentLikeService.addDislike(2L, 1L);
         Mockito.verify(commentLikeRepository, times(2)).save(Mockito.any(CommentLikeData.class));
     }
 
@@ -83,7 +82,7 @@ class CommentLikeServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
                 () -> commentLikeService.removeDislike(2L, 1L));
 
-        Assertions.assertDoesNotThrow(() -> commentLikeService.removeDislike(3L, 1L));
+        commentLikeService.removeDislike(3L, 1L);
         Mockito.verify(commentLikeRepository, times(1))
                 .delete(Mockito.any(CommentLikeData.class));
         Mockito.verify(commentStatisticsService, times(1)).removeDislike(1L);

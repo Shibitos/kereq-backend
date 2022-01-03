@@ -4,11 +4,11 @@ import com.kereq.authorization.entity.TokenData;
 import com.kereq.authorization.error.AuthError;
 import com.kereq.authorization.repository.TokenRepository;
 import com.kereq.authorization.service.AuthService;
+import com.kereq.common.error.RepositoryError;
 import com.kereq.common.error.ValidationError;
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.RoleData;
 import com.kereq.main.entity.UserData;
-import com.kereq.common.error.RepositoryError;
 import com.kereq.main.repository.RoleRepository;
 import com.kereq.main.repository.UserRepository;
 import com.kereq.main.util.DateUtil;
@@ -17,14 +17,13 @@ import com.kereq.messaging.entity.MessageTemplateData;
 import com.kereq.messaging.repository.MessageRepository;
 import com.kereq.messaging.repository.MessageTemplateRepository;
 import com.kereq.messaging.service.EmailService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.springframework.mock.web.MockHttpServletRequest;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Date;
 
@@ -105,7 +104,7 @@ class AuthServiceUnitTest {
 
         user.setBirthDate(past);
         user.setActivated(true);
-        TokenData token = Assertions.assertDoesNotThrow(() -> authService.registerUser(user));
+        TokenData token = authService.registerUser(user);
 
         assertThat(user.getPassword()).isEqualTo("encoded");
         assertThat(user.getRoles().size()).isEqualTo(1);
@@ -146,11 +145,11 @@ class AuthServiceUnitTest {
                 () -> authService.sendVerificationToken(mainUser, token, false));
 
         token.setType(TokenData.TokenType.VERIFICATION);
-        Assertions.assertDoesNotThrow(() -> authService.sendVerificationToken(mainUser, token, false));
+        authService.sendVerificationToken(mainUser, token, false);
         assertThat(token.getLastSendDate()).isNotNull();
 
         Date lastSendDate = token.getLastSendDate();
-        Assertions.assertDoesNotThrow(() -> authService.sendVerificationToken(mainUser, token, true));
+        authService.sendVerificationToken(mainUser, token, true);
         assertThat(token.getLastSendDate()).isNotEqualTo(lastSendDate);
         Mockito.verify(messageRepository, times(1))
                 .findFirstByUserEmailTemplateCodeNewest(mainUserEmail, "COMPLETE_REGISTRATION");
@@ -187,12 +186,12 @@ class AuthServiceUnitTest {
         AssertHelper.assertException(AuthError.TOKEN_TOO_EARLY,
                 () -> authService.resendVerificationToken("resendTooEarly"));
 
-        Assertions.assertDoesNotThrow(() -> authService.resendVerificationToken("resend1"));
-        Assertions.assertDoesNotThrow(() -> authService.resendVerificationToken("resend2"));
+        authService.resendVerificationToken("resend1");
+        authService.resendVerificationToken("resend2");
 
         String firstAttemptValue = resendToken2.getValue();
         resendToken2.setLastSendDate(null);
-        Assertions.assertDoesNotThrow(() -> authService.resendVerificationToken("resend2"));
+        authService.resendVerificationToken("resend2");
         assertThat(firstAttemptValue).isNotEqualTo(resendToken2.getValue());
     }
 
@@ -221,7 +220,7 @@ class AuthServiceUnitTest {
         AssertHelper.assertException(AuthError.TOKEN_EXPIRED,
                 () -> authService.confirmUser("expired"));
 
-        Assertions.assertDoesNotThrow(() -> authService.confirmUser("notExpired"));
+        authService.confirmUser("notExpired");
         assertThat(user.isActivated()).isTrue();
     }
 
