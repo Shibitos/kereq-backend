@@ -196,7 +196,7 @@ class AuthServiceUnitTest {
     }
 
     @Test
-    public void testConfirmUser() {
+    void testConfirmUser() {
         when(tokenRepository.findByValue("nonexisting")).thenReturn(null);
 
         TokenData notVerificationType = buildToken(null, null);

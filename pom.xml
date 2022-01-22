@@ -281,6 +281,15 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<excludes>
+						<exclude>**/*com/kereq/BackendApplication.class</exclude>
+						<exclude>**/*Config.*</exclude>
+						<exclude>**/*Data.*</exclude>
+						<exclude>**/*DTO.*</exclude>
+						<exclude>**/*Repository.*</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
