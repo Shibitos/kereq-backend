@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.kereq.common.error.CommonError;
-import com.kereq.main.dto.ErrorResponse;
+import com.kereq.main.dto.ErrorResponseDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,23 +18,24 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+@Slf4j
 @ControllerAdvice
 public class ApplicationErrorControllerAdvice {
 
     @Autowired
     private ObjectMapper mapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationErrorControllerAdvice.class);
+    private static final Logger log = LoggerFactory.getLogger(ApplicationErrorControllerAdvice.class);
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception exception, final HttpServletRequest request) {
-        logger.error("Exception occurred", exception);
+    public ResponseEntity<ErrorResponseDTO> handleException(Exception exception, final HttpServletRequest request) {
+        log.error("Exception occurred", exception);
         return handleApplicationException(new ApplicationException(), request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException exception,
-                                                                   final HttpServletRequest request) {
+    public ResponseEntity<ErrorResponseDTO> handleValidationException(MethodArgumentNotValidException exception,
+                                                                      final HttpServletRequest request) {
         Map<String, List<String>> data = new HashMap<>();
         exception.getFieldErrors().forEach(fieldError -> {
             String field = fieldError.getField();
@@ -56,7 +58,7 @@ public class ApplicationErrorControllerAdvice {
         HttpStatus status = HttpStatus.valueOf(error.getHttpCode());
 
         return new ResponseEntity<>(
-                new ErrorResponse(
+                new ErrorResponseDTO(
                         status,
                         error.buildMessage(),
                         error.name(),
@@ -68,15 +70,15 @@ public class ApplicationErrorControllerAdvice {
     }
 
     @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException exception,
-                                                                    final HttpServletRequest request) {
+    public ResponseEntity<ErrorResponseDTO> handleApplicationException(ApplicationException exception,
+                                                                       final HttpServletRequest request) {
         HttpStatus status = exception.getStatus();
         if (!CommonError.OTHER_ERROR.getMessage().equals(exception.getErrorCode())) {
-            logger.error(exception.getMessage(), exception);
+            log.error(exception.getMessage(), exception);
         }
 
         return new ResponseEntity<>(
-                new ErrorResponse(
+                new ErrorResponseDTO(
                         status,
                         exception.getMessage(),
                         exception.getErrorCode(),

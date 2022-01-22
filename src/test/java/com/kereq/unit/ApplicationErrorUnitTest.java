@@ -9,7 +9,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class ApplicationErrorUnitTest {
 
     @Test
-    void testApplicationException() {
+    void testApplicationError() {
         ApplicationError error = CommonError.TEST_ERROR;
         assertThat(error.buildMessage()).isEqualTo("Test {0} erro{1}r");
         assertThat(error.buildMessage("abc")).isEqualTo("Test abc erro{1}r");

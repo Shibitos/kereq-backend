@@ -1,11 +1,14 @@
 package com.kereq.messaging.service;
 
 import com.kereq.common.error.CommonError;
+import com.kereq.common.error.RepositoryError;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.messaging.entity.MessageData;
 import com.kereq.messaging.entity.MessageTemplateData;
+import com.kereq.messaging.error.MessageError;
 import com.kereq.messaging.repository.MessageRepository;
 import com.sanctionco.jmail.JMail;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
@@ -17,12 +20,13 @@ import org.springframework.util.ObjectUtils;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+@Slf4j
 @Service
 public class EmailService {
 
-    private static final Pattern PARAM_PATTERN = Pattern.compile("\\{\\{.*?}}");
+    public static final Integer MAX_RETRY_COUNT = 3; //TODO: params
 
-    private static final Integer MAX_RETRY_COUNT = 3; //TODO: params
+    private static final Pattern PARAM_PATTERN = Pattern.compile("\\{\\{.*?}}");
 
     @Autowired
     private MessageRepository messageRepository;
@@ -54,27 +58,28 @@ public class EmailService {
 
     public void sendMessage(MessageData message) { //TODO: bulk message?
         if (!messageRepository.existsById(message.getId())) {
-            throw new ApplicationException(CommonError.INVALID_ERROR, "email object");
+            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
         if (!MessageData.Status.PENDING.equals(message.getStatus())) {
-            throw new ApplicationException(CommonError.INVALID_ERROR, "email status");
+            throw new ApplicationException(CommonError.INVALID_ERROR, "status");
         }
 
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setFrom(message.getFrom());
-        email.setTo(message.getTo());
-        email.setSubject(message.getSubject());
-        email.setText(message.getBody());
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setFrom(message.getFrom());
+        mail.setTo(message.getTo());
+        mail.setSubject(message.getSubject());
+        mail.setText(message.getBody());
 
         try {
-            mailSender.send(email);
+            mailSender.send(mail);
         } catch (MailException e) {
             message.setRetryCount(message.getRetryCount() + 1);
             if (message.getRetryCount() >= MAX_RETRY_COUNT) {
                 message.setStatus(MessageData.Status.FAILED);
             }
             messageRepository.save(message);
-            throw e;
+            log.error("Error while sending message.", e);
+            throw new ApplicationException(MessageError.UNABLE_TO_SEND);
         }
         message.setStatus(MessageData.Status.SENT);
         messageRepository.save(message);

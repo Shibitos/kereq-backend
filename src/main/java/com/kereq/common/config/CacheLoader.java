@@ -8,8 +8,7 @@ import com.kereq.common.entity.CodeEntity;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.repository.DictionaryItemRepository;
 import com.kereq.main.exception.ApplicationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cache.Cache;
@@ -23,10 +22,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
-
-    private static final Logger logger = LoggerFactory.getLogger(CacheLoader.class);
 
     @Autowired
     CacheManager cacheManager;
@@ -43,14 +41,14 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
     }
 
     private void loadCaches() {
-        logger.info("Loading caches");
+        log.info("Loading caches");
         List<CacheProvider> cacheRegions = List.of(CacheProvider.values());
         for (CacheProvider ent : cacheRegions) {
             CacheRegion<?> region = ent.getCacheRegion();
             if (!region.isPreloaded()) {
                 continue;
             }
-            logger.info("Loading cache: {}", region.getName());
+            log.info("Loading cache: {}", region.getName());
             for (Object obj : applicationContext.getBean(region.getRepositoryClass()).findAll()) {
                 Cache cache = cacheManager.getCache(region.getName());
                 if (cache == null) {
@@ -65,11 +63,11 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
             }
         }
         loadDictionariesLists();
-        logger.info("All caches loaded");
+        log.info("All caches loaded");
     }
 
     private void loadDictionariesLists() {
-        logger.info("Loading dictionaries lists");
+        log.info("Loading dictionaries lists");
         Cache cache = cacheManager.getCache(CacheProvider.CacheName.DICTIONARY_ITEMS);
         if (cache == null) {
             throw new ApplicationException(CommonError.OTHER_ERROR);
@@ -77,9 +75,9 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
         List<String> dictionaries = Arrays.stream(Dictionary.class.getFields())
                 .map(Field::getName).collect(Collectors.toList());
         for (String dictionary : dictionaries) {
-            logger.info("Loading dictionary list: {}", dictionary);
+            log.info("Loading dictionary list: {}", dictionary);
             cache.put(dictionary, dictionaryItemRepository.findByDictionaryCode(dictionary));
         }
-        logger.info("All dictionaries lists loaded");
+        log.info("All dictionaries lists loaded");
     }
 }

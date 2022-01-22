@@ -285,9 +285,10 @@
 					<excludes>
 						<exclude>**/*com/kereq/BackendApplication.class</exclude>
 						<exclude>**/*Config.*</exclude>
-						<exclude>**/*Data.*</exclude>
+						<exclude>**/entity/*</exclude>
 						<exclude>**/*DTO.*</exclude>
 						<exclude>**/*Repository.*</exclude>
+						<exclude>**/*Exception.*</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

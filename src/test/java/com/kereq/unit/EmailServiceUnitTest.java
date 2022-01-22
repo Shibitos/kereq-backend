@@ -1,9 +1,11 @@
 package com.kereq.unit;
 
 import com.kereq.common.error.CommonError;
+import com.kereq.common.error.RepositoryError;
 import com.kereq.helper.AssertHelper;
 import com.kereq.messaging.entity.MessageData;
 import com.kereq.messaging.entity.MessageTemplateData;
+import com.kereq.messaging.error.MessageError;
 import com.kereq.messaging.repository.MessageRepository;
 import com.kereq.messaging.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,12 +15,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.MailSendException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class EmailServiceUnitTest {
 
@@ -27,6 +32,9 @@ class EmailServiceUnitTest {
 
     @Mock
     private Environment env;
+
+    @Mock
+    private JavaMailSender mailSender;
 
     @InjectMocks
     private EmailService emailService;
@@ -64,7 +72,7 @@ class EmailServiceUnitTest {
     };
 
     @BeforeEach
-    public void setup() { //TODO: sendMessageTest: if fail, retry count up (on limit = failed), else status sent
+    public void setup() {
         MockitoAnnotations.initMocks(this);
         when(env.getProperty("email.support")).thenReturn("kereq@ethereal.email");
         when(messageRepository.save(Mockito.any(MessageData.class))).thenAnswer(i -> i.getArguments()[0]);
@@ -119,6 +127,39 @@ class EmailServiceUnitTest {
                 () -> emailService.createMessageFromTemplate(template, validEmails[0], params));
         AssertHelper.assertException(CommonError.MISSING_ERROR,
                 () -> emailService.createMessageFromTemplate(template, validEmails[0], null));
+    }
+
+    @Test
+    void testSendMessage() {
+        when(messageRepository.existsById(1L)).thenReturn(false);
+        when(messageRepository.existsById(2L)).thenReturn(true);
+
+        MessageTemplateData template = getTestTemplate("t", "S", "B");
+        MessageData message = emailService.createMessageFromTemplate(template, validEmails[0], null);
+
+        message.setId(1L);
+        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND, () -> emailService.sendMessage(message));
+
+        doNothing().when(mailSender).send(Mockito.any(SimpleMailMessage.class));
+        message.setStatus(MessageData.Status.SENT);
+        message.setId(2L);
+        AssertHelper.assertException(CommonError.INVALID_ERROR, () -> emailService.sendMessage(message));
+
+        message.setStatus(MessageData.Status.PENDING);
+        emailService.sendMessage(message);
+        assertThat(message.getStatus()).isEqualTo(MessageData.Status.SENT);
+
+        doThrow(new MailSendException("")).when(mailSender).send(Mockito.any(SimpleMailMessage.class));
+        message.setStatus(MessageData.Status.PENDING);
+        AssertHelper.assertException(MessageError.UNABLE_TO_SEND, () -> emailService.sendMessage(message));
+        assertThat(message.getStatus()).isEqualTo(MessageData.Status.PENDING);
+        assertThat(message.getRetryCount()).isEqualTo(1);
+
+        message.setStatus(MessageData.Status.PENDING);
+        message.setRetryCount(EmailService.MAX_RETRY_COUNT - 1);
+        AssertHelper.assertException(MessageError.UNABLE_TO_SEND, () -> emailService.sendMessage(message));
+        assertThat(message.getStatus()).isEqualTo(MessageData.Status.FAILED);
+        assertThat(message.getRetryCount()).isEqualTo(EmailService.MAX_RETRY_COUNT);
     }
 
     private MessageTemplateData getTestTemplate(String code, String subject, String body) {

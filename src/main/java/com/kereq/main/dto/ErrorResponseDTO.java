@@ -13,7 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ErrorResponse {
+public class ErrorResponseDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private Date timestamp;
@@ -30,11 +30,11 @@ public class ErrorResponse {
 
     private Object data;
 
-    public ErrorResponse() {
+    public ErrorResponseDTO() {
         timestamp = new Date();
     }
 
-    public ErrorResponse(HttpStatus httpStatus, String message, String error, String path) {
+    public ErrorResponseDTO(HttpStatus httpStatus, String message, String error, String path) {
         this();
 
         this.code = httpStatus.value();
@@ -44,7 +44,7 @@ public class ErrorResponse {
         this.error = error;
     }
 
-    public ErrorResponse(HttpStatus httpStatus, String message, String error, String path, Object data) {
+    public ErrorResponseDTO(HttpStatus httpStatus, String message, String error, String path, Object data) {
         this(httpStatus, message, error, path);
         this.data = data;
     }
