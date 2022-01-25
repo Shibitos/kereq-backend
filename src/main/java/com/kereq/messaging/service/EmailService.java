@@ -78,7 +78,7 @@ public class EmailService {
                 message.setStatus(MessageData.Status.FAILED);
             }
             messageRepository.save(message);
-            log.error("Error while sending message.", e);
+            log.error("Error while sending message.", e); //TODO: remove (already logged) or add message entity field for it
             throw new ApplicationException(MessageError.UNABLE_TO_SEND);
         }
         message.setStatus(MessageData.Status.SENT);

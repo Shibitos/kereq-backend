@@ -1,7 +1,7 @@
-package com.kereq.main.validation;
+package com.kereq.common.validation;
 
-import com.kereq.main.util.DateUtil;
-import com.kereq.main.validation.annotation.ValidDate;
+import com.kereq.common.util.DateUtil;
+import com.kereq.common.validation.annotation.ValidDate;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

@@ -7,7 +7,7 @@ import com.kereq.authorization.error.AuthError;
 import com.kereq.authorization.service.JWTService;
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.UserData;
-import com.kereq.main.util.DateUtil;
+import com.kereq.common.util.DateUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

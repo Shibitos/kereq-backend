@@ -6,9 +6,9 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.kereq.authorization.dto.JWTTokenDTO;
 import com.kereq.authorization.error.AuthError;
+import com.kereq.common.util.DateUtil;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
-import com.kereq.main.util.DateUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

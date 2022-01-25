@@ -1,6 +1,6 @@
 package com.kereq.unit;
 
-import com.kereq.main.util.DateUtil;
+import com.kereq.common.util.DateUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;

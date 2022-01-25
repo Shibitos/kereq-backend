@@ -11,7 +11,7 @@ import com.kereq.main.entity.RoleData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.repository.RoleRepository;
 import com.kereq.main.repository.UserRepository;
-import com.kereq.main.util.DateUtil;
+import com.kereq.common.util.DateUtil;
 import com.kereq.messaging.entity.MessageData;
 import com.kereq.messaging.entity.MessageTemplateData;
 import com.kereq.messaging.repository.MessageRepository;

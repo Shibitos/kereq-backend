@@ -1,5 +1,6 @@
 package com.kereq.main.controller;
 
+import com.kereq.common.dto.BaseDTO;
 import com.kereq.main.dto.CommentDTO;
 import com.kereq.main.dto.CommentStatisticsDTO;
 import com.kereq.main.entity.CommentData;
@@ -61,13 +62,13 @@ public class CommentController {
     }
 
     @GetMapping
-    public Page<CommentDTO> getUserComments(
+    public Page<CommentDTO> getComments(
             @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
                     Pageable page,
             @PathVariable("postId") Long postId,
             @AuthenticationPrincipal UserDataInfo user) {
         return commentService.getPostComments(user.getId(), postId, page)
-                .map(c -> modelMapper.map(c, CommentDTO.class));
+                .map(c -> (CommentDTO) modelMapper.map(c, CommentDTO.class).applyVariant(BaseDTO.hideId));
     }
 
     @PostMapping("/{id}/like")

@@ -2,11 +2,11 @@ package com.kereq.main.service;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
+import com.kereq.common.util.DateUtil;
 import com.kereq.main.entity.FindFriendData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.FindFriendRepository;
-import com.kereq.main.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

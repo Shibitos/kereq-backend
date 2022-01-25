@@ -7,7 +7,7 @@ import com.kereq.main.entity.FindFriendData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.repository.FindFriendRepository;
 import com.kereq.main.service.FindFriendService;
-import com.kereq.main.util.DateUtil;
+import com.kereq.common.util.DateUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

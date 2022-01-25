@@ -1,7 +1,7 @@
 package com.kereq.unit;
 
-import com.kereq.main.validation.DateValidator;
-import com.kereq.main.validation.annotation.ValidDate;
+import com.kereq.common.validation.DateValidator;
+import com.kereq.common.validation.annotation.ValidDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-public class DictionaryItemDTO {
+public class DictionaryItemDTO extends BaseDTO {
 
     @NotNull
     @Size(min = 4, max = 25)

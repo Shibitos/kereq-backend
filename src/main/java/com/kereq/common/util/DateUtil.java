@@ -1,4 +1,4 @@
-package com.kereq.main.util;
+package com.kereq.common.util;
 
 import org.joda.time.DateTime;
 import org.joda.time.Years;

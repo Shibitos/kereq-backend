@@ -1,6 +1,6 @@
-package com.kereq.main.validation.annotation;
+package com.kereq.common.validation.annotation;
 
-import com.kereq.main.validation.DateValidator;
+import com.kereq.common.validation.DateValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
