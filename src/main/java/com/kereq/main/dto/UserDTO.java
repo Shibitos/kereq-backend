@@ -12,8 +12,6 @@ import java.util.Set;
 @Setter
 public class UserDTO extends BaseDTO {
 
-    //public static final MapperVariant editProfileVariant = MapperVariant.builder().hide("email").hide("birthDate").build();
-
     private Long id;
     private String firstName;
     private String lastName;

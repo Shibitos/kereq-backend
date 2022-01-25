@@ -3,6 +3,7 @@ package com.kereq.unit;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.helper.AssertHelper;
+import com.kereq.main.entity.FindFriendData;
 import com.kereq.main.entity.FriendshipData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.repository.FriendshipRepository;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -34,6 +37,37 @@ class UserServiceUnitTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    void testModifyUser() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        UserData original = new UserData();
+        when(userRepository.findById(2L)).thenReturn(Optional.of(original));
+
+        UserData changed = new UserData();
+        changed.setFirstName("f");
+        changed.setLastName("l");
+        changed.setCountry("c");
+
+        changed.setGender("E");
+        changed.setRoles(new HashSet<>());
+        changed.setBirthDate(new Date());
+        changed.setEmail("E");
+        changed.setPassword("E");
+        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
+                () -> userService.modifyUser(1L, changed));
+
+        userService.modifyUser(2L, changed);
+        Assertions.assertThat(original.getFirstName()).isEqualTo(changed.getFirstName());
+        Assertions.assertThat(original.getLastName()).isEqualTo(changed.getLastName());
+        Assertions.assertThat(original.getCountry()).isEqualTo(changed.getCountry());
+        Assertions.assertThat(original.getGender()).isNull();
+        Assertions.assertThat(original.getRoles()).isNull();
+        Assertions.assertThat(original.getBirthDate()).isNull();
+        Assertions.assertThat(original.getEmail()).isNull();
+        Assertions.assertThat(original.getPassword()).isNull();
+        Mockito.verify(userRepository, times(1)).save(Mockito.any(UserData.class));
     }
 
     @Test

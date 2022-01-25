@@ -2,6 +2,7 @@ package com.kereq.main.service;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
+import com.kereq.main.entity.FindFriendData;
 import com.kereq.main.entity.FriendshipData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
@@ -23,6 +24,15 @@ public class UserService {
     private FriendshipRepository friendshipRepository;
 
     private static final String STATUS_FIELD = "status"; //TODO: remove?
+
+    public UserData modifyUser(Long userId, UserData user) {
+        UserData original = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+        original.setFirstName(user.getFirstName());
+        original.setLastName(user.getLastName());
+        original.setCountry(user.getCountry());
+        return userRepository.save(original);
+    }
 
     public void inviteFriend(Long userId, Long receiverId) {
         if (friendshipRepository.existsByUserIdAndFriendId(userId, receiverId)
