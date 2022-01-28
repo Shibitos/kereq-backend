@@ -17,6 +17,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "USER_TOKENS")
+@AttributeOverride(name = "version", column = @Column(name = "TKN_VERSION"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

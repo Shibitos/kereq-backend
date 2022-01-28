@@ -15,6 +15,7 @@ import java.util.Objects;
 @AttributeOverride(name = "auditCD", column = @Column(name = "FFA_AUDIT_CD"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "FFA_AUDIT_MD"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "FFA_AUDIT_RD"))
+@AttributeOverride(name = "version", column = @Column(name = "FFA_VERSION"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

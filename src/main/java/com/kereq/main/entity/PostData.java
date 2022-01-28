@@ -17,6 +17,7 @@ import java.util.Set;
 @AttributeOverride(name = "auditCD", column = @Column(name = "POST_AUDIT_CD"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "POST_AUDIT_MD"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "POST_AUDIT_RD"))
+@AttributeOverride(name = "version", column = @Column(name = "POST_VERSION"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

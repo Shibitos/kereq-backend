@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @AttributeOverride(name = "auditCD", column = @Column(name = "USER_AUDIT_CD"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "USER_AUDIT_MD"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "USER_AUDIT_RD"))
+@AttributeOverride(name = "version", column = @Column(name = "USER_VERSION"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
