@@ -15,7 +15,9 @@ import java.util.Set;
 @Entity
 @Table(name = "POSTS")
 @AttributeOverride(name = "auditCD", column = @Column(name = "POST_AUDIT_CD"))
+@AttributeOverride(name = "auditCU", column = @Column(name = "POST_AUDIT_CU"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "POST_AUDIT_MD"))
+@AttributeOverride(name = "auditMU", column = @Column(name = "POST_AUDIT_MU"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "POST_AUDIT_RD"))
 @AttributeOverride(name = "version", column = @Column(name = "POST_VERSION"))
 @AllArgsConstructor

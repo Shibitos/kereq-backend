@@ -26,7 +26,9 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "USERS")
 @AttributeOverride(name = "auditCD", column = @Column(name = "USER_AUDIT_CD"))
+@AttributeOverride(name = "auditCU", column = @Column(name = "USER_AUDIT_CU"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "USER_AUDIT_MD"))
+@AttributeOverride(name = "auditMU", column = @Column(name = "USER_AUDIT_MU"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "USER_AUDIT_RD"))
 @AttributeOverride(name = "version", column = @Column(name = "USER_VERSION"))
 @AllArgsConstructor

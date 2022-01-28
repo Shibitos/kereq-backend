@@ -15,7 +15,9 @@ import java.util.Objects;
 @Entity
 @Table(name = "FRIENDSHIPS")
 @AttributeOverride(name = "auditCD", column = @Column(name = "FRS_AUDIT_CD"))
+@AttributeOverride(name = "auditCU", column = @Column(name = "FRS_AUDIT_CU"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "FRS_AUDIT_MD"))
+@AttributeOverride(name = "auditMU", column = @Column(name = "FRS_AUDIT_MU"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "FRS_AUDIT_RD"))
 @AttributeOverride(name = "version", column = @Column(name = "FRS_VERSION"))
 @AllArgsConstructor
