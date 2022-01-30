@@ -2,12 +2,12 @@ package com.kereq.unit;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
+import com.kereq.common.util.DateUtil;
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.FindFriendData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.repository.FindFriendRepository;
 import com.kereq.main.service.FindFriendService;
-import com.kereq.common.util.DateUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

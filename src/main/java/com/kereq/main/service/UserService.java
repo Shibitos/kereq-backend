@@ -2,7 +2,6 @@ package com.kereq.main.service;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
-import com.kereq.main.entity.FindFriendData;
 import com.kereq.main.entity.FriendshipData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
@@ -31,6 +30,13 @@ public class UserService {
         original.setFirstName(user.getFirstName());
         original.setLastName(user.getLastName());
         original.setCountry(user.getCountry());
+        return userRepository.save(original);
+    }
+
+    public UserData modifyUserBiography(Long userId, String biography) {
+        UserData original = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+        original.setBiography(biography);
         return userRepository.save(original);
     }
 

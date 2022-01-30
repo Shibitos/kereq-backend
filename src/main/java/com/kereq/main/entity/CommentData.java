@@ -38,7 +38,7 @@ public class CommentData extends AuditableEntity {
     private UserData user;
 
     @Column(name = "COMM_POST_ID")
-    //@NotNull
+    @NotNull
     private Long postId;
 
     @OneToOne(targetEntity = PostData.class, fetch = FetchType.LAZY)

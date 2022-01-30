@@ -56,9 +56,12 @@ public class UserData extends AuditableEntity implements UserDataInfo {
     private String lastName;
 
     @Column(name = "USER_EMAIL", length = 50, unique = true)
-    @NotNull
     @Size(min = 8, max = 50)
     private String email;
+
+    @Column(name = "USER_BIOGRAPHY", length = 200)
+    @Size(max = 200)
+    private String biography; //TODO: lazy? another entity like profile?
 
     @JsonIgnore
     @Column(name = "USER_PASSWORD", length = 72)

@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 import java.io.Serializable;
-import java.util.Objects;
 
 @MappedSuperclass
 @Getter
@@ -16,7 +15,7 @@ import java.util.Objects;
 public abstract class BaseEntity implements Serializable {
 
     @Version
-    @Column(name = "version")
+    @Column(name = "VERSION")
     private Long version;
 
     public abstract Long getId();
@@ -33,7 +32,7 @@ public abstract class BaseEntity implements Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         BaseEntity that = (BaseEntity) o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getVersion(), that.getVersion());
+        return getId() != null && getId().equals(that.getId());
     }
 
     @Override

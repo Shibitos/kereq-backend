@@ -3,7 +3,6 @@ package com.kereq.unit;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.helper.AssertHelper;
-import com.kereq.main.entity.FindFriendData;
 import com.kereq.main.entity.FriendshipData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.repository.FriendshipRepository;
