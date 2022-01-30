@@ -7,8 +7,10 @@ import com.kereq.main.entity.UserDataInfo;
 import com.kereq.main.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -46,5 +48,11 @@ public class UserProfileController {
                                     @AuthenticationPrincipal UserDataInfo user) {
         UserData modifiedUser = userService.modifyUserBiography(user.getId(), userBiographyDTO.getBiography());
         return modelMapper.map(modifiedUser, UserDTO.class);
+    }
+
+    @PostMapping("/image")
+    public ResponseEntity uploadImage(@RequestParam("imageFile") MultipartFile file) {
+
+        return ResponseEntity.ok().build();
     }
 }

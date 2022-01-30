@@ -26,6 +26,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
@@ -55,8 +56,6 @@ class AuthServiceUnitTest {
 
     @Mock
     private EmailService emailService;
-
-    private final int TOKEN_LENGTH = 36;
 
     @BeforeEach
     public void setup() {
@@ -114,7 +113,7 @@ class AuthServiceUnitTest {
         assertThat(token.getType()).isEqualTo(TokenData.TokenType.VERIFICATION);
         assertThat(token.getLastSendDate()).isNull();
         assertThat(token.getExpireDate()).isAfter(new Date());
-        assertThat(token.getValue()).hasSize(TOKEN_LENGTH);
+        assertThat(token.getValue()).isNotNull();
     }
 
     @Test
@@ -189,7 +188,7 @@ class AuthServiceUnitTest {
         authService.resendVerificationToken("resend1");
         authService.resendVerificationToken("resend2");
 
-        String firstAttemptValue = resendToken2.getValue();
+        UUID firstAttemptValue = resendToken2.getValue();
         resendToken2.setLastSendDate(null);
         authService.resendVerificationToken("resend2");
         assertThat(firstAttemptValue).isNotEqualTo(resendToken2.getValue());
@@ -197,30 +196,34 @@ class AuthServiceUnitTest {
 
     @Test
     void testConfirmUser() {
-        when(tokenRepository.findByValue("nonexisting")).thenReturn(null);
+        UUID nonExistingUUID = UUID.randomUUID();
+        when(tokenRepository.findByValue(nonExistingUUID)).thenReturn(null);
 
+        UUID notVerificationUUID = UUID.randomUUID();
         TokenData notVerificationType = buildToken(null, null);
         notVerificationType.setType("nonexistingtype");
-        when(tokenRepository.findByValue("notVerification")).thenReturn(notVerificationType);
+        when(tokenRepository.findByValue(notVerificationUUID)).thenReturn(notVerificationType);
 
+        UUID expiredUUID = UUID.randomUUID();
         TokenData expired = buildToken(null, null);
-        when(tokenRepository.findByValue("expired")).thenReturn(expired);
+        when(tokenRepository.findByValue(expiredUUID)).thenReturn(expired);
 
+        UUID notExpiredUUID = UUID.randomUUID();
         UserData user = buildUserWithId(1L);
         user.setActivated(false);
         TokenData notExpired = buildToken(user, null);
         notExpired.setExpireDate(DateUtil.addMinutes(DateUtil.now(), 1000));
-        when(tokenRepository.findByValue("notExpired")).thenReturn(notExpired);
+        when(tokenRepository.findByValue(notExpiredUUID)).thenReturn(notExpired);
 
         AssertHelper.assertException(AuthError.TOKEN_INVALID,
-                () -> authService.confirmUser("nonexisting"));
+                () -> authService.confirmUser(nonExistingUUID));
         AssertHelper.assertException(AuthError.TOKEN_INVALID,
-                () -> authService.confirmUser("notVerification"));
+                () -> authService.confirmUser(notVerificationUUID));
 
         AssertHelper.assertException(AuthError.TOKEN_EXPIRED,
-                () -> authService.confirmUser("expired"));
+                () -> authService.confirmUser(expiredUUID));
 
-        authService.confirmUser("notExpired");
+        authService.confirmUser(notExpiredUUID);
         assertThat(user.isActivated()).isTrue();
     }
 

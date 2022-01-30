@@ -4,6 +4,7 @@ import com.kereq.authorization.entity.TokenData;
 import com.kereq.common.repository.BaseRepository;
 
 import java.util.Date;
+import java.util.UUID;
 
 public interface TokenRepository extends BaseRepository<TokenData> {
 
@@ -11,7 +12,7 @@ public interface TokenRepository extends BaseRepository<TokenData> {
 
     TokenData findByUserIdAndType(Long userId, String tokenType);
 
-    TokenData findByValue(String value);
+    TokenData findByValue(UUID value);
 
     void deleteByExpireDateLessThan(Date date);
 }

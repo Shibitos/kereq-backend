@@ -14,6 +14,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "USER_TOKENS")
@@ -32,9 +33,9 @@ public class TokenData extends BaseEntity {
     @Column(name = "TKN_ID")
     private Long id;
 
-    @Column(name = "TKN_VALUE", length = 36)
+    @Column(name = "TKN_VALUE", unique = true)
     @NotNull
-    private String value;
+    private UUID value;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "TKN_EXPIRE_DATE")
