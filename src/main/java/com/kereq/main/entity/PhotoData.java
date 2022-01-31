@@ -32,6 +32,14 @@ public class PhotoData extends AuditableEntity {
     @Column(name = "PHT_ID")
     private Long id;
 
+    @Column(name = "PHT_USER_ID")
+    //@NotNull
+    private Long userId;
+
+    @OneToOne(targetEntity = UserData.class, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "PHT_USER_ID", insertable = false, updatable = false)
+    private UserData user;
+
     @Column(name = "PHT_UUID", unique = true)
     @NotNull
     private UUID uuid;
