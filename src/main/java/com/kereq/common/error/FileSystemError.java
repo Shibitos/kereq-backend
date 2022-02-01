@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public enum FileSystemError implements ApplicationError {
 
-    NO_ACCESS_CREATE_DIR(500, "Error occurred.");
+    RESOURCE_NOT_FOUND(404, "Resource not found.");
 
     private final int httpCode;
     private final String message;

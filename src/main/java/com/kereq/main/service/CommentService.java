@@ -18,6 +18,9 @@ public class CommentService {
     private CommentRepository commentRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private PostStatisticsService postStatisticsService;
 
     @Autowired
@@ -58,7 +61,10 @@ public class CommentService {
 
     public Page<CommentData> getPostComments(Long userId, Long postId, Pageable page) {
         Page<CommentData> comments = commentRepository.findByPostId(postId, page);
-        comments.forEach(c -> c.setStatistics(commentStatisticsService.getStatistics(userId, c.getId())));
+        comments.forEach(comment -> {
+            userService.loadProfilePhoto(comment.getUser());
+            comment.setStatistics(commentStatisticsService.getStatistics(userId, comment.getId()));
+        });
         return comments;
     }
 }

@@ -40,4 +40,6 @@ public class UserDTO extends BaseDTO {
     private Date auditCD;
 
     private Set<RoleDTO> roles;
+
+    private String profilePhotoId;
 }

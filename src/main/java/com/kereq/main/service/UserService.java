@@ -3,9 +3,11 @@ package com.kereq.main.service;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.main.entity.FriendshipData;
+import com.kereq.main.entity.PhotoData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.FriendshipRepository;
+import com.kereq.main.repository.PhotoRepository;
 import com.kereq.main.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PhotoRepository photoRepository;
 
     @Autowired
     private FriendshipRepository friendshipRepository;
@@ -118,7 +123,16 @@ public class UserService {
     }
 
     public UserData getUser(Long userId) {
-        return userRepository.findById(userId)
+        UserData user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
+        loadProfilePhoto(user);
+        return user;
+    }
+
+    public void loadProfilePhoto(UserData user) {
+        PhotoData photo = photoRepository.findByUserIdAndType(user.getId(), PhotoData.PhotoType.PROFILE); //TODO: user add relation? photo primary key uuid?
+        if (photo != null) {
+            user.setProfilePhotoId(photo.getUuid().toString().replace("-", ""));
+        }
     }
 }

@@ -10,6 +10,7 @@ import com.kereq.main.service.UserService;
 import com.kereq.main.util.ImageCropOptions;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class UserProfileController {
 
     @GetMapping
     public UserDTO getLoggedUser(@AuthenticationPrincipal UserDataInfo user) {
-        return modelMapper.map(user, UserDTO.class);
+        return getUser(user.getId());
     }
 
     @GetMapping("/{userId}")
@@ -56,7 +57,7 @@ public class UserProfileController {
     }
 
     @PostMapping("/image")
-    public ResponseEntity uploadImage(@ModelAttribute ProfileImageDTO profileImageDTO,
+    public ResponseEntity<Object> uploadProfileImage(@ModelAttribute ProfileImageDTO profileImageDTO, //TODO: validation?
                                       @AuthenticationPrincipal UserDataInfo user) {
         photoService.addProfilePhoto(user.getId(), profileImageDTO.getFile(),
                 new ImageCropOptions(profileImageDTO.getSize(), profileImageDTO.getPosX(), profileImageDTO.getPosY()));

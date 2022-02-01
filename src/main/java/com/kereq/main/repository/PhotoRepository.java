@@ -5,4 +5,5 @@ import com.kereq.main.entity.PhotoData;
 
 public interface PhotoRepository extends BaseRepository<PhotoData> {
 
+    PhotoData findByUserIdAndType(Long userId, String type);
 }

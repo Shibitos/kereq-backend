@@ -93,6 +93,9 @@ public class UserData extends AuditableEntity implements UserDataInfo {
             inverseJoinColumns = {@JoinColumn(name = "UR_ROLE_ID", referencedColumnName = "ROLE_ID")})
     private Set<RoleData> roles;
 
+    @Transient
+    private String profilePhotoId;
+
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JoinTable(
 //            name = "FRIENDSHIPS",
