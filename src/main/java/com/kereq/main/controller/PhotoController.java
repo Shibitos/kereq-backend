@@ -17,16 +17,16 @@ public class PhotoController {
 
     @GetMapping(value = "/og/{photoId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getImage(@PathVariable("photoId") String photoId) {
-        return photoService.getPhoto(photoId, PhotoService.PhotoSize.ORIGINAL);
+        return photoService.getPhotoImage(photoId, PhotoService.PhotoSize.ORIGINAL);
     }
 
     @GetMapping(value = "/tb/{photoId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getImageThumbnail(@PathVariable("photoId") String photoId) {
-        return photoService.getPhoto(photoId, PhotoService.PhotoSize.THUMBNAIL);
+        return photoService.getPhotoImage(photoId, PhotoService.PhotoSize.THUMBNAIL);
     }
 
     @GetMapping(value = "/tbm/{photoId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getImageThumbnailMini(@PathVariable("photoId") String photoId) {
-        return photoService.getPhoto(photoId, PhotoService.PhotoSize.THUMBNAIL_MINI);
+        return photoService.getPhotoImage(photoId, PhotoService.PhotoSize.THUMBNAIL_MINI);
     }
 }

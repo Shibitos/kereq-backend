@@ -10,6 +10,8 @@ import com.kereq.main.util.ImageCropOptions;
 import com.kereq.main.util.ImageResizeOptions;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,7 +79,11 @@ public class PhotoService {
         return photoRepository.save(photo);
     }
 
-    public byte[] getPhoto(String photoId, String photoSize) { //TODO: privileges? security? now link to image must be unauthorized, maybe put logged userId into photoId when returning from api and check it here?
+    public Page<PhotoData> getUserPhotos(Long userId, Pageable page) {
+        return photoRepository.findByUserId(userId, page);
+    }
+
+    public byte[] getPhotoImage(String photoId, String photoSize) { //TODO: privileges? security? now link to image must be unauthorized, maybe put logged userId into photoId when returning from api and check it here?
         String directory = getDirectory(photoId);
         StringBuilder fileName = new StringBuilder(photoId);
         if (PhotoSize.THUMBNAIL.equals(photoSize)) {

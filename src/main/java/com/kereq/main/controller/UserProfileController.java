@@ -1,5 +1,6 @@
 package com.kereq.main.controller;
 
+import com.kereq.main.dto.PhotoDTO;
 import com.kereq.main.dto.ProfileImageDTO;
 import com.kereq.main.dto.UserBiographyDTO;
 import com.kereq.main.dto.UserDTO;
@@ -10,7 +11,10 @@ import com.kereq.main.service.UserService;
 import com.kereq.main.util.ImageCropOptions;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +43,18 @@ public class UserProfileController {
     public UserDTO getUser(@PathVariable("userId") Long userId) {
         UserData requestedUser = userService.getUser(userId);
         return modelMapper.map(requestedUser, UserDTO.class);
+    }
+
+    @GetMapping("/{userId}/photos")
+    public Page<PhotoDTO> browsePhotos(
+            @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
+                    Pageable page,
+            @AuthenticationPrincipal UserDataInfo user) {
+        return photoService.getUserPhotos(user.getId(), page).map(p -> {
+            PhotoDTO photoDTO = modelMapper.map(p, PhotoDTO.class);
+            photoDTO.fillPhotoId(p.getUuid());
+            return photoDTO;
+        });
     }
 
     @PatchMapping
