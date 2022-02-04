@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface FindFriendRepository extends BaseRepository<FindFriendData> {
 
-    boolean existsByUserId(Long userId);
+    boolean existsByUserId(long userId);
 
-    FindFriendData findByUserId(Long userId);
+    FindFriendData findByUserId(long userId);
 
     @Query(value = "SELECT ff FROM FindFriendData ff JOIN UserData u ON u.id = :userId" +
             " WHERE ff.user.id <> :userId" +
@@ -18,5 +18,5 @@ public interface FindFriendRepository extends BaseRepository<FindFriendData> {
             " AND (ff.minAge IS NULL OR ff.minAge <= :age)" +
             " AND (ff.maxAge IS NULL OR ff.maxAge >= :age)" +
             " AND (ff.gender IS NULL OR ff.gender = u.gender)")
-    Page<FindFriendData> findAdsForUserId(Long userId, int age, Pageable page);
+    Page<FindFriendData> findAdsForUserId(long userId, int age, Pageable page);
 }

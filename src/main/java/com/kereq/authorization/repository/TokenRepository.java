@@ -8,9 +8,9 @@ import java.util.UUID;
 
 public interface TokenRepository extends BaseRepository<TokenData> {
 
-    boolean existsByUserIdAndType(Long userId, String tokenType);
+    boolean existsByUserIdAndType(long userId, String tokenType);
 
-    TokenData findByUserIdAndType(Long userId, String tokenType);
+    TokenData findByUserIdAndType(long userId, String tokenType);
 
     TokenData findByValue(UUID value);
 

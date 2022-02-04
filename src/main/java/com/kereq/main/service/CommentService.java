@@ -37,7 +37,7 @@ public class CommentService {
         return comment;
     }
 
-    public void modifyComment(Long commentId, Long userId, CommentData comment) { //TODO: sanitize html
+    public void modifyComment(long commentId, long userId, CommentData comment) { //TODO: sanitize html
         CommentData original = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
         if (!original.getUser().getId().equals(userId)) {
@@ -48,7 +48,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void removeComment(Long commentId, Long userId) {
+    public void removeComment(long commentId, long userId) {
         CommentData comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
         if (!comment.getUser().getId().equals(userId)) {
@@ -59,7 +59,7 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    public Page<CommentData> getPostComments(Long userId, Long postId, Pageable page) {
+    public Page<CommentData> getPostComments(long userId, long postId, Pageable page) {
         Page<CommentData> comments = commentRepository.findByPostId(postId, page);
         comments.forEach(comment -> {
             userService.loadProfilePhoto(comment.getUser());

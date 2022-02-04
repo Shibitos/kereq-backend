@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -33,7 +35,7 @@ public class PhotoData extends AuditableEntity {
     private Long id;
 
     @Column(name = "PHT_USER_ID")
-    //@NotNull
+    @NotNull
     private Long userId;
 
     @OneToOne(targetEntity = UserData.class, fetch = FetchType.LAZY)
@@ -53,5 +55,33 @@ public class PhotoData extends AuditableEntity {
         String PROFILE = "R";
 
         String ALL = "P|R";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        PhotoData photoData = (PhotoData) o;
+        return id != null && Objects.equals(id, photoData.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + getId() + ", " +
+                "auditCD = " + getAuditCD() + ", " +
+                "auditCU = " + getAuditCU() + ", " +
+                "auditMD = " + getAuditMD() + ", " +
+                "auditMU = " + getAuditMU() + ", " +
+                "auditRD = " + getAuditRD() + ", " +
+                "version = " + getVersion() + ", " +
+                "userId = " + getUserId() + ", " +
+                "uuid = " + getUuid() + ", " +
+                "type = " + getType() + ")";
     }
 }

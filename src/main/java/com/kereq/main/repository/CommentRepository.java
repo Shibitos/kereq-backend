@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface CommentRepository extends BaseRepository<CommentData> {
 
     @Query(countQuery = "SELECT ps.commentsCount FROM PostStatisticsData ps WHERE ps.postId = :postId")
-    Page<CommentData> findByPostId(Long postId, Pageable page);
+    Page<CommentData> findByPostId(long postId, Pageable page);
 }

@@ -44,7 +44,7 @@ public class MessageListener {
     )
     )
     @Transactional
-    public void onMessage(@Payload Long messageId) {
+    public void onMessage(@Payload long messageId) {
         MessageData message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
         entityManager.lock(message, LockModeType.PESSIMISTIC_READ); //TODO: move to annotation over findMessageToSend in repo?

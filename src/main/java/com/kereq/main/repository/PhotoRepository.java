@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface PhotoRepository extends BaseRepository<PhotoData> {
 
-    PhotoData findByUserIdAndType(Long userId, String type);
+    PhotoData findByUserIdAndType(long userId, String type);
 
-    Page<PhotoData> findByUserId(Long userId, Pageable page);
+    Page<PhotoData> findByUserId(long userId, Pageable page);
 }

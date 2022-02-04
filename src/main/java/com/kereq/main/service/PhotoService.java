@@ -53,7 +53,7 @@ public class PhotoService {
     @Autowired
     private PhotoRepository photoRepository;
 
-    public PhotoData addPhoto(Long userId, MultipartFile imageFile) {
+    public PhotoData addPhoto(long userId, MultipartFile imageFile) {
         UUID photoUUID = saveImageAndThumbnails(imageFile, null, PHOTO_MAX_SIZE);
 
         PhotoData photo = new PhotoData();
@@ -64,7 +64,7 @@ public class PhotoService {
     }
 
     @Transactional
-    public PhotoData addProfilePhoto(Long userId, MultipartFile imageFile, ImageCropOptions imageCropOptions) {
+    public PhotoData addProfilePhoto(long userId, MultipartFile imageFile, ImageCropOptions imageCropOptions) {
         UUID photoUUID = saveImageAndThumbnails(imageFile, imageCropOptions, PHOTO_PROFILE_MAX_SIZE);
 
         PhotoData existing = photoRepository.findByUserIdAndType(userId, PhotoData.PhotoType.PROFILE);
@@ -79,7 +79,7 @@ public class PhotoService {
         return photoRepository.save(photo);
     }
 
-    public Page<PhotoData> getUserPhotos(Long userId, Pageable page) {
+    public Page<PhotoData> getUserPhotos(long userId, Pageable page) {
         return photoRepository.findByUserId(userId, page);
     }
 

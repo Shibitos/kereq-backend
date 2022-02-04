@@ -5,7 +5,7 @@ import com.kereq.main.entity.PostStatisticsData;
 
 public interface PostStatisticsRepository extends BaseRepository<PostStatisticsData> {
 
-    boolean existsByPostId(Long postId);
+    boolean existsByPostId(long postId);
 
-    PostStatisticsData findByPostId(Long postId);
+    PostStatisticsData findByPostId(long postId);
 }

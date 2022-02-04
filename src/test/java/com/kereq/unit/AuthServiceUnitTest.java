@@ -227,7 +227,7 @@ class AuthServiceUnitTest {
         assertThat(user.isActivated()).isTrue();
     }
 
-    private UserData buildUserWithId(Long id) {
+    private UserData buildUserWithId(long id) {
         UserData user = new UserData();
         user.setId(id);
         return user;

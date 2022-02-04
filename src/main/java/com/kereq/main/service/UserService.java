@@ -29,7 +29,7 @@ public class UserService {
 
     private static final String STATUS_FIELD = "status"; //TODO: remove?
 
-    public UserData modifyUser(Long userId, UserData user) {
+    public UserData modifyUser(long userId, UserData user) {
         UserData original = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
         original.setFirstName(user.getFirstName());
@@ -38,14 +38,14 @@ public class UserService {
         return userRepository.save(original);
     }
 
-    public UserData modifyUserBiography(Long userId, String biography) {
+    public UserData modifyUserBiography(long userId, String biography) {
         UserData original = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
         original.setBiography(biography);
         return userRepository.save(original);
     }
 
-    public void inviteFriend(Long userId, Long receiverId) {
+    public void inviteFriend(long userId, long receiverId) {
         if (friendshipRepository.existsByUserIdAndFriendId(userId, receiverId)
                 || friendshipRepository.existsByUserIdAndFriendId(receiverId, userId)) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
@@ -57,7 +57,7 @@ public class UserService {
         friendshipRepository.save(friendship);
     }
 
-    public void removeInvitation(Long userId, Long receiverId) {
+    public void removeInvitation(long userId, long receiverId) {
         FriendshipData invitation = friendshipRepository.findByUserIdAndFriendId(userId, receiverId);
         if (invitation == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -69,7 +69,7 @@ public class UserService {
     }
 
     @Transactional
-    public void acceptInvitation(Long userId, Long senderId) {
+    public void acceptInvitation(long userId, long senderId) {
         FriendshipData invitation = friendshipRepository.findByUserIdAndFriendId(senderId, userId);
         if (invitation == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -88,7 +88,7 @@ public class UserService {
     }
 
     @Transactional
-    public void rejectInvitation(Long userId, Long senderId) {
+    public void rejectInvitation(long userId, long senderId) {
         FriendshipData invitation = friendshipRepository.findByUserIdAndFriendId(senderId, userId);
         if (invitation == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -101,7 +101,7 @@ public class UserService {
     }
 
     @Transactional
-    public void removeFriend(Long userId, Long friendId) {
+    public void removeFriend(long userId, long friendId) {
         FriendshipData userEntry = friendshipRepository.findByUserIdAndFriendId(userId, friendId);
         if (userEntry == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -114,15 +114,15 @@ public class UserService {
         friendshipRepository.delete(friendEntry);
     }
 
-    public Page<FriendshipData> getFriends(Long userId, Pageable page) {
+    public Page<FriendshipData> getFriends(long userId, Pageable page) {
         return friendshipRepository.findUserFriends(userId, page);
     }
 
-    public Page<FriendshipData> getInvitationsUsers(Long userId, Pageable page) {
+    public Page<FriendshipData> getInvitationsUsers(long userId, Pageable page) {
         return friendshipRepository.findUserInvitations(userId, page);
     }
 
-    public UserData getUser(Long userId) {
+    public UserData getUser(long userId) {
         UserData user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
         loadProfilePhoto(user);

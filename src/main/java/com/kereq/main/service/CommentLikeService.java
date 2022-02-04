@@ -19,12 +19,12 @@ public class CommentLikeService { //TODO: abstract posts&comments?
     @Autowired
     private CommentStatisticsService commentStatisticsService;
 
-    public CommentLikeData getUserLike(Long userId, Long commentId) {
+    public CommentLikeData getUserLike(long userId, long commentId) {
         return commentLikeRepository.findByUserIdAndCommentId(userId, commentId);
     }
 
     @Transactional
-    public CommentStatisticsData addLike(Long userId, Long commentId) {
+    public CommentStatisticsData addLike(long userId, long commentId) {
         CommentLikeData commentLike = commentLikeRepository.findByUserIdAndCommentId(userId, commentId);
         if (commentLike != null) {
             if (LikeType.LIKE == commentLike.getType()) {
@@ -41,7 +41,7 @@ public class CommentLikeService { //TODO: abstract posts&comments?
     }
 
     @Transactional
-    public CommentStatisticsData removeLike(Long userId, Long commentId) {
+    public CommentStatisticsData removeLike(long userId, long commentId) {
         CommentLikeData commentLike = commentLikeRepository.findByUserIdAndCommentId(userId, commentId);
         if (commentLike == null || LikeType.LIKE != commentLike.getType()) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -51,7 +51,7 @@ public class CommentLikeService { //TODO: abstract posts&comments?
     }
 
     @Transactional
-    public CommentStatisticsData addDislike(Long userId, Long commentId) {
+    public CommentStatisticsData addDislike(long userId, long commentId) {
         CommentLikeData commentLike = commentLikeRepository.findByUserIdAndCommentId(userId, commentId);
         if (commentLike != null) {
             if (LikeType.DISLIKE == commentLike.getType()) {
@@ -69,7 +69,7 @@ public class CommentLikeService { //TODO: abstract posts&comments?
 
 
     @Transactional
-    public CommentStatisticsData removeDislike(Long userId, Long commentId) {
+    public CommentStatisticsData removeDislike(long userId, long commentId) {
         CommentLikeData commentLike = commentLikeRepository.findByUserIdAndCommentId(userId, commentId);
         if (commentLike == null || LikeType.DISLIKE != commentLike.getType()) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -78,7 +78,7 @@ public class CommentLikeService { //TODO: abstract posts&comments?
         return commentStatisticsService.removeDislike(commentId);
     }
 
-    private CommentLikeData createCommentLikeData(Long userId, Long commentId) {
+    private CommentLikeData createCommentLikeData(long userId, long commentId) {
         CommentLikeData commentLike = new CommentLikeData();
         commentLike.setCommentId(commentId);
         commentLike.setUserId(userId);

@@ -23,12 +23,12 @@ public class PostLikeService {
     @Autowired
     private PostStatisticsService postStatisticsService;
 
-    public PostLikeData getUserLike(Long userId, Long postId) {
+    public PostLikeData getUserLike(long userId, long postId) {
         return postLikeRepository.findByUserIdAndPostId(userId, postId);
     }
 
     @Transactional
-    public PostStatisticsData addLike(Long userId, Long postId) {
+    public PostStatisticsData addLike(long userId, long postId) {
         PostLikeData postLike = postLikeRepository.findByUserIdAndPostId(userId, postId);
         if (postLike != null) {
             if (LikeType.LIKE == postLike.getType()) {
@@ -45,7 +45,7 @@ public class PostLikeService {
     }
 
     @Transactional
-    public PostStatisticsData removeLike(Long userId, Long postId) {
+    public PostStatisticsData removeLike(long userId, long postId) {
         PostLikeData postLike = postLikeRepository.findByUserIdAndPostId(userId, postId);
         if (postLike == null || LikeType.LIKE != postLike.getType()) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -55,7 +55,7 @@ public class PostLikeService {
     }
 
     @Transactional
-    public PostStatisticsData addDislike(Long userId, Long postId) {
+    public PostStatisticsData addDislike(long userId, long postId) {
         PostLikeData postLike = postLikeRepository.findByUserIdAndPostId(userId, postId);
         if (postLike != null) {
             if (LikeType.DISLIKE == postLike.getType()) {
@@ -73,7 +73,7 @@ public class PostLikeService {
 
 
     @Transactional
-    public PostStatisticsData removeDislike(Long userId, Long postId) {
+    public PostStatisticsData removeDislike(long userId, long postId) {
         PostLikeData postLike = postLikeRepository.findByUserIdAndPostId(userId, postId);
         if (postLike == null || LikeType.DISLIKE != postLike.getType()) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -82,7 +82,7 @@ public class PostLikeService {
         return postStatisticsService.removeDislike(postId);
     }
 
-    private PostLikeData createPostLikeData(Long userId, Long postId) {
+    private PostLikeData createPostLikeData(long userId, long postId) {
         PostLikeData postLike = new PostLikeData();
         postLike.setPostId(postId);
         postLike.setUserId(userId);
