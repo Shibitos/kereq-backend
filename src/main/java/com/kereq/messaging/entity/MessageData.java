@@ -60,6 +60,9 @@ public class MessageData extends AuditableEntity {
     @Column(name = "MSG_RETRY_COUNT")
     private Integer retryCount;
 
+    @Column(name = "MSG_ERROR_MESSAGE", length = 100)
+    private String errorMessage;
+
     public interface Status {
         String PENDING = "P";
         String SENT = "S";

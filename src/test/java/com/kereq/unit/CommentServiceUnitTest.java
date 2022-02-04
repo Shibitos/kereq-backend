@@ -10,6 +10,7 @@ import com.kereq.main.repository.CommentRepository;
 import com.kereq.main.service.CommentService;
 import com.kereq.main.service.CommentStatisticsService;
 import com.kereq.main.service.PostStatisticsService;
+import com.kereq.main.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,6 +38,9 @@ class CommentServiceUnitTest {
 
     @Mock
     private CommentStatisticsService commentStatisticsService;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private CommentService commentService;
@@ -130,5 +134,6 @@ class CommentServiceUnitTest {
 
         commentService.getPostComments(1L, 1L, null);
         assertThat(list).allMatch(c -> c.getStatistics() != null);
+        Mockito.verify(userService, times(list.size())).loadProfilePhoto(Mockito.any(UserData.class));
     }
 }

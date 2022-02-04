@@ -4,8 +4,10 @@ import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.FriendshipData;
+import com.kereq.main.entity.PhotoData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.repository.FriendshipRepository;
+import com.kereq.main.repository.PhotoRepository;
 import com.kereq.main.repository.UserRepository;
 import com.kereq.main.service.UserService;
 import org.assertj.core.api.Assertions;
@@ -16,8 +18,10 @@ import org.mockito.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +32,9 @@ class UserServiceUnitTest {
 
     @Mock
     private FriendshipRepository friendshipRepository;
+
+    @Mock
+    private PhotoRepository photoRepository;
 
     @InjectMocks
     private UserService userService;
@@ -199,9 +206,31 @@ class UserServiceUnitTest {
     void testGetUser() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
         when(userRepository.findById(2L)).thenReturn(Optional.of(new UserData()));
+        when(photoRepository.findByUserIdAndType(2L, PhotoData.PhotoType.PROFILE)).thenReturn(null);
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND, () -> userService.getUser(1L));
 
         userService.getUser(2L);
+        Mockito.verify(photoRepository, times(1))
+                .findByUserIdAndType(Mockito.any(), eq(PhotoData.PhotoType.PROFILE));
+    }
+
+    @Test
+    void testLoadProfilePhoto() {
+        UserData user = new UserData();
+
+        PhotoData photo = new PhotoData();
+        photo.setUuid(UUID.randomUUID());
+
+        when(photoRepository.findByUserIdAndType(1L, PhotoData.PhotoType.PROFILE)).thenReturn(null);
+        when(photoRepository.findByUserIdAndType(2L, PhotoData.PhotoType.PROFILE)).thenReturn(photo);
+
+        user.setId(1L);
+        userService.loadProfilePhoto(user);
+        assertThat(user.getProfilePhotoId()).isNull();
+
+        user.setId(2L);
+        userService.loadProfilePhoto(user);
+        assertThat(user.getProfilePhotoId()).isNotNull();
     }
 }

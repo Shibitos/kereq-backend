@@ -11,6 +11,7 @@ import com.kereq.main.repository.PostRepository;
 import com.kereq.main.service.CommentService;
 import com.kereq.main.service.PostService;
 import com.kereq.main.service.PostStatisticsService;
+import com.kereq.main.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,6 +39,9 @@ class PostServiceUnitTest {
 
     @Mock
     private PostStatisticsService postStatisticsService;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private PostService postService;
@@ -133,6 +137,7 @@ class PostServiceUnitTest {
 
         postService.getBrowsePosts(1L, null);
         assertThat(list).allMatch(p -> p.getStatistics() != null && p.getComments().size() == 1);
+        Mockito.verify(userService, times(list.size())).loadProfilePhoto(Mockito.any(UserData.class));
     }
 
     @Test
@@ -149,5 +154,6 @@ class PostServiceUnitTest {
 
         postService.getUserPosts(1L, null);
         assertThat(list).allMatch(p -> p.getStatistics() != null && p.getComments().size() == 1);
+        Mockito.verify(userService, times(list.size())).loadProfilePhoto(Mockito.any(UserData.class));
     }
 }
