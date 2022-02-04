@@ -1,10 +1,13 @@
 package com.kereq.common.config;
 
-import com.kereq.common.constant.QueueName;
+import com.kereq.common.constant.Queue;
 import com.kereq.main.exception.ApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.Exchange;
+import org.springframework.amqp.core.ExchangeBuilder;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -106,9 +109,9 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer, Applicat
 
     private void registerQueues() {
         log.info("Registering queues");
-        for (QueueName queueName : QueueName.values()) {
+        for (Queue queueName : Queue.values()) {
             log.info("Registering queue name: {}", queueName.getName());
-            Queue queue = new Queue(queueName.getName(), true, false, false);
+            org.springframework.amqp.core.Queue queue = new org.springframework.amqp.core.Queue(queueName.getName(), true, false, false);
             Binding binding = new Binding(queueName.getName(), Binding.DestinationType.QUEUE, queueName.getName(), queueName.getName(), null);
             Exchange exchange = ExchangeBuilder.topicExchange(queueName.getName()).build();
             admin.declareExchange(exchange);

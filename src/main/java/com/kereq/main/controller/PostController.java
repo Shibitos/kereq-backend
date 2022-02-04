@@ -44,7 +44,7 @@ public class PostController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> modifyPost(@Valid @RequestBody PostDTO postDTO,
-                                           @PathVariable("id") Long postId,
+                                           @PathVariable("id") long postId,
                                            @AuthenticationPrincipal UserDataInfo user) {
         PostData post = modelMapper.map(postDTO, PostData.class);
         postService.modifyPost(postId, user.getId(), post);
@@ -52,7 +52,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> removePost(@PathVariable("id") Long postId, @AuthenticationPrincipal UserDataInfo user) {
+    public ResponseEntity<Object> removePost(@PathVariable("id") long postId, @AuthenticationPrincipal UserDataInfo user) {
         postService.removePost(postId, user.getId());
         return ResponseEntity.ok().build();
     }
@@ -69,34 +69,34 @@ public class PostController {
     public Page<PostDTO> getUserPosts(
             @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
                     Pageable page,
-            @PathVariable("userId") Long userId,
+            @PathVariable("userId") long userId,
             @AuthenticationPrincipal UserDataInfo principal) {
         return postService.getUserPosts(userId, page).map(p -> modelMapper.map(p, PostDTO.class));
     }
 
     @PostMapping("/{id}/like")
-    public PostStatisticsDTO addLike(@PathVariable("id") Long postId,
+    public PostStatisticsDTO addLike(@PathVariable("id") long postId,
                                      @AuthenticationPrincipal UserDataInfo user) {
         PostStatisticsData postStatistics = postLikeService.addLike(user.getId(), postId);
         return modelMapper.map(postStatistics, PostStatisticsDTO.class);
     }
 
     @DeleteMapping("/{id}/like")
-    public PostStatisticsDTO removeLike(@PathVariable("id") Long postId,
+    public PostStatisticsDTO removeLike(@PathVariable("id") long postId,
                                      @AuthenticationPrincipal UserDataInfo user) {
         PostStatisticsData postStatistics = postLikeService.removeLike(user.getId(), postId);
         return modelMapper.map(postStatistics, PostStatisticsDTO.class);
     }
 
     @PostMapping("/{id}/dislike")
-    public PostStatisticsDTO addDislike(@PathVariable("id") Long postId,
+    public PostStatisticsDTO addDislike(@PathVariable("id") long postId,
                                      @AuthenticationPrincipal UserDataInfo user) {
         PostStatisticsData postStatistics = postLikeService.addDislike(user.getId(), postId);
         return modelMapper.map(postStatistics, PostStatisticsDTO.class);
     }
 
     @DeleteMapping("/{id}/dislike")
-    public PostStatisticsDTO removeDislike(@PathVariable("id") Long postId,
+    public PostStatisticsDTO removeDislike(@PathVariable("id") long postId,
                                         @AuthenticationPrincipal UserDataInfo user) {
         PostStatisticsData postStatistics = postLikeService.removeDislike(user.getId(), postId);
         return modelMapper.map(postStatistics, PostStatisticsDTO.class);

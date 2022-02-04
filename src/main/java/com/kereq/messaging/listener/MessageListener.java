@@ -1,6 +1,6 @@
 package com.kereq.messaging.listener;
 
-import com.kereq.common.constant.QueueName;
+import com.kereq.common.constant.Queue;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.messaging.entity.MessageData;
@@ -9,7 +9,6 @@ import com.kereq.messaging.repository.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.plexus.util.StringUtils;
 import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
 
 @Slf4j
 @Component
@@ -38,16 +36,17 @@ public class MessageListener {
     private EntityManager entityManager;
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = QueueName.Constant.MESSAGES, durable = "true"),
-            exchange = @Exchange(name = QueueName.Constant.MESSAGES, durable = "true", type = "topic"),
-            key = QueueName.Constant.MESSAGES
+            value = @org.springframework.amqp.rabbit.annotation.Queue(value = Queue.Constant.MESSAGES, durable = "true"),
+            exchange = @Exchange(name = Queue.Constant.MESSAGES, durable = "true", type = "topic"),
+            key = Queue.Constant.MESSAGES
     )
     )
     @Transactional
     public void onMessage(@Payload long messageId) {
-        MessageData message = messageRepository.findById(messageId)
-                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
-        entityManager.lock(message, LockModeType.PESSIMISTIC_READ); //TODO: move to annotation over findMessageToSend in repo?
+        MessageData message = messageRepository.findByIdForSending(messageId);
+        if (message == null) {
+            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
+        }
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setFrom(message.getFrom());
         mail.setTo(message.getTo());

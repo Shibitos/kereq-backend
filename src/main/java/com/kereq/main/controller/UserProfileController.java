@@ -40,7 +40,7 @@ public class UserProfileController {
     }
 
     @GetMapping("/{userId}")
-    public UserDTO getUser(@PathVariable("userId") Long userId) {
+    public UserDTO getUser(@PathVariable("userId") long userId) {
         UserData requestedUser = userService.getUser(userId);
         return modelMapper.map(requestedUser, UserDTO.class);
     }

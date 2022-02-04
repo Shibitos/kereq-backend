@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum QueueName {
+public enum Queue {
 
     MESSAGES(Constant.MESSAGES);
 

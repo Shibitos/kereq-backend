@@ -27,35 +27,35 @@ public class FriendController {
     }
 
     @PostMapping("/invitations/{receiverId}")
-    public ResponseEntity<Object> inviteFriend(@PathVariable("receiverId") Long receiverId,
+    public ResponseEntity<Object> inviteFriend(@PathVariable("receiverId") long receiverId,
                                                @AuthenticationPrincipal UserDataInfo user) {
         userService.inviteFriend(user.getId(), receiverId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/invitations/{receiverId}")
-    public ResponseEntity<Object> removeInvitation(@PathVariable("receiverId") Long receiverId,
+    public ResponseEntity<Object> removeInvitation(@PathVariable("receiverId") long receiverId,
                                                @AuthenticationPrincipal UserDataInfo user) {
         userService.removeInvitation(user.getId(), receiverId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/accept/{senderId}")
-    public ResponseEntity<Object> acceptInvitation(@PathVariable("senderId") Long senderId,
+    public ResponseEntity<Object> acceptInvitation(@PathVariable("senderId") long senderId,
                                                    @AuthenticationPrincipal UserDataInfo user) {
         userService.acceptInvitation(user.getId(), senderId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/reject/{senderId}")
-    public ResponseEntity<Object> rejectInvitation(@PathVariable("senderId") Long senderId,
+    public ResponseEntity<Object> rejectInvitation(@PathVariable("senderId") long senderId,
                                                    @AuthenticationPrincipal UserDataInfo user) {
         userService.rejectInvitation(user.getId(), senderId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{friendId}")
-    public ResponseEntity<Object> removeFriend(@PathVariable("friendId") Long friendId,
+    public ResponseEntity<Object> removeFriend(@PathVariable("friendId") long friendId,
                                                @AuthenticationPrincipal UserDataInfo user) {
         userService.removeFriend(user.getId(), friendId);
         return ResponseEntity.ok().build();
@@ -67,7 +67,7 @@ public class FriendController {
     }
 
     @GetMapping("/{userId}")
-    public Page<FriendshipDTO> getFriends(Pageable page, @PathVariable("userId") Long userId) {
+    public Page<FriendshipDTO> getFriends(Pageable page, @PathVariable("userId") long userId) {
         return userService.getFriends(userId, page).map(f -> modelMapper.map(f, FriendshipDTO.class));
     }
 }
