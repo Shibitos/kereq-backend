@@ -212,7 +212,5 @@ class UserServiceUnitTest {
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND, () -> userService.getUser(1L));
 
         userService.getUser(2L);
-        Mockito.verify(photoRepository, times(1))
-                .findByUserIdAndType(Mockito.anyLong(), eq(PhotoData.PhotoType.PROFILE));
     }
 }
