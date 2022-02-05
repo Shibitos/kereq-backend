@@ -41,5 +41,5 @@ public class UserDTO extends BaseDTO {
 
     private Set<RoleDTO> roles;
 
-    private String profilePhotoId;
+    private PhotoDTO profilePhoto;
 }

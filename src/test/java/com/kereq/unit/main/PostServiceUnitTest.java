@@ -143,7 +143,6 @@ class PostServiceUnitTest {
 
         postService.getBrowsePosts(1L, null);
         assertThat(list).allMatch(p -> p.getStatistics() != null && p.getComments().size() == 1);
-        Mockito.verify(userService, times(list.size())).loadProfilePhoto(Mockito.any(UserData.class));
     }
 
     @Test
@@ -162,6 +161,5 @@ class PostServiceUnitTest {
 
         postService.getUserPosts(1L, null);
         assertThat(list).allMatch(p -> p.getStatistics() != null && p.getComments().size() == 1);
-        Mockito.verify(userService, times(list.size())).loadProfilePhoto(Mockito.any(UserData.class));
     }
 }

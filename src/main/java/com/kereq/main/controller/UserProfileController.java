@@ -50,11 +50,7 @@ public class UserProfileController {
             @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
                     Pageable page,
             @AuthenticationPrincipal UserDataInfo user) {
-        return photoService.getUserPhotos(user.getId(), page).map(p -> {
-            PhotoDTO photoDTO = modelMapper.map(p, PhotoDTO.class);
-            photoDTO.fillPhotoId(p.getUuid());
-            return photoDTO;
-        });
+        return photoService.getUserPhotos(user.getId(), page).map(p -> modelMapper.map(p, PhotoDTO.class));
     }
 
     @PatchMapping

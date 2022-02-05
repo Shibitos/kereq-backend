@@ -2,8 +2,10 @@ package com.kereq.main.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kereq.common.dto.BaseDTO;
+import com.kereq.main.entity.PhotoData;
 import lombok.Getter;
 import lombok.Setter;
+import org.modelmapper.ModelMapper;
 
 import java.util.Date;
 import java.util.UUID;
@@ -12,12 +14,9 @@ import java.util.UUID;
 @Setter
 public class PhotoDTO extends BaseDTO {
 
-    private String photoId;
+    @JsonProperty("photoId")
+    private String uuid;
 
     @JsonProperty("createdAt")
     private Date auditCD;
-
-    public void fillPhotoId(UUID uuid) {
-        setPhotoId(uuid.toString().replace("-", ""));
-    }
 }

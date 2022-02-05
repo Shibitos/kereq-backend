@@ -141,6 +141,5 @@ class CommentServiceUnitTest {
 
         commentService.getPostComments(1L, 1L, null);
         assertThat(list).allMatch(c -> c.getStatistics() != null);
-        Mockito.verify(userService, times(list.size())).loadProfilePhoto(Mockito.any(UserData.class));
     }
 }

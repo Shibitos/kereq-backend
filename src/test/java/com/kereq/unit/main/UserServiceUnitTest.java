@@ -18,7 +18,6 @@ import org.mockito.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -215,24 +214,5 @@ class UserServiceUnitTest {
         userService.getUser(2L);
         Mockito.verify(photoRepository, times(1))
                 .findByUserIdAndType(Mockito.anyLong(), eq(PhotoData.PhotoType.PROFILE));
-    }
-
-    @Test
-    void testLoadProfilePhoto() {
-        UserData user = new UserData();
-
-        PhotoData photo = new PhotoData();
-        photo.setUuid(UUID.randomUUID());
-
-        when(photoRepository.findByUserIdAndType(1L, PhotoData.PhotoType.PROFILE)).thenReturn(null);
-        when(photoRepository.findByUserIdAndType(2L, PhotoData.PhotoType.PROFILE)).thenReturn(photo);
-
-        user.setId(1L);
-        userService.loadProfilePhoto(user);
-        assertThat(user.getProfilePhotoId()).isNull();
-
-        user.setId(2L);
-        userService.loadProfilePhoto(user);
-        assertThat(user.getProfilePhotoId()).isNotNull();
     }
 }

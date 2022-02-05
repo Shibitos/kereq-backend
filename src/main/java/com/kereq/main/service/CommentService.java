@@ -62,7 +62,6 @@ public class CommentService {
     public Page<CommentData> getPostComments(long userId, long postId, Pageable page) {
         Page<CommentData> comments = commentRepository.findByPostId(postId, page);
         comments.forEach(comment -> {
-            userService.loadProfilePhoto(comment.getUser());
             comment.setStatistics(commentStatisticsService.getStatistics(userId, comment.getId()));
         });
         return comments;

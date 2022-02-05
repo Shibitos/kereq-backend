@@ -61,7 +61,6 @@ public class PostService {
     public Page<PostData> getBrowsePosts(long userId, Pageable page) {
         Page<PostData> posts = postRepository.findPostsForUser(userId, page);
         posts.forEach(post -> {
-            userService.loadProfilePhoto(post.getUser());
             Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3));
             post.setComments(comments.toSet());
             post.setStatistics(postStatisticsService.getStatistics(userId, post.getId()));
@@ -72,7 +71,6 @@ public class PostService {
     public Page<PostData> getUserPosts(long userId, Pageable page) {
         Page<PostData> posts = postRepository.findByUserId(userId, page);
         posts.forEach(post -> {
-            userService.loadProfilePhoto(post.getUser());
             Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3));
             post.setComments(comments.toSet());
             post.setStatistics(postStatisticsService.getStatistics(userId, post.getId()));

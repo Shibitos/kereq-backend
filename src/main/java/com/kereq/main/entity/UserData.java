@@ -17,10 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -93,8 +90,9 @@ public class UserData extends AuditableEntity implements UserDataInfo {
             inverseJoinColumns = {@JoinColumn(name = "UR_ROLE_ID", referencedColumnName = "ROLE_ID")})
     private Set<RoleData> roles;
 
-    @Transient
-    private String profilePhotoId;
+    @OneToOne(targetEntity = PhotoData.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "USER_PROFILE_PHOTO_ID")
+    private PhotoData profilePhoto;
 
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JoinTable(

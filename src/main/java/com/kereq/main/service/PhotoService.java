@@ -2,10 +2,13 @@ package com.kereq.main.service;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.FileSystemError;
+import com.kereq.common.error.RepositoryError;
 import com.kereq.main.entity.PhotoData;
+import com.kereq.main.entity.UserData;
 import com.kereq.main.error.PhotoError;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.PhotoRepository;
+import com.kereq.main.repository.UserRepository;
 import com.kereq.main.util.ImageCropOptions;
 import com.kereq.main.util.ImageResizeOptions;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +58,9 @@ public class PhotoService {
     @Autowired
     private PhotoRepository photoRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public PhotoData addPhoto(long userId, MultipartFile imageFile) {
         UUID photoUUID = saveImageAndThumbnails(imageFile, null, PHOTO_MAX_SIZE);
 
@@ -67,25 +73,29 @@ public class PhotoService {
 
     @Transactional
     public PhotoData addProfilePhoto(long userId, MultipartFile imageFile, ImageCropOptions imageCropOptions) {
+        UserData user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
         UUID photoUUID = saveImageAndThumbnails(imageFile, imageCropOptions, PHOTO_PROFILE_MAX_SIZE);
 
-        PhotoData existing = photoRepository.findByUserIdAndType(userId, PhotoData.PhotoType.PROFILE);
+        PhotoData existing = photoRepository.findByUserIdAndType(user.getId(), PhotoData.PhotoType.PROFILE);
         if (existing != null) {
             existing.setType(PhotoData.PhotoType.PHOTO);
-            photoRepository.save(existing);
         }
         PhotoData photo = new PhotoData();
         photo.setType(PhotoData.PhotoType.PROFILE);
         photo.setUuid(photoUUID);
-        photo.setUserId(userId);
-        return photoRepository.save(photo);
+        photo.setUserId(user.getId());
+        photo = photoRepository.save(photo);
+        user.setProfilePhoto(photo);
+        return photo;
     }
 
     public Page<PhotoData> getUserPhotos(long userId, Pageable page) {
         return photoRepository.findByUserId(userId, page);
     }
 
-    public byte[] getPhotoImage(String photoId, String photoSize) { //TODO: privileges? security? now link to image must be unauthorized, maybe put logged userId into photoId when returning from api and check it here?
+    public byte[] getPhotoImage(String photoUUID, String photoSize) { //TODO: privileges? security? now link to image must be unauthorized, maybe put logged userId into photoId when returning from api and check it here?
+        String photoId = photoUUID.replace("-", "");
         String directory = getDirectory(photoId);
         StringBuilder fileName = new StringBuilder(photoId);
         if (PhotoSize.THUMBNAIL.equals(photoSize)) {

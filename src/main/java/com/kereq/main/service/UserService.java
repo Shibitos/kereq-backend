@@ -115,28 +115,15 @@ public class UserService {
     }
 
     public Page<FriendshipData> getFriends(long userId, Pageable page) {
-        Page<FriendshipData> friends = friendshipRepository.findUserFriends(userId, page);
-        friends.forEach(f -> loadProfilePhoto(f.getFriend()));
-        return friends;
+        return friendshipRepository.findUserFriends(userId, page);
     }
 
     public Page<FriendshipData> getInvitationsUsers(long userId, Pageable page) {
-        Page<FriendshipData> invitations = friendshipRepository.findUserInvitations(userId, page);
-        invitations.forEach(i -> loadProfilePhoto(i.getUser()));
-        return invitations;
+        return friendshipRepository.findUserInvitations(userId, page);
     }
 
     public UserData getUser(long userId) {
-        UserData user = userRepository.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
-        loadProfilePhoto(user);
-        return user;
-    }
-
-    public void loadProfilePhoto(UserData user) {
-        PhotoData photo = photoRepository.findByUserIdAndType(user.getId(), PhotoData.PhotoType.PROFILE); //TODO: user add relation? photo primary key uuid?
-        if (photo != null) {
-            user.setProfilePhotoId(photo.getUuid().toString().replace("-", ""));
-        }
     }
 }
