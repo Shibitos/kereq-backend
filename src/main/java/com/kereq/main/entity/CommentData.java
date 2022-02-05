@@ -14,8 +14,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "COMMENTS")
 @AttributeOverride(name = "auditCD", column = @Column(name = "COMM_AUDIT_CD"))
+@AttributeOverride(name = "auditCU", column = @Column(name = "COMM_AUDIT_CU"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "COMM_AUDIT_MD"))
+@AttributeOverride(name = "auditMU", column = @Column(name = "COMM_AUDIT_MU"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "COMM_AUDIT_RD"))
+@AttributeOverride(name = "version", column = @Column(name = "COMM_VERSION"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -35,7 +38,7 @@ public class CommentData extends AuditableEntity {
     private UserData user;
 
     @Column(name = "COMM_POST_ID")
-    //@NotNull
+    @NotNull
     private Long postId;
 
     @OneToOne(targetEntity = PostData.class, fetch = FetchType.LAZY)

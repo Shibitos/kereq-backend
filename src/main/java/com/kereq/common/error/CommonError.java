@@ -11,7 +11,7 @@ public enum CommonError implements ApplicationError {
     VALIDATION_ERROR(400, "Validation failed."),
     INVALID_ERROR(400, "Invalid {0}."),
     MISSING_ERROR(404, "Missing {0}."),
-    TEST_ERROR(500, "Test {0} erro{1}r");
+    TEST_ERROR(500, "Test {0} err{1}o{1}r");
 
     private final int httpCode;
     private final String message;

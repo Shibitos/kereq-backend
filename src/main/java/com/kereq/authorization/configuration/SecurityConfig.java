@@ -55,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/", "/dictionaries/*").permitAll()
+                .antMatchers("/", "/dictionaries/*", "/image/**").permitAll() //TODO: security? only gets?
                 .antMatchers("/auth/*").anonymous()
                 .anyRequest().authenticated()
                 .and()

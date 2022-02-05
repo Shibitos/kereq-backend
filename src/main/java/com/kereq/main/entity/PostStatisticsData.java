@@ -13,6 +13,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "POSTS_STATISTICS")
+@AttributeOverride(name = "version", column = @Column(name = "POSTAT_VERSION"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

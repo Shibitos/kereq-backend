@@ -26,8 +26,11 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "USERS")
 @AttributeOverride(name = "auditCD", column = @Column(name = "USER_AUDIT_CD"))
+@AttributeOverride(name = "auditCU", column = @Column(name = "USER_AUDIT_CU"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "USER_AUDIT_MD"))
+@AttributeOverride(name = "auditMU", column = @Column(name = "USER_AUDIT_MU"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "USER_AUDIT_RD"))
+@AttributeOverride(name = "version", column = @Column(name = "USER_VERSION"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -53,9 +56,12 @@ public class UserData extends AuditableEntity implements UserDataInfo {
     private String lastName;
 
     @Column(name = "USER_EMAIL", length = 50, unique = true)
-    @NotNull
     @Size(min = 8, max = 50)
     private String email;
+
+    @Column(name = "USER_BIOGRAPHY", length = 200)
+    @Size(max = 200)
+    private String biography; //TODO: lazy? another entity like profile?
 
     @JsonIgnore
     @Column(name = "USER_PASSWORD", length = 72)
@@ -86,6 +92,10 @@ public class UserData extends AuditableEntity implements UserDataInfo {
             joinColumns = {@JoinColumn(name = "UR_USER_ID", referencedColumnName = "USER_ID")},
             inverseJoinColumns = {@JoinColumn(name = "UR_ROLE_ID", referencedColumnName = "ROLE_ID")})
     private Set<RoleData> roles;
+
+    @OneToOne(targetEntity = PhotoData.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "USER_PROFILE_PHOTO_ID")
+    private PhotoData profilePhoto;
 
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JoinTable(

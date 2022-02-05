@@ -1,6 +1,7 @@
 package com.kereq.main.dto;
 
 import com.kereq.common.constant.Gender;
+import com.kereq.common.dto.BaseDTO;
 import com.kereq.common.validation.annotation.AllowedStrings;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-public class FindFriendDTO {
+public class FindFriendDTO extends BaseDTO {
 
     private UserDTO user; //TODO: only for browse
     private Integer minAge;

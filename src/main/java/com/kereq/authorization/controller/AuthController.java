@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -42,7 +43,7 @@ public class AuthController {
 
     @PostMapping("/confirm")
     public ResponseEntity<Object> confirmUser(@Valid @RequestBody ConfirmDTO confirmDTO) {
-        authService.confirmUser(confirmDTO.getToken());
+        authService.confirmUser(UUID.fromString(confirmDTO.getToken()));
 
         return ResponseEntity.ok().build();
     }

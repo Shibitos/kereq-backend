@@ -5,12 +5,12 @@ import com.kereq.authorization.error.AuthError;
 import com.kereq.authorization.repository.TokenRepository;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.common.error.ValidationError;
+import com.kereq.common.util.DateUtil;
 import com.kereq.main.entity.RoleData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.RoleRepository;
 import com.kereq.main.repository.UserRepository;
-import com.kereq.main.util.DateUtil;
 import com.kereq.messaging.entity.MessageData;
 import com.kereq.messaging.entity.MessageTemplateData;
 import com.kereq.messaging.repository.MessageRepository;
@@ -93,7 +93,7 @@ public class AuthService {
         TokenData token = new TokenData();
         token.setType(TokenData.TokenType.VERIFICATION);
         token.setUser(user);
-        token.setValue(UUID.randomUUID().toString());
+        token.setValue(UUID.randomUUID());
         token.setExpireDate(DateUtil.addMinutes(DateUtil.now(), TOKEN_EXPIRATION_TIME_MIN));
         return tokenRepository.save(token);
     }
@@ -138,12 +138,12 @@ public class AuthService {
     }
 
     private TokenData renewVerificationToken(TokenData token) {
-        token.setValue(UUID.randomUUID().toString());
+        token.setValue(UUID.randomUUID());
         return tokenRepository.save(token);
     }
 
     @Transactional
-    public void confirmUser(String token) {
+    public void confirmUser(UUID token) {
         TokenData verificationToken = tokenRepository.findByValue(token);
         if (verificationToken == null || !TokenData.TokenType.VERIFICATION.equals(verificationToken.getType())) {
             throw new ApplicationException(AuthError.TOKEN_INVALID);
@@ -163,7 +163,7 @@ public class AuthService {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND_VALUE, VERIFICATION_TEMPLATE_CODE);
         }
         Map<String, String> params = new HashMap<>();
-        params.put("CONFIRM_URL", frontendUrl + "/confirm-account?token=" + token.getValue());
+        params.put("CONFIRM_URL", frontendUrl + "/confirm-account/" + token.getValue());
         return emailService.createMessageFromTemplate(template, user.getEmail(), params);
     }
 }

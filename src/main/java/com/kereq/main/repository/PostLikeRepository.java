@@ -5,5 +5,5 @@ import com.kereq.main.entity.PostLikeData;
 
 public interface PostLikeRepository extends BaseRepository<PostLikeData> {
 
-    PostLikeData findByUserIdAndPostId(Long userId, Long postId);
+    PostLikeData findByUserIdAndPostId(long userId, long postId);
 }

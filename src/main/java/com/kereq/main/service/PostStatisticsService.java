@@ -23,7 +23,7 @@ public class PostStatisticsService {
     @Autowired
     private PostStatisticsRepository postStatisticsRepository;
 
-    public PostStatisticsData getStatistics(Long userId, Long postId) {
+    public PostStatisticsData getStatistics(long userId, long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -35,7 +35,7 @@ public class PostStatisticsService {
         return postStatistics;
     }
 
-    public PostStatisticsData initialize(Long postId) {
+    public PostStatisticsData initialize(long postId) {
         if (postStatisticsRepository.existsByPostId(postId)) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
         }
@@ -47,7 +47,7 @@ public class PostStatisticsService {
         return postStatisticsRepository.save(postStatistics);
     }
 
-    public void remove(Long postId) {
+    public void remove(long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -56,7 +56,7 @@ public class PostStatisticsService {
     }
 
     @Transactional
-    public PostStatisticsData convertLike(Long postId, boolean toLike) {
+    public PostStatisticsData convertLike(long postId, boolean toLike) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -67,7 +67,7 @@ public class PostStatisticsService {
     }
 
     @Transactional
-    public PostStatisticsData addLike(Long postId) {
+    public PostStatisticsData addLike(long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -77,7 +77,7 @@ public class PostStatisticsService {
     }
 
     @Transactional
-    public PostStatisticsData removeLike(Long postId) {
+    public PostStatisticsData removeLike(long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -87,7 +87,7 @@ public class PostStatisticsService {
     }
 
     @Transactional
-    public PostStatisticsData addDislike(Long postId) {
+    public PostStatisticsData addDislike(long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -97,7 +97,7 @@ public class PostStatisticsService {
     }
 
     @Transactional
-    public PostStatisticsData removeDislike(Long postId) {
+    public PostStatisticsData removeDislike(long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -107,7 +107,7 @@ public class PostStatisticsService {
     }
 
     @Transactional
-    public PostStatisticsData addComment(Long postId) {
+    public PostStatisticsData addComment(long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -117,7 +117,7 @@ public class PostStatisticsService {
     }
 
     @Transactional
-    public PostStatisticsData removeComment(Long postId) {
+    public PostStatisticsData removeComment(long postId) {
         PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
         if (postStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);

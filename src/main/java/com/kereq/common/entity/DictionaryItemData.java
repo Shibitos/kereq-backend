@@ -14,8 +14,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "DICTIONARY_ITEMS")
 @AttributeOverride(name = "auditCD", column = @Column(name = "DICT_ITEM_AUDIT_CD"))
+@AttributeOverride(name = "auditCU", column = @Column(name = "DICT_ITEM_AUDIT_CU"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "DICT_ITEM_AUDIT_MD"))
+@AttributeOverride(name = "auditMU", column = @Column(name = "DICT_ITEM_AUDIT_MU"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "DICT_ITEM_AUDIT_RD"))
+@AttributeOverride(name = "version", column = @Column(name = "DICT_ITEM_VERSION"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

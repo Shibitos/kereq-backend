@@ -5,7 +5,7 @@ import com.kereq.main.entity.CommentStatisticsData;
 
 public interface CommentStatisticsRepository extends BaseRepository<CommentStatisticsData> {
 
-    boolean existsByCommentId(Long postId);
+    boolean existsByCommentId(long postId);
 
-    CommentStatisticsData findByCommentId(Long postId);
+    CommentStatisticsData findByCommentId(long postId);
 }

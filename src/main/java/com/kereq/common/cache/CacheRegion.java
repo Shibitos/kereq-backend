@@ -20,7 +20,7 @@ public class CacheRegion<T extends BaseEntity> {
     private final boolean isPreloaded;
 
     @SuppressWarnings("unchecked")
-    public T getItem(ApplicationContext ctx, Long id) {
+    public T getItem(ApplicationContext ctx, long id) {
         Cache.ValueWrapper item = getCache(ctx).get(id);
         return item != null ? (T) item.get() : null;
     }
@@ -31,7 +31,7 @@ public class CacheRegion<T extends BaseEntity> {
         return item != null ? (T) item.get() : null;
     }
 
-    public T getItemAttached(ApplicationContext ctx, Long id) {
+    public T getItemAttached(ApplicationContext ctx, long id) {
         T item = getItem(ctx, id);
         if (item != null) {
             ctx.getBean(EntityManager.class).merge(item);

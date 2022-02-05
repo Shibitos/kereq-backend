@@ -15,8 +15,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "MESSAGES")
 @AttributeOverride(name = "auditCD", column = @Column(name = "MSG_AUDIT_CD"))
+@AttributeOverride(name = "auditCU", column = @Column(name = "MSG_AUDIT_CU"))
 @AttributeOverride(name = "auditMD", column = @Column(name = "MSG_AUDIT_MD"))
+@AttributeOverride(name = "auditMU", column = @Column(name = "MSG_AUDIT_MU"))
 @AttributeOverride(name = "auditRD", column = @Column(name = "MSG_AUDIT_RD"))
+@AttributeOverride(name = "version", column = @Column(name = "MSG_VERSION"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -56,6 +59,9 @@ public class MessageData extends AuditableEntity {
 
     @Column(name = "MSG_RETRY_COUNT")
     private Integer retryCount;
+
+    @Column(name = "MSG_ERROR_MESSAGE", length = 100)
+    private String errorMessage;
 
     public interface Status {
         String PENDING = "P";

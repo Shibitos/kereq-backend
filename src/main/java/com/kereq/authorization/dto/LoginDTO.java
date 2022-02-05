@@ -1,5 +1,6 @@
 package com.kereq.authorization.dto;
 
+import com.kereq.common.dto.BaseDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-public class LoginDTO {
+public class LoginDTO extends BaseDTO {
 
     @NotNull
     @Size(min = 8, max = 50)

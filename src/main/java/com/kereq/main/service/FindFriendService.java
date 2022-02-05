@@ -2,11 +2,11 @@ package com.kereq.main.service;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
+import com.kereq.common.util.DateUtil;
 import com.kereq.main.entity.FindFriendData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.FindFriendRepository;
-import com.kereq.main.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +28,7 @@ public class FindFriendService {
         findFriendRepository.save(findFriendData);
     }
 
-    public void modifyFindFriendAd(Long userId, FindFriendData findFriendData) { //TODO: sanitize html
+    public void modifyFindFriendAd(long userId, FindFriendData findFriendData) { //TODO: sanitize html
         FindFriendData original = findFriendRepository.findByUserId(userId);
         if (original == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -40,12 +40,12 @@ public class FindFriendService {
         findFriendRepository.save(original);
     }
 
-    public void removeFindFriendAd(Long userId) {
+    public void removeFindFriendAd(long userId) {
         FindFriendData findFriendData = getFindFriendAdByUserId(userId);
         findFriendRepository.delete(findFriendData);
     }
 
-    public FindFriendData getFindFriendAdByUserId(Long userId) {
+    public FindFriendData getFindFriendAdByUserId(long userId) {
         FindFriendData findFriendData = findFriendRepository.findByUserId(userId);
         if (findFriendData == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);

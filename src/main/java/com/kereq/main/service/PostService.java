@@ -22,6 +22,9 @@ public class PostService {
     private CommentService commentService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private PostStatisticsService postStatisticsService;
 
     @Transactional
@@ -34,7 +37,7 @@ public class PostService {
         return saved;
     }
 
-    public void modifyPost(Long postId, Long userId, PostData post) { //TODO: sanitize html
+    public void modifyPost(long postId, long userId, PostData post) { //TODO: sanitize html
         PostData original = postRepository.findById(postId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
         if (!original.getUser().getId().equals(userId)) {
@@ -45,7 +48,7 @@ public class PostService {
     }
 
     @Transactional
-    public void removePost(Long postId, Long userId) {
+    public void removePost(long postId, long userId) {
         PostData post = postRepository.findById(postId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
         if (!post.getUser().getId().equals(userId)) {
@@ -55,7 +58,7 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    public Page<PostData> getBrowsePosts(Long userId, Pageable page) {
+    public Page<PostData> getBrowsePosts(long userId, Pageable page) {
         Page<PostData> posts = postRepository.findPostsForUser(userId, page);
         posts.forEach(post -> {
             Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3));
@@ -65,7 +68,7 @@ public class PostService {
         return posts;
     }
 
-    public Page<PostData> getUserPosts(Long userId, Pageable page) {
+    public Page<PostData> getUserPosts(long userId, Pageable page) {
         Page<PostData> posts = postRepository.findByUserId(userId, page);
         posts.forEach(post -> {
             Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3));

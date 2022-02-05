@@ -26,3 +26,13 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+
+  rabbitmq:
+    image: 'docker.io/bitnami/rabbitmq:3.9'
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_USERNAME=kereq
+      - RABBITMQ_PASSWORD=kereq

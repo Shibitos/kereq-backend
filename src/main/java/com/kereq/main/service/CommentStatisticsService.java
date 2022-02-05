@@ -19,7 +19,7 @@ public class CommentStatisticsService {
     @Autowired
     private CommentStatisticsRepository commentStatisticsRepository;
 
-    public CommentStatisticsData getStatistics(Long userId, Long commentId) {
+    public CommentStatisticsData getStatistics(long userId, long commentId) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -31,7 +31,7 @@ public class CommentStatisticsService {
         return commentStatistics;
     }
 
-    public CommentStatisticsData initialize(Long commentId) {
+    public CommentStatisticsData initialize(long commentId) {
         if (commentStatisticsRepository.existsByCommentId(commentId)) {
             throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
         }
@@ -42,7 +42,7 @@ public class CommentStatisticsService {
         return commentStatisticsRepository.save(commentStatistics);
     }
 
-    public void remove(Long commentId) {
+    public void remove(long commentId) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -51,7 +51,7 @@ public class CommentStatisticsService {
     }
 
     @Transactional
-    public CommentStatisticsData convertLike(Long commentId, boolean toLike) {
+    public CommentStatisticsData convertLike(long commentId, boolean toLike) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -62,7 +62,7 @@ public class CommentStatisticsService {
     }
 
     @Transactional
-    public CommentStatisticsData addLike(Long commentId) {
+    public CommentStatisticsData addLike(long commentId) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -72,7 +72,7 @@ public class CommentStatisticsService {
     }
 
     @Transactional
-    public CommentStatisticsData removeLike(Long commentId) {
+    public CommentStatisticsData removeLike(long commentId) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -82,7 +82,7 @@ public class CommentStatisticsService {
     }
 
     @Transactional
-    public CommentStatisticsData addDislike(Long commentId) {
+    public CommentStatisticsData addDislike(long commentId) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -92,7 +92,7 @@ public class CommentStatisticsService {
     }
 
     @Transactional
-    public CommentStatisticsData removeDislike(Long commentId) {
+    public CommentStatisticsData removeDislike(long commentId) {
         CommentStatisticsData commentStatistics = commentStatisticsRepository.findByCommentId(commentId);
         if (commentStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
