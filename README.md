@@ -8,7 +8,6 @@ Backend part of social media platform named Kereq.
 ## Table of Contents
 * [General Info](#general-information)
 * [Tech Stack](#tech-stack)
-* [Features](#features)
 * [Screenshots](#screenshots)
 * [Project Status](#project-status)
 

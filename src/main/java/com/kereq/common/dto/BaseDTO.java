@@ -1,7 +1,6 @@
 package com.kereq.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.modelmapper.ModelMapper;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class BaseDTO {

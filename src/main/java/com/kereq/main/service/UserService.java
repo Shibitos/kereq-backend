@@ -3,7 +3,6 @@ package com.kereq.main.service;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.main.entity.FriendshipData;
-import com.kereq.main.entity.PhotoData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.FriendshipRepository;
