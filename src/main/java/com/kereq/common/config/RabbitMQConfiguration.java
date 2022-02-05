@@ -1,6 +1,6 @@
 package com.kereq.common.config;
 
-import com.kereq.common.constant.Queue;
+import com.kereq.common.constant.QueueName;
 import com.kereq.main.exception.ApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
@@ -109,7 +109,7 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer, Applicat
 
     private void registerQueues() {
         log.info("Registering queues");
-        for (Queue queueName : Queue.values()) {
+        for (QueueName queueName : QueueName.values()) {
             log.info("Registering queue name: {}", queueName.getName());
             org.springframework.amqp.core.Queue queue = new org.springframework.amqp.core.Queue(queueName.getName(), true, false, false);
             Binding binding = new Binding(queueName.getName(), Binding.DestinationType.QUEUE, queueName.getName(), queueName.getName(), null);

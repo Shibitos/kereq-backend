@@ -1,4 +1,4 @@
-package com.kereq.unit;
+package com.kereq.unit.common;
 
 import com.kereq.common.entity.DictionaryData;
 import com.kereq.common.entity.DictionaryItemData;

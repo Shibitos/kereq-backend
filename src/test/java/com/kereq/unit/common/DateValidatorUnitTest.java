@@ -1,4 +1,4 @@
-package com.kereq.unit;
+package com.kereq.unit.common;
 
 import com.kereq.common.validation.DateValidator;
 import com.kereq.common.validation.annotation.ValidDate;

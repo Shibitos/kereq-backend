@@ -1,6 +1,6 @@
 package com.kereq.messaging.listener;
 
-import com.kereq.common.constant.Queue;
+import com.kereq.common.constant.QueueName;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.messaging.entity.MessageData;
@@ -36,9 +36,9 @@ public class MessageListener {
     private EntityManager entityManager;
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @org.springframework.amqp.rabbit.annotation.Queue(value = Queue.Constant.MESSAGES, durable = "true"),
-            exchange = @Exchange(name = Queue.Constant.MESSAGES, durable = "true", type = "topic"),
-            key = Queue.Constant.MESSAGES
+            value = @org.springframework.amqp.rabbit.annotation.Queue(value = QueueName.Constant.MESSAGES, durable = "true"),
+            exchange = @Exchange(name = QueueName.Constant.MESSAGES, durable = "true", type = "topic"),
+            key = QueueName.Constant.MESSAGES
     )
     )
     @Transactional

@@ -8,6 +8,7 @@ import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.PhotoRepository;
 import com.kereq.main.util.ImageCropOptions;
 import com.kereq.main.util.ImageResizeOptions;
+import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class PhotoService {
 
@@ -123,10 +125,12 @@ public class PhotoService {
             Path thumbnailMiniPath = Paths.get(directory, photoId + THUMBNAIL_MINI_SUFFIX + "." + IMAGE_EXTENSION);
             saveThumbnail(thumbnailMiniPath, bufferedImage, THUMBNAIL_MINI_SIZE);
         } catch (IOException e) {
+            log.error("Failed to save image {}", photoId, e);
             try {
                 Files.deleteIfExists(Paths.get(directory, photoId + "." + IMAGE_EXTENSION));
                 Files.deleteIfExists(Paths.get(directory, photoId + THUMBNAIL_SUFFIX + "." + IMAGE_EXTENSION));
                 Files.deleteIfExists(Paths.get(directory, photoId + THUMBNAIL_MINI_SUFFIX + "." + IMAGE_EXTENSION));
+                log.error("Failed to clean up image files {}", photoId, e);
             } catch (IOException ex) {
                 throw new ApplicationException(CommonError.OTHER_ERROR);
             }

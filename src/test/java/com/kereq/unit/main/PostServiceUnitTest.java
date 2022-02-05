@@ -1,4 +1,4 @@
-package com.kereq.unit;
+package com.kereq.unit.main;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
@@ -49,13 +49,17 @@ class PostServiceUnitTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        when(postStatisticsService.initialize(Mockito.any())).thenReturn(new PostStatisticsData());
-        when(postStatisticsService.getStatistics(Mockito.any(), Mockito.any()))
+        when(postStatisticsService.initialize(Mockito.anyLong())).thenReturn(new PostStatisticsData());
+        when(postStatisticsService.getStatistics(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(new PostStatisticsData());
-        when(postRepository.save(Mockito.any(PostData.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(postRepository.save(Mockito.any(PostData.class))).thenAnswer(i -> {
+            PostData post = (PostData) i.getArguments()[0];
+            post.setId(1L);
+            return post;
+        });
 
         Page<CommentData> commentsPage = new PageImpl<>(List.of(new CommentData()));
-        when(commentService.getPostComments(Mockito.any(Long.class), Mockito.any(), Mockito.any()))
+        when(commentService.getPostComments(Mockito.anyLong(), Mockito.anyLong(), Mockito.any()))
                 .thenReturn(commentsPage);
     }
 
@@ -67,7 +71,7 @@ class PostServiceUnitTest {
         post.setUser(new UserData());
         postService.createPost(post);
         assertThat(post.getStatistics()).isNotNull();
-        Mockito.verify(postStatisticsService, times(1)).initialize(Mockito.any());
+        Mockito.verify(postStatisticsService, times(1)).initialize(Mockito.anyLong());
     }
 
     @Test
@@ -128,12 +132,14 @@ class PostServiceUnitTest {
         UserData user = new UserData();
         user.setId(1L);
         PostData postOne = new PostData();
+        postOne.setId(1L);
         postOne.setUser(user);
         PostData postTwo = new PostData();
+        postTwo.setId(2L);
         postTwo.setUser(user);
         List<PostData> list = Arrays.asList(postOne, postTwo);
         Page<PostData> page = new PageImpl<>(list);
-        when(postRepository.findPostsForUser(Mockito.any(), Mockito.any())).thenReturn(page);
+        when(postRepository.findPostsForUser(Mockito.anyLong(), Mockito.any())).thenReturn(page);
 
         postService.getBrowsePosts(1L, null);
         assertThat(list).allMatch(p -> p.getStatistics() != null && p.getComments().size() == 1);
@@ -145,12 +151,14 @@ class PostServiceUnitTest {
         UserData user = new UserData();
         user.setId(1L);
         PostData postOne = new PostData();
+        postOne.setId(1L);
         postOne.setUser(user);
         PostData postTwo = new PostData();
+        postTwo.setId(2L);
         postTwo.setUser(user);
         List<PostData> list = Arrays.asList(postOne, postTwo);
         Page<PostData> page = new PageImpl<>(list);
-        when(postRepository.findByUserId(Mockito.any(), Mockito.any())).thenReturn(page);
+        when(postRepository.findByUserId(Mockito.anyLong(), Mockito.any())).thenReturn(page);
 
         postService.getUserPosts(1L, null);
         assertThat(list).allMatch(p -> p.getStatistics() != null && p.getComments().size() == 1);

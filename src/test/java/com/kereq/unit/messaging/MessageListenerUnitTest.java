@@ -1,4 +1,4 @@
-package com.kereq.unit;
+package com.kereq.unit.messaging;
 
 import com.kereq.common.error.RepositoryError;
 import com.kereq.helper.AssertHelper;
@@ -51,8 +51,8 @@ class MessageListenerUnitTest {
     void testSendMessage() {
         MessageData message = new MessageData();
         message.setRetryCount(0);
-        when(messageRepository.findById(1L)).thenReturn(Optional.empty());
-        when(messageRepository.findById(2L)).thenReturn(Optional.of(message));
+        when(messageRepository.findByIdForSending(1L)).thenReturn(null);
+        when(messageRepository.findByIdForSending(2L)).thenReturn(message);
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND, () -> messageListener.onMessage(1L));
 

@@ -1,4 +1,4 @@
-package com.kereq.unit;
+package com.kereq.unit.main;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
@@ -204,15 +204,17 @@ class UserServiceUnitTest {
 
     @Test
     void testGetUser() {
+        UserData user = new UserData();
+        user.setId(2L);
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
-        when(userRepository.findById(2L)).thenReturn(Optional.of(new UserData()));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(user));
         when(photoRepository.findByUserIdAndType(2L, PhotoData.PhotoType.PROFILE)).thenReturn(null);
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND, () -> userService.getUser(1L));
 
         userService.getUser(2L);
         Mockito.verify(photoRepository, times(1))
-                .findByUserIdAndType(Mockito.any(), eq(PhotoData.PhotoType.PROFILE));
+                .findByUserIdAndType(Mockito.anyLong(), eq(PhotoData.PhotoType.PROFILE));
     }
 
     @Test

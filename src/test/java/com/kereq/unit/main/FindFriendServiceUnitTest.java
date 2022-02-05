@@ -1,4 +1,4 @@
-package com.kereq.unit;
+package com.kereq.unit.main;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;

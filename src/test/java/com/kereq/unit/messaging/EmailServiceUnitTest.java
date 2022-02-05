@@ -1,6 +1,6 @@
-package com.kereq.unit;
+package com.kereq.unit.messaging;
 
-import com.kereq.common.constant.Queue;
+import com.kereq.common.constant.QueueName;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.common.service.MessagingService;
@@ -147,7 +147,7 @@ class EmailServiceUnitTest {
         message.setStatus(MessageData.Status.PENDING);
         emailService.sendMessage(message);
         Mockito.verify(messagingService, times(1))
-                .sendMessageToQueue(Queue.Constant.MESSAGES, 2L);
+                .sendMessageToQueue(QueueName.Constant.MESSAGES, 2L);
     }
 
     private MessageTemplateData getTestTemplate(String code, String subject, String body) {

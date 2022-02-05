@@ -1,10 +1,11 @@
-package com.kereq.unit;
+package com.kereq.unit.main;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.CommentData;
 import com.kereq.main.entity.CommentStatisticsData;
+import com.kereq.main.entity.PostData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.repository.CommentRepository;
 import com.kereq.main.service.CommentService;
@@ -48,9 +49,14 @@ class CommentServiceUnitTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        when(commentStatisticsService.initialize(Mockito.any())).thenReturn(new CommentStatisticsData());
-        when(commentStatisticsService.getStatistics(Mockito.any(), Mockito.any()))
+        when(commentStatisticsService.initialize(Mockito.anyLong())).thenReturn(new CommentStatisticsData());
+        when(commentStatisticsService.getStatistics(Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(new CommentStatisticsData());
+        when(commentRepository.save(Mockito.any(CommentData.class))).thenAnswer(i -> {
+            CommentData comment = (CommentData) i.getArguments()[0];
+            comment.setId(1L);
+            return comment;
+        });
     }
 
     @Test
@@ -125,12 +131,14 @@ class CommentServiceUnitTest {
         UserData user = new UserData();
         user.setId(1L);
         CommentData commentOne = new CommentData();
+        commentOne.setId(1L);
         commentOne.setUser(user);
         CommentData commentTwo = new CommentData();
+        commentTwo.setId(2L);
         commentTwo.setUser(user);
         List<CommentData> list = Arrays.asList(commentOne, commentTwo);
         Page<CommentData> page = new PageImpl<>(list);
-        when(commentRepository.findByPostId(Mockito.any(), Mockito.any())).thenReturn(page);
+        when(commentRepository.findByPostId(Mockito.anyLong(), Mockito.any())).thenReturn(page);
 
         commentService.getPostComments(1L, 1L, null);
         assertThat(list).allMatch(c -> c.getStatistics() != null);

@@ -1,4 +1,4 @@
-package com.kereq.unit;
+package com.kereq.unit.authorization;
 
 import com.kereq.authorization.entity.TokenData;
 import com.kereq.authorization.error.AuthError;

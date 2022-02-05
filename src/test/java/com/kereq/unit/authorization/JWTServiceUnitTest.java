@@ -1,4 +1,4 @@
-package com.kereq.unit;
+package com.kereq.unit.authorization;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
