@@ -18,7 +18,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import javax.persistence.EntityManager;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
@@ -51,8 +50,8 @@ class MessageListenerUnitTest {
     void testSendMessage() {
         MessageData message = new MessageData();
         message.setRetryCount(0);
-        when(messageRepository.findByIdForSending(1L)).thenReturn(null);
-        when(messageRepository.findByIdForSending(2L)).thenReturn(message);
+        when(messageRepository.findForSendingById(1L)).thenReturn(null);
+        when(messageRepository.findForSendingById(2L)).thenReturn(message);
 
         AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND, () -> messageListener.onMessage(1L));
 

@@ -43,7 +43,7 @@ public class MessageListener {
     )
     @Transactional
     public void onMessage(@Payload long messageId) {
-        MessageData message = messageRepository.findByIdForSending(messageId);
+        MessageData message = messageRepository.findForSendingById(messageId);
         if (message == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }

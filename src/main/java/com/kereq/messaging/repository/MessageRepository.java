@@ -14,5 +14,5 @@ public interface MessageRepository extends BaseRepository<MessageData> {
     MessageData findFirstByUserEmailTemplateCodeNewest(String emailTo, String templateCode);
 
     @Lock(LockModeType.PESSIMISTIC_READ)
-    MessageData findByIdForSending(long id);
+    MessageData findForSendingById(long id);
 }

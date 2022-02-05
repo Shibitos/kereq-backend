@@ -5,7 +5,6 @@ import com.kereq.common.error.RepositoryError;
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.CommentData;
 import com.kereq.main.entity.CommentStatisticsData;
-import com.kereq.main.entity.PostData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.repository.CommentRepository;
 import com.kereq.main.service.CommentService;
