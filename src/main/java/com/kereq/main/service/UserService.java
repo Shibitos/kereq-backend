@@ -115,11 +115,15 @@ public class UserService {
     }
 
     public Page<FriendshipData> getFriends(long userId, Pageable page) {
-        return friendshipRepository.findUserFriends(userId, page);
+        Page<FriendshipData> friends = friendshipRepository.findUserFriends(userId, page);
+        friends.forEach(f -> loadProfilePhoto(f.getFriend()));
+        return friends;
     }
 
     public Page<FriendshipData> getInvitationsUsers(long userId, Pageable page) {
-        return friendshipRepository.findUserInvitations(userId, page);
+        Page<FriendshipData> invitations = friendshipRepository.findUserInvitations(userId, page);
+        invitations.forEach(i -> loadProfilePhoto(i.getUser()));
+        return invitations;
     }
 
     public UserData getUser(long userId) {
