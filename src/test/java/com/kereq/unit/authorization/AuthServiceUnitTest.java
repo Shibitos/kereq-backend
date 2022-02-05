@@ -147,9 +147,9 @@ class AuthServiceUnitTest {
         authService.sendVerificationToken(mainUser, token, false);
         assertThat(token.getLastSendDate()).isNotNull();
 
-        Date lastSendDate = token.getLastSendDate();
+        long lastSendTime = token.getLastSendDate().getTime();
         authService.sendVerificationToken(mainUser, token, true);
-        assertThat(token.getLastSendDate()).isNotEqualTo(lastSendDate);
+        assertThat(token.getLastSendDate().getTime()).isNotEqualTo(lastSendTime);
         Mockito.verify(messageRepository, times(1))
                 .findFirstByUserEmailTemplateCodeNewest(mainUserEmail, "COMPLETE_REGISTRATION");
     }
