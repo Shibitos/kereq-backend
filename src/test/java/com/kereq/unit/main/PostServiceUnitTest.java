@@ -11,7 +11,6 @@ import com.kereq.main.repository.PostRepository;
 import com.kereq.main.service.CommentService;
 import com.kereq.main.service.PostService;
 import com.kereq.main.service.PostStatisticsService;
-import com.kereq.main.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,8 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class PostServiceUnitTest {
 
@@ -40,18 +38,13 @@ class PostServiceUnitTest {
     @Mock
     private PostStatisticsService postStatisticsService;
 
-    @Mock
-    private UserService userService;
-
     @InjectMocks
     private PostService postService;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        when(postStatisticsService.initialize(Mockito.anyLong())).thenReturn(new PostStatisticsData());
-        when(postStatisticsService.getStatistics(Mockito.anyLong(), Mockito.anyLong()))
-                .thenReturn(new PostStatisticsData());
+        when(postStatisticsService.initialize()).thenReturn(new PostStatisticsData());
         when(postRepository.save(Mockito.any(PostData.class))).thenAnswer(i -> {
             PostData post = (PostData) i.getArguments()[0];
             post.setId(1L);
@@ -71,7 +64,7 @@ class PostServiceUnitTest {
         post.setUser(new UserData());
         postService.createPost(post);
         assertThat(post.getStatistics()).isNotNull();
-        Mockito.verify(postStatisticsService, times(1)).initialize(Mockito.anyLong());
+        Mockito.verify(postStatisticsService, times(1)).initialize();
     }
 
     @Test
@@ -123,7 +116,6 @@ class PostServiceUnitTest {
         when(postRepository.findById(3L)).thenReturn(Optional.of(post));
 
         postService.removePost(3L, 2L);
-        Mockito.verify(postStatisticsService, times(1)).remove(3L);
         Mockito.verify(postRepository, times(1)).delete(Mockito.any(PostData.class));
     }
 
@@ -134,15 +126,19 @@ class PostServiceUnitTest {
         PostData postOne = new PostData();
         postOne.setId(1L);
         postOne.setUser(user);
+        postOne.setStatistics(new PostStatisticsData());
         PostData postTwo = new PostData();
         postTwo.setId(2L);
         postTwo.setUser(user);
+        postTwo.setStatistics(new PostStatisticsData());
         List<PostData> list = Arrays.asList(postOne, postTwo);
         Page<PostData> page = new PageImpl<>(list);
         when(postRepository.findPostsForUser(Mockito.anyLong(), Mockito.any())).thenReturn(page);
 
         postService.getBrowsePosts(1L, null);
-        assertThat(list).allMatch(p -> p.getStatistics() != null && p.getComments().size() == 1);
+        verify(postStatisticsService, times(list.size()))
+                .fillUserLikeType(Mockito.anyLong(), Mockito.any(PostStatisticsData.class));
+        assertThat(list).allMatch(p -> p.getComments().size() == 1);
     }
 
     @Test
@@ -152,14 +148,18 @@ class PostServiceUnitTest {
         PostData postOne = new PostData();
         postOne.setId(1L);
         postOne.setUser(user);
+        postOne.setStatistics(new PostStatisticsData());
         PostData postTwo = new PostData();
         postTwo.setId(2L);
         postTwo.setUser(user);
+        postTwo.setStatistics(new PostStatisticsData());
         List<PostData> list = Arrays.asList(postOne, postTwo);
         Page<PostData> page = new PageImpl<>(list);
         when(postRepository.findByUserId(Mockito.anyLong(), Mockito.any())).thenReturn(page);
 
         postService.getUserPosts(1L, null);
-        assertThat(list).allMatch(p -> p.getStatistics() != null && p.getComments().size() == 1);
+        verify(postStatisticsService, times(list.size()))
+                .fillUserLikeType(Mockito.anyLong(), Mockito.any(PostStatisticsData.class));
+        assertThat(list).allMatch(p -> p.getComments().size() == 1);
     }
 }

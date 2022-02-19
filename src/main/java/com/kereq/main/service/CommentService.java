@@ -31,8 +31,8 @@ public class CommentService {
         if (comment.getUser() == null) {
             throw new ApplicationException(CommonError.MISSING_ERROR, "user");
         }
+        comment.setStatistics(commentStatisticsService.initialize());
         commentRepository.save(comment);
-        comment.setStatistics(commentStatisticsService.initialize(comment.getId()));
         postStatisticsService.addComment(comment.getPostId());
         return comment;
     }
@@ -55,14 +55,12 @@ public class CommentService {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
         postStatisticsService.removeComment(comment.getPostId());
-        commentStatisticsService.remove(commentId);
         commentRepository.delete(comment);
     }
 
     public Page<CommentData> getPostComments(long userId, long postId, Pageable page) {
         Page<CommentData> comments = commentRepository.findByPostId(postId, page);
-        comments.forEach(comment -> comment.setStatistics(
-                commentStatisticsService.getStatistics(userId, comment.getId())));
+        comments.forEach(comment -> commentStatisticsService.fillUserLikeType(userId, comment.getStatistics()));
         return comments;
     }
 }

@@ -28,12 +28,13 @@ public class PostStatisticsData extends BaseEntity {
     @Column(name = "POSTAT_ID")
     private Long id;
 
-    @Column(name = "POSTAT_POST_ID")
+    @Column(name = "POSTAT_POST_ID", insertable = false, updatable = false)
     //@NotNull
+    //@Transient
     private Long postId;
 
     @OneToOne(targetEntity = PostData.class, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "POSTAT_POST_ID", insertable = false, updatable = false)
+    @JoinColumn(nullable = false, name = "POSTAT_POST_ID")
     private PostData post;
 
     @Column(name = "POSTAT_LIKES_COUNT")

@@ -23,36 +23,23 @@ public class PostStatisticsService {
     @Autowired
     private PostStatisticsRepository postStatisticsRepository;
 
-    public PostStatisticsData getStatistics(long userId, long postId) {
-        PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
+    public void fillUserLikeType(long userId, PostStatisticsData postStatistics) {
         if (postStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
-        PostLikeData postLikeData = postLikeRepository.findByUserIdAndPostId(userId, postId);
+        PostLikeData postLikeData = postLikeRepository
+                .findByUserIdAndPostId(userId, postStatistics.getPostId());
         if (postLikeData != null) {
             postStatistics.setUserLikeType(postLikeData.getType());
         }
-        return postStatistics;
     }
 
-    public PostStatisticsData initialize(long postId) {
-        if (postStatisticsRepository.existsByPostId(postId)) {
-            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
-        }
+    public PostStatisticsData initialize() {
         PostStatisticsData postStatistics = new PostStatisticsData();
-        postStatistics.setPostId(postId);
         postStatistics.setLikesCount(0);
         postStatistics.setDislikesCount(0);
         postStatistics.setCommentsCount(0);
-        return postStatisticsRepository.save(postStatistics);
-    }
-
-    public void remove(long postId) {
-        PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
-        if (postStatistics == null) {
-            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
-        }
-        postStatisticsRepository.delete(postStatistics);
+        return postStatistics;
     }
 
     @Transactional

@@ -32,9 +32,8 @@ public class PostService {
         if (post.getUser() == null) { //TODO: needed?
             throw new ApplicationException(CommonError.MISSING_ERROR, "user");
         }
-        PostData saved = postRepository.save(post);
-        saved.setStatistics(postStatisticsService.initialize(saved.getId()));
-        return saved;
+        post.setStatistics(postStatisticsService.initialize());
+        return postRepository.save(post);
     }
 
     public void modifyPost(long postId, long userId, PostData post) { //TODO: sanitize html
@@ -54,16 +53,15 @@ public class PostService {
         if (!post.getUser().getId().equals(userId)) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
-        postStatisticsService.remove(post.getId());
         postRepository.delete(post);
     }
 
     public Page<PostData> getBrowsePosts(long userId, Pageable page) {
         Page<PostData> posts = postRepository.findPostsForUser(userId, page);
         posts.forEach(post -> {
-            Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3));
+            postStatisticsService.fillUserLikeType(userId, post.getStatistics());
+            Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3)); //TODO: param
             post.setComments(comments.toSet());
-            post.setStatistics(postStatisticsService.getStatistics(userId, post.getId()));
         });
         return posts;
     }
@@ -71,9 +69,9 @@ public class PostService {
     public Page<PostData> getUserPosts(long userId, Pageable page) {
         Page<PostData> posts = postRepository.findByUserId(userId, page);
         posts.forEach(post -> {
+            postStatisticsService.fillUserLikeType(userId, post.getStatistics());
             Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3));
             post.setComments(comments.toSet());
-            post.setStatistics(postStatisticsService.getStatistics(userId, post.getId()));
         });
         return posts;
     }

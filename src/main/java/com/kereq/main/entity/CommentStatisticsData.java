@@ -28,13 +28,12 @@ public class CommentStatisticsData extends BaseEntity {
     @Column(name = "COSTAT_ID")
     private Long id;
 
-    @Column(name = "COSTAT_COMM_ID")
-    //@NotNull
+    @Column(name = "COSTAT_COMM_ID", insertable = false, updatable = false)
     private Long commentId;
 
-    @OneToOne(targetEntity = PostData.class, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "COSTAT_COMM_ID", insertable = false, updatable = false)
-    private PostData comment;
+    @OneToOne(targetEntity = CommentData.class, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "COSTAT_COMM_ID")
+    private CommentData comment;
 
     @Column(name = "COSTAT_LIKES_COUNT")
     @NotNull

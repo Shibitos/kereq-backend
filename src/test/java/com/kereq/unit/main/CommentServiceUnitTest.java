@@ -10,7 +10,6 @@ import com.kereq.main.repository.CommentRepository;
 import com.kereq.main.service.CommentService;
 import com.kereq.main.service.CommentStatisticsService;
 import com.kereq.main.service.PostStatisticsService;
-import com.kereq.main.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,8 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class CommentServiceUnitTest {
 
@@ -39,18 +37,13 @@ class CommentServiceUnitTest {
     @Mock
     private CommentStatisticsService commentStatisticsService;
 
-    @Mock
-    private UserService userService;
-
     @InjectMocks
     private CommentService commentService;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        when(commentStatisticsService.initialize(Mockito.anyLong())).thenReturn(new CommentStatisticsData());
-        when(commentStatisticsService.getStatistics(Mockito.anyLong(), Mockito.anyLong()))
-                .thenReturn(new CommentStatisticsData());
+        when(commentStatisticsService.initialize()).thenReturn(new CommentStatisticsData());
         when(commentRepository.save(Mockito.any(CommentData.class))).thenAnswer(i -> {
             CommentData comment = (CommentData) i.getArguments()[0];
             comment.setId(1L);
@@ -121,7 +114,6 @@ class CommentServiceUnitTest {
 
         commentService.removeComment(3L, 2L);
         Mockito.verify(postStatisticsService, times(1)).removeComment(comment.getPostId());
-        Mockito.verify(commentStatisticsService, times(1)).remove(3L);
         Mockito.verify(commentRepository, times(1)).delete(Mockito.any(CommentData.class));
     }
 
@@ -132,14 +124,17 @@ class CommentServiceUnitTest {
         CommentData commentOne = new CommentData();
         commentOne.setId(1L);
         commentOne.setUser(user);
+        commentOne.setStatistics(new CommentStatisticsData());
         CommentData commentTwo = new CommentData();
         commentTwo.setId(2L);
         commentTwo.setUser(user);
+        commentTwo.setStatistics(new CommentStatisticsData());
         List<CommentData> list = Arrays.asList(commentOne, commentTwo);
         Page<CommentData> page = new PageImpl<>(list);
         when(commentRepository.findByPostId(Mockito.anyLong(), Mockito.any())).thenReturn(page);
 
         commentService.getPostComments(1L, 1L, null);
-        assertThat(list).allMatch(c -> c.getStatistics() != null);
+        verify(commentStatisticsService, times(list.size()))
+                .fillUserLikeType(Mockito.anyLong(), Mockito.any(CommentStatisticsData.class));
     }
 }

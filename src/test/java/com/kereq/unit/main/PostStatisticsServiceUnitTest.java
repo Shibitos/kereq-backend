@@ -17,7 +17,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 class PostStatisticsServiceUnitTest {
@@ -43,50 +42,41 @@ class PostStatisticsServiceUnitTest {
         when(postStatisticsRepository.findByPostId(1L)).thenReturn(null);
         when(postStatisticsRepository.findByPostId(2L)).thenReturn(new PostStatisticsData());
     }
-
+    
     @Test
-    void testGetStatistics() {
+    void testFillUserLikeType() {
         PostStatisticsData postStatistics = new PostStatisticsData();
-        when(postStatisticsRepository.findByPostId(3L)).thenReturn(postStatistics);
-        when(postStatisticsRepository.findByPostId(4L)).thenReturn(postStatistics);
 
         PostLikeData postLike = new PostLikeData();
         postLike.setType(LikeType.LIKE);
         when(postLikeRepository.findByUserIdAndPostId(1L, 4L)).thenReturn(postLike);
 
-        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
-                () -> postStatisticsService.getStatistics(1L, 1L));
-        postStatisticsService.getStatistics(1L, 3L);
+        PostLikeData postDislike = new PostLikeData();
+        postDislike.setType(LikeType.DISLIKE);
+        when(postLikeRepository.findByUserIdAndPostId(1L, 5L)).thenReturn(postDislike);
+
+        postStatistics.setPostId(3L);
+        postStatisticsService.fillUserLikeType(1L, postStatistics);
         assertThat(postStatistics.getUserLikeType()).isNull();
-        postStatisticsService.getStatistics(1L, 4L);
+
+        postStatistics.setPostId(4L);
+        postStatisticsService.fillUserLikeType(1L, postStatistics);
         assertThat(postStatistics.getUserLikeType()).isEqualTo(LikeType.LIKE);
+
+        postStatistics.setPostId(5L);
+        postStatisticsService.fillUserLikeType(1L, postStatistics);
+        assertThat(postStatistics.getUserLikeType()).isEqualTo(LikeType.DISLIKE);
+
+        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
+                () -> postStatisticsService.fillUserLikeType(1L, null));
     }
 
     @Test
     void testInitialize() {
-        when(postStatisticsRepository.existsByPostId(1L)).thenReturn(true);
-        when(postStatisticsRepository.existsByPostId(2L)).thenReturn(false);
-
-        AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
-                () -> postStatisticsService.initialize(1L));
-        PostStatisticsData postStatistics =
-                postStatisticsService.initialize(2L);
-        assertThat(postStatistics.getPostId()).isEqualTo(2L);
+        PostStatisticsData postStatistics = postStatisticsService.initialize();
         assertThat(postStatistics.getLikesCount()).isZero();
         assertThat(postStatistics.getDislikesCount()).isZero();
         assertThat(postStatistics.getUserLikeType()).isNull();
-    }
-
-    @Test
-    void testRemove() {
-        when(postStatisticsRepository.existsByPostId(1L)).thenReturn(true);
-        when(postStatisticsRepository.existsByPostId(2L)).thenReturn(false);
-
-        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
-                () -> postStatisticsService.remove(1L));
-        postStatisticsService.remove(2L);
-        Mockito.verify(postStatisticsRepository, times(1))
-                .delete(Mockito.any(PostStatisticsData.class));
     }
 
     @Test
