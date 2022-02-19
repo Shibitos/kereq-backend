@@ -47,7 +47,7 @@ public class UserProfileController {
 
     @GetMapping("/{userId}/photos")
     public Page<PhotoDTO> browsePhotos(
-            @PageableDefault(sort = {"auditCD"}, direction = Sort.Direction.DESC)
+            @PageableDefault(sort = {"auditCD"}, direction = Sort.Direction.ASC)
                     Pageable page,
             @AuthenticationPrincipal UserDataInfo user) {
         return photoService.getUserPhotos(user.getId(), page).map(p -> modelMapper.map(p, PhotoDTO.class));
