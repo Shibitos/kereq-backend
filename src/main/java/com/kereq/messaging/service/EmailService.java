@@ -1,8 +1,10 @@
 package com.kereq.messaging.service;
 
+import com.kereq.common.constant.ParamKey;
 import com.kereq.common.constant.QueueName;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
+import com.kereq.common.service.EnvironmentService;
 import com.kereq.common.service.MessagingService;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.messaging.entity.MessageData;
@@ -30,20 +32,20 @@ public class EmailService {
     private MessageRepository messageRepository;
 
     @Autowired
-    private Environment env;
+    private EnvironmentService environmentService;
 
     @Autowired
     private MessagingService messagingService;
 
     public MessageData createMessageFromTemplate(MessageTemplateData template, String to, Map<String, String> data) {
-        if (ObjectUtils.isEmpty(env.getProperty("email.support"))) { //TODO: better, params
+        if (ObjectUtils.isEmpty(environmentService.getParam(ParamKey.EMAIL_SUPPORT))) {
             throw new ApplicationException(CommonError.INVALID_ERROR, "sender");
         }
         if (!JMail.isValid(to)) {
             throw new ApplicationException(CommonError.INVALID_ERROR, "email");
         }
         MessageData message = new MessageData();
-        message.setFrom(env.getProperty("email.support"));
+        message.setFrom(environmentService.getParam(ParamKey.EMAIL_SUPPORT));
         message.setTo(to);
         message.setSubject(appendParameters(template.getSubject(), data));
         message.setBody(appendParameters(template.getBody(), data)); //TODO: sanitizing

@@ -1,6 +1,7 @@
 package com.kereq.common.config;
 
 import com.kereq.common.cache.CacheRegion;
+import com.kereq.common.constant.CacheName;
 import com.kereq.common.constant.CacheProvider;
 import com.kereq.common.constant.Dictionary;
 import com.kereq.common.entity.BaseEntity;
@@ -67,7 +68,7 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
 
     private void loadDictionariesLists() {
         log.info("Loading dictionaries lists");
-        Cache cache = cacheManager.getCache(CacheProvider.CacheName.DICTIONARY_ITEMS);
+        Cache cache = cacheManager.getCache(CacheName.DICTIONARY_ITEMS);
         if (cache == null) {
             throw new ApplicationException(CommonError.OTHER_ERROR);
         }

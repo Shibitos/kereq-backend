@@ -29,8 +29,6 @@ public class PostStatisticsData extends BaseEntity {
     private Long id;
 
     @Column(name = "POSTAT_POST_ID", insertable = false, updatable = false)
-    //@NotNull
-    //@Transient
     private Long postId;
 
     @OneToOne(targetEntity = PostData.class, fetch = FetchType.LAZY)

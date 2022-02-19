@@ -1,8 +1,10 @@
 package com.kereq.unit.messaging;
 
+import com.kereq.common.constant.ParamKey;
 import com.kereq.common.constant.QueueName;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
+import com.kereq.common.service.EnvironmentService;
 import com.kereq.common.service.MessagingService;
 import com.kereq.helper.AssertHelper;
 import com.kereq.messaging.entity.MessageData;
@@ -30,7 +32,7 @@ class EmailServiceUnitTest {
     private MessageRepository messageRepository;
 
     @Mock
-    private Environment env;
+    private EnvironmentService environmentService;
 
     @Mock
     private MessagingService messagingService;
@@ -73,7 +75,7 @@ class EmailServiceUnitTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        when(env.getProperty("email.support")).thenReturn("kereq@ethereal.email");
+        when(environmentService.getParam(ParamKey.EMAIL_SUPPORT)).thenReturn("kereq@ethereal.email");
         when(messageRepository.save(Mockito.any(MessageData.class))).thenAnswer(i -> i.getArguments()[0]);
     }
 
