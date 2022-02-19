@@ -21,7 +21,7 @@ public class DictionaryService {
     @Autowired
     private DictionaryItemRepository dictionaryItemRepository;
 
-    @Cacheable(value = CacheProvider.CacheName.DICTIONARY_ITEMS, key="#code")
+    @Cacheable(value = CacheProvider.CacheName.DICTIONARY_ITEMS, key = "#code")
     public List<DictionaryItemData> getAllDictionaryItems(String code) {
         if (!dictionaryRepository.existsByCode(code)) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -29,7 +29,7 @@ public class DictionaryService {
         return dictionaryItemRepository.findByDictionaryCode(code);
     }
 
-    @Cacheable(value = CacheProvider.CacheName.DICTIONARY_ITEMS, key="#code")
+    @Cacheable(value = CacheProvider.CacheName.DICTIONARY_ITEMS, key = "#code")
     public DictionaryItemData getItemByCode(String code) {
         return dictionaryItemRepository.findByCode(code);
     }

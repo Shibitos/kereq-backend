@@ -47,7 +47,7 @@ public class UserProfileController {
 
     @GetMapping("/{userId}/photos")
     public Page<PhotoDTO> browsePhotos(
-            @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
+            @PageableDefault(sort = {"auditCD"}, direction = Sort.Direction.DESC)
                     Pageable page,
             @AuthenticationPrincipal UserDataInfo user) {
         return photoService.getUserPhotos(user.getId(), page).map(p -> modelMapper.map(p, PhotoDTO.class));
@@ -70,7 +70,7 @@ public class UserProfileController {
 
     @PostMapping("/image")
     public ResponseEntity<Object> uploadProfileImage(@ModelAttribute ProfileImageDTO profileImageDTO, //TODO: validation?
-                                      @AuthenticationPrincipal UserDataInfo user) {
+                                                     @AuthenticationPrincipal UserDataInfo user) {
         photoService.addProfilePhoto(user.getId(), profileImageDTO.getFile(),
                 new ImageCropOptions(profileImageDTO.getSize(), profileImageDTO.getPosX(), profileImageDTO.getPosY()));
         return ResponseEntity.ok().build();

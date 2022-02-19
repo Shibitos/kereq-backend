@@ -35,7 +35,7 @@ public class FriendController {
 
     @DeleteMapping("/invitations/{receiverId}")
     public ResponseEntity<Object> removeInvitation(@PathVariable("receiverId") long receiverId,
-                                               @AuthenticationPrincipal UserDataInfo user) {
+                                                   @AuthenticationPrincipal UserDataInfo user) {
         userService.removeInvitation(user.getId(), receiverId);
         return ResponseEntity.ok().build();
     }

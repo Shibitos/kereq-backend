@@ -159,7 +159,7 @@ public class PhotoService {
     }
 
     private BufferedImage prepareImage(BufferedImage image, ImageCropOptions imageCropOptions,
-                              ImageResizeOptions imageResizeOptions) {
+                                       ImageResizeOptions imageResizeOptions) {
         if (imageCropOptions != null) {
             image = Scalr.crop(image,
                     imageCropOptions.getPosX(),

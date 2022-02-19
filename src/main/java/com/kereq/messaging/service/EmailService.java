@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Map;
@@ -52,6 +54,7 @@ public class EmailService {
         return messageRepository.save(message);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void sendMessage(MessageData message) { //TODO: bulk message?
         if (!messageRepository.existsById(message.getId())) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);

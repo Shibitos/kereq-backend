@@ -25,8 +25,8 @@ public class JWTService {
     private final String secret;
 
     public JWTService(@Value("${jwt.expirationTime}") int expirationTime,
-               @Value("${jwt.refreshTime}") int refreshTime,
-               @Value("${jwt.secret}") String secret) {
+                      @Value("${jwt.refreshTime}") int refreshTime,
+                      @Value("${jwt.secret}") String secret) {
         this.expirationTime = expirationTime;
         this.refreshTime = refreshTime;
         this.secret = secret;

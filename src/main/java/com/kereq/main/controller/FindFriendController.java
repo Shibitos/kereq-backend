@@ -56,7 +56,7 @@ public class FindFriendController {
     }
 
     @GetMapping("/browse")
-    public Page<FindFriendDTO> getAdsForUser(@PageableDefault(sort = { "auditMD" }) Pageable page,
+    public Page<FindFriendDTO> getAdsForUser(@PageableDefault(sort = {"auditMD"}) Pageable page,
                                              @AuthenticationPrincipal UserDataInfo user) {
         return findFriendService.getFindFriendAdsForUser((UserData) user, page)
                 .map(f -> modelMapper.map(f, FindFriendDTO.class));

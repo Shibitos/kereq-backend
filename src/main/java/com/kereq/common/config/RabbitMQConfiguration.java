@@ -65,7 +65,7 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer, Applicat
     }
 
     @Bean
-    public RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry(){
+    public RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry() {
         return new RabbitListenerEndpointRegistry();
     }
 

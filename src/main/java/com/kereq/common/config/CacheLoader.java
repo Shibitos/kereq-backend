@@ -56,8 +56,7 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
                 }
                 if (obj instanceof CodeEntity) {
                     cache.put(((CodeEntity) obj).getCode(), obj);
-                }
-                else if (obj instanceof BaseEntity) {
+                } else if (obj instanceof BaseEntity) {
                     cache.put(((BaseEntity) obj).getId(), obj);
                 }
             }

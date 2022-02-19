@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
-    
+
     @Autowired
     private CommentRepository commentRepository;
 

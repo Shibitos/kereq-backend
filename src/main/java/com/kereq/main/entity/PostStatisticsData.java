@@ -27,7 +27,7 @@ public class PostStatisticsData extends BaseEntity {
     @SequenceGenerator(name = "SEQ_POSTAT_ID", sequenceName = "SEQ_POSTAT_ID", allocationSize = 50)
     @Column(name = "POSTAT_ID")
     private Long id;
-    
+
     @Column(name = "POSTAT_POST_ID")
     //@NotNull
     private Long postId;

@@ -8,7 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 public class DateUtil {
 
-    private DateUtil() {}
+    private DateUtil() {
+    }
 
     public static Date now() {
         return new Date();

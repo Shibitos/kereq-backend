@@ -67,6 +67,5 @@ public class MessageListener {
             throw new ApplicationException(MessageError.UNABLE_TO_SEND);
         }
         message.setStatus(MessageData.Status.SENT);
-        messageRepository.save(message);
     }
 }

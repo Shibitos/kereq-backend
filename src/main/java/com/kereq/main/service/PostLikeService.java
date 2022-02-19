@@ -71,7 +71,6 @@ public class PostLikeService {
         return postStatisticsService.addDislike(postId);
     }
 
-
     @Transactional
     public PostStatisticsData removeDislike(long userId, long postId) {
         PostLikeData postLike = postLikeRepository.findByUserIdAndPostId(userId, postId);
