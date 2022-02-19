@@ -63,12 +63,12 @@ public class CommentController {
 
     @GetMapping
     public Page<CommentDTO> getComments(
-            @PageableDefault(sort = {"auditCD"}, direction = Sort.Direction.DESC)
+            @PageableDefault(sort = {"auditCD"}, direction = Sort.Direction.ASC)
                     Pageable page,
             @PathVariable("postId") long postId,
             @AuthenticationPrincipal UserDataInfo user) {
         return commentService.getPostComments(user.getId(), postId, page)
-                .map(c -> (CommentDTO) modelMapper.map(c, CommentDTO.class).applyVariant(BaseDTO.hideId));
+                .map(c -> (CommentDTO) modelMapper.map(c, CommentDTO.class).applyVariant(BaseDTO.HIDE_ID));
     }
 
     @PostMapping("/{id}/like")
