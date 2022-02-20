@@ -4,23 +4,22 @@ import com.kereq.common.constant.ParamKey;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.FileSystemError;
 import com.kereq.common.service.EnvironmentService;
+import com.kereq.common.util.FileUtil;
 import com.kereq.main.constant.PhotoSize;
 import com.kereq.main.error.PhotoError;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.util.ImageCropOptions;
 import com.kereq.main.util.ImageResizeOptions;
+import com.kereq.main.util.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -28,30 +27,39 @@ import java.nio.file.Paths;
 @Service
 public class ImageService {
     
-    @Autowired
-    private EnvironmentService environmentService;
+    private final EnvironmentService environmentService;
     
-    public byte[] getImage(String photoUUID, String photoSize) { //TODO: privileges? security? now link to image must be unauthorized, maybe put logged userId into photoId when returning from api and check it here?
-        String photoId = photoUUID.replace("-", "");
+    private final ImageUtil imageUtil;
+
+    private final FileUtil fileUtil;
+    
+    @Autowired
+    public ImageService(EnvironmentService environmentService, ImageUtil imageUtil, FileUtil fileUtil) {
+        this.environmentService = environmentService;
+        this.imageUtil = imageUtil;
+        this.fileUtil = fileUtil;
+    }
+    
+    public byte[] getImage(String photoId, String photoSize) { //TODO: privileges? security? now link to image must be unauthorized, maybe put logged userId into photoId when returning from api and check it here?
         String directory = getImageDirectory(photoId);
         try {
-            return Files.readAllBytes(Paths.get(directory, getImageFilename(photoId, photoSize)));
+            return fileUtil.readAllBytes(Paths.get(directory, getImageFilename(photoId, photoSize)));
         } catch (IOException e) {
             throw new ApplicationException(FileSystemError.RESOURCE_NOT_FOUND);
         }
     }
 
-    public void saveImageAndThumbnails(String photoId,
+    public void saveImageAndThumbnails(String photoId, //TODO: validation?
                      MultipartFile imageFile,
                      ImageCropOptions imageCropOptions,
                      ImageResizeOptions imageResizeOptions) {
         String directory = getImageDirectory(photoId);
         try {
-            BufferedImage bufferedImage = ImageIO.read(imageFile.getInputStream());
+            BufferedImage bufferedImage = imageUtil.read(imageFile.getInputStream());
             validateImage(bufferedImage);
-            bufferedImage = prepareImage(bufferedImage, imageCropOptions, imageResizeOptions);
+            bufferedImage = cropResizeImage(bufferedImage, imageCropOptions, imageResizeOptions);
 
-            Files.createDirectories(Paths.get(directory));
+            fileUtil.createDirectories(Paths.get(directory));
 
             Path mainPath = Paths.get(directory, getImageFilename(photoId, PhotoSize.ORIGINAL));
             saveImage(mainPath, bufferedImage, 0);
@@ -71,54 +79,35 @@ public class ImageService {
     public void removePhotoImages(String photoId) {
         String directory = getImageDirectory(photoId);
         try {
-            Files.deleteIfExists(Paths.get(directory, getImageFilename(photoId, PhotoSize.ORIGINAL)));
-            Files.deleteIfExists(Paths.get(directory, getImageFilename(photoId, PhotoSize.THUMBNAIL)));
-            Files.deleteIfExists(Paths.get(directory, getImageFilename(photoId, PhotoSize.THUMBNAIL_MINI)));
+            fileUtil.deleteIfExists(Paths.get(directory, getImageFilename(photoId, PhotoSize.ORIGINAL)));
+            fileUtil.deleteIfExists(Paths.get(directory, getImageFilename(photoId, PhotoSize.THUMBNAIL)));
+            fileUtil.deleteIfExists(Paths.get(directory, getImageFilename(photoId, PhotoSize.THUMBNAIL_MINI)));
         } catch (IOException e) {
             log.error("Failed to clean up image files {}", photoId, e);
             throw new ApplicationException(CommonError.OTHER_ERROR);
         }
     }
 
-    private void validateImage(BufferedImage image) { //TODO: max size validation?
-        if (image.getWidth() < environmentService.getParamInteger(ParamKey.IMG_MIN_SIZE)
-                || image.getHeight() < environmentService.getParamInteger(ParamKey.IMG_MIN_SIZE)) {
-            throw new ApplicationException(PhotoError.IMAGE_TOO_SMALL, environmentService.getParamInteger(ParamKey.IMG_MIN_SIZE));
-        }
-    }
-
-    private BufferedImage prepareImage(BufferedImage image, ImageCropOptions imageCropOptions,
-                                       ImageResizeOptions imageResizeOptions) {
+    public BufferedImage cropResizeImage(BufferedImage image, ImageCropOptions imageCropOptions,
+                                          ImageResizeOptions imageResizeOptions) {
         if (imageCropOptions != null) {
-            image = Scalr.crop(image,
+            image = imageUtil.crop(image,
                     imageCropOptions.getPosX(),
                     imageCropOptions.getPosY(),
                     imageCropOptions.getSize(),
                     imageCropOptions.getSize());
         }
         if (imageResizeOptions != null
-                && (imageResizeOptions.getMaxWidth() > 0 || imageResizeOptions.getMaxHeight() > 0)) {
+                && (imageResizeOptions.getMaxWidth() > 0 && imageResizeOptions.getMaxHeight() > 0)) {
             double resizeScale = Math.min((double) imageResizeOptions.getMaxWidth() / image.getWidth(),
                     (double) imageResizeOptions.getMaxHeight() / image.getHeight());
             if (resizeScale < 1) {
-                image = Scalr.resize(image,
+                image = imageUtil.resize(image,
                         Math.min((int) (image.getWidth() * resizeScale), imageResizeOptions.getMaxWidth()),
                         Math.min((int) (image.getHeight() * resizeScale), imageResizeOptions.getMaxHeight()));
             }
         }
         return image;
-    }
-
-    private void saveImage(Path path, BufferedImage image, int size) throws IOException {
-        File newImageFile = path.toFile();
-        BufferedImage convertedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-        convertedImage.createGraphics().drawImage(image, 0, 0, Color.WHITE, null);
-        if (size > 0) {
-            convertedImage = Scalr.resize(convertedImage, size);
-        }
-        if (!ImageIO.write(convertedImage, environmentService.getParam(ParamKey.IMG_EXTENSION), newImageFile)) {
-            throw new ApplicationException(CommonError.OTHER_ERROR);
-        }
     }
 
     public String getImageDirectory(String photoId) {
@@ -127,7 +116,7 @@ public class ImageService {
         int step = environmentService.getParamInteger(ParamKey.IMG_DIR_DIV_CHAR_COUNT);
         for (int pos = 0; pos < maxPos; pos += step) {
             dir.append(photoId, pos, pos + environmentService.getParamInteger(ParamKey.IMG_DIR_DIV_CHAR_COUNT));
-            dir.append("/");
+            dir.append(File.separator);
         }
         return dir.toString();
     }
@@ -141,5 +130,24 @@ public class ImageService {
         }
         fileName.append(".").append(environmentService.getParam(ParamKey.IMG_EXTENSION));
         return fileName.toString();
+    }
+
+    private void validateImage(BufferedImage image) { //TODO: max size validation?
+        if (image.getWidth() < environmentService.getParamInteger(ParamKey.IMG_MIN_SIZE)
+                || image.getHeight() < environmentService.getParamInteger(ParamKey.IMG_MIN_SIZE)) {
+            throw new ApplicationException(PhotoError.IMAGE_TOO_SMALL, environmentService.getParamInteger(ParamKey.IMG_MIN_SIZE));
+        }
+    }
+
+    private void saveImage(Path path, BufferedImage image, int size) throws IOException {
+        File newImageFile = path.toFile();
+        BufferedImage convertedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+        convertedImage.createGraphics().drawImage(image, 0, 0, Color.WHITE, null);
+        if (size > 0) {
+            convertedImage = imageUtil.resize(convertedImage, size);
+        }
+        if (!imageUtil.write(convertedImage, environmentService.getParam(ParamKey.IMG_EXTENSION), newImageFile)) {
+            throw new ApplicationException(CommonError.OTHER_ERROR);
+        }
     }
 }
