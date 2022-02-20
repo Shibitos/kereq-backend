@@ -1,7 +1,6 @@
 package com.kereq.common.service;
 
 import com.kereq.common.constant.CacheName;
-import com.kereq.common.constant.CacheProvider;
 import com.kereq.common.entity.DictionaryItemData;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.common.repository.DictionaryItemRepository;

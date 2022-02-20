@@ -1,6 +1,8 @@
 package com.kereq.main.service;
 
+import com.kereq.common.constant.ParamKey;
 import com.kereq.common.error.RepositoryError;
+import com.kereq.common.service.EnvironmentService;
 import com.kereq.main.entity.PhotoData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.error.PhotoError;
@@ -23,25 +25,36 @@ import java.util.UUID;
 @Service
 public class PhotoService {
 
-    private static final ImageResizeOptions PHOTO_MAX_SIZE = new ImageResizeOptions(2000, 1800);
-    private static final ImageResizeOptions PHOTO_PROFILE_MAX_SIZE = new ImageResizeOptions(400, 400); //TODO: think move
+    private final ImageResizeOptions photoMaxSize;
+    private final ImageResizeOptions photoProfileMaxSize;
+
+    private final ImageService imageService;
+
+    private final PhotoRepository photoRepository;
+
+    private final UserRepository userRepository;
 
     @Autowired
-    private ImageService imageService;
-
-    @Autowired
-    private PhotoRepository photoRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    public PhotoService(ImageService imageService,
+                        PhotoRepository photoRepository,
+                        UserRepository userRepository,
+                        EnvironmentService environmentService) {
+        this.imageService = imageService;
+        this.photoRepository = photoRepository;
+        this.userRepository = userRepository;
+        photoMaxSize = new ImageResizeOptions(environmentService.getParamInteger(ParamKey.PHOTO_MAX_WIDTH),
+                environmentService.getParamInteger(ParamKey.PHOTO_MAX_HEIGHT));
+        photoProfileMaxSize = new ImageResizeOptions(environmentService.getParamInteger(ParamKey.PHOTO_PROFILE_MAX_WIDTH),
+                environmentService.getParamInteger(ParamKey.PHOTO_PROFILE_MAX_HEIGHT));
+    }
 
     public PhotoData addPhoto(long userId, MultipartFile imageFile) {
-        if (imageFile.isEmpty()) {
+        if (imageFile == null || imageFile.isEmpty()) {
             throw new ApplicationException(PhotoError.NO_FILE);
         }
         UUID photoUUID = UUID.randomUUID();
         String photoId = photoUUID.toString().replace("-", "");
-        imageService.saveImageAndThumbnails(photoId, imageFile, null, PHOTO_MAX_SIZE);
+        imageService.saveImageAndThumbnails(photoId, imageFile, null, photoMaxSize);
 
         PhotoData photo = new PhotoData();
         photo.setType(PhotoData.PhotoType.PHOTO);
@@ -52,20 +65,23 @@ public class PhotoService {
 
     @Transactional
     public PhotoData addProfilePhoto(long userId, MultipartFile imageFile, ImageCropOptions imageCropOptions) {
+        if (imageFile == null || imageFile.isEmpty()) {
+            throw new ApplicationException(PhotoError.NO_FILE);
+        }
         UserData user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND));
         UUID photoUUID = UUID.randomUUID();
         String photoId = photoUUID.toString().replace("-", "");
-        imageService.saveImageAndThumbnails(photoId, imageFile, imageCropOptions, PHOTO_PROFILE_MAX_SIZE);
+        imageService.saveImageAndThumbnails(photoId, imageFile, imageCropOptions, photoProfileMaxSize);
 
-        PhotoData existing = photoRepository.findByUserIdAndType(user.getId(), PhotoData.PhotoType.PROFILE);
+        PhotoData existing = photoRepository.findByUserIdAndType(userId, PhotoData.PhotoType.PROFILE);
         if (existing != null) {
             existing.setType(PhotoData.PhotoType.PHOTO);
         }
         PhotoData photo = new PhotoData();
         photo.setType(PhotoData.PhotoType.PROFILE);
         photo.setUuid(photoUUID);
-        photo.setUserId(user.getId());
+        photo.setUserId(userId);
         photo = photoRepository.save(photo);
         user.setProfilePhoto(photo);
         return photo;

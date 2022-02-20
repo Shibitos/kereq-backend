@@ -1,7 +1,6 @@
 package com.kereq.common.config;
 
 import com.kereq.common.constant.CacheName;
-import com.kereq.common.constant.CacheProvider;
 import org.ehcache.config.CacheConfiguration;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;

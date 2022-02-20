@@ -11,4 +11,8 @@ public interface ParamKey {
     String THUMBNAIL_SUFFIX = "kereq.img.thumbnail_suffix";
     String THUMBNAIL_MINI_SIZE = "kereq.img.thumbnail_mini_size";
     String THUMBNAIL_MINI_SUFFIX = "kereq.img.thumbnail_mini_suffix";
+    String PHOTO_MAX_WIDTH = "kereq.photo.max_width";
+    String PHOTO_MAX_HEIGHT = "kereq.photo.max_height";
+    String PHOTO_PROFILE_MAX_WIDTH = "kereq.photo.profile.max_width";
+    String PHOTO_PROFILE_MAX_HEIGHT = "kereq.photo.profile.max_height";
 }
