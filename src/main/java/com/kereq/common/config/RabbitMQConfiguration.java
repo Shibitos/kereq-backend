@@ -110,10 +110,10 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer, Applicat
     private void registerQueues() {
         log.info("Registering queues");
         for (QueueName queueName : QueueName.values()) {
-            log.info("Registering queue name: {}", queueName.getName());
-            org.springframework.amqp.core.Queue queue = new org.springframework.amqp.core.Queue(queueName.getName(), true, false, false);
-            Binding binding = new Binding(queueName.getName(), Binding.DestinationType.QUEUE, queueName.getName(), queueName.getName(), null);
-            Exchange exchange = ExchangeBuilder.topicExchange(queueName.getName()).build();
+            log.info("Registering queue name: {}", queueName.getLiteral());
+            org.springframework.amqp.core.Queue queue = new org.springframework.amqp.core.Queue(queueName.getLiteral(), true, false, false);
+            Binding binding = new Binding(queueName.getLiteral(), Binding.DestinationType.QUEUE, queueName.getLiteral(), queueName.getLiteral(), null);
+            Exchange exchange = ExchangeBuilder.topicExchange(queueName.getLiteral()).build();
             admin.declareExchange(exchange);
             admin.declareQueue(queue);
             admin.declareBinding(binding);

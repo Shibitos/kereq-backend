@@ -9,7 +9,7 @@ public enum QueueName {
 
     MESSAGES(Constant.MESSAGES);
 
-    String name;
+    String literal;
 
     public interface Constant {
 
