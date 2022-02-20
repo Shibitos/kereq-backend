@@ -3,7 +3,6 @@ package com.kereq.main.exception;
 import com.kereq.common.error.ApplicationError;
 import com.kereq.common.error.CommonError;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 @Getter

@@ -1,6 +1,7 @@
 package com.kereq.common.constant;
 
 public interface ParamKey {
+
     String EMAIL_SUPPORT = "email.support";
     String IMG_EXTENSION = "kereq.img.extension";
     String IMG_DIR_DIV_CHAR_COUNT = "kereq.img.dir_div_char_count";

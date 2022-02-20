@@ -5,7 +5,6 @@ import com.kereq.common.error.RepositoryError;
 import com.kereq.common.service.EnvironmentService;
 import com.kereq.helper.AssertHelper;
 import com.kereq.main.entity.PhotoData;
-import com.kereq.main.entity.PostData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.error.PhotoError;
 import com.kereq.main.repository.PhotoRepository;
@@ -14,16 +13,15 @@ import com.kereq.main.service.ImageService;
 import com.kereq.main.service.PhotoService;
 import com.kereq.main.util.ImageCropOptions;
 import com.kereq.main.util.ImageResizeOptions;
-import javassist.bytecode.ByteArray;
-import org.assertj.core.internal.Bytes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,7 +1,6 @@
 package com.kereq.common.service;
 
 import com.kereq.common.constant.CacheName;
-import com.kereq.common.constant.ParamKey;
 import com.kereq.common.constant.ParamRange;
 import com.kereq.common.error.CommonError;
 import com.kereq.main.exception.ApplicationException;
