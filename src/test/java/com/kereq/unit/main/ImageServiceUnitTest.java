@@ -155,7 +155,6 @@ class ImageServiceUnitTest {
         AssertHelper.assertException(CommonError.OTHER_ERROR,
                 () -> imageService.saveImageAndThumbnails(EXAMPLE_PHOTO_ID, emptyFile, null, null));
         Mockito.verify(fileUtil, times(3)).deleteIfExists(Mockito.any());
-        //TODO: całość bez resize; IOException na write
     }
 
     @Test

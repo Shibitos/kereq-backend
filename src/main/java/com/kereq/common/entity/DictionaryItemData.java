@@ -43,7 +43,7 @@ public class DictionaryItemData extends AuditableEntity implements CodeEntity {
     @Size(min = 4, max = 50)
     private String value;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DICT_ITEM_DICT_ID", nullable = false)
     private DictionaryData dictionary;
 
