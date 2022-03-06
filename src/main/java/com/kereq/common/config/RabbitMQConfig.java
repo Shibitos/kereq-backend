@@ -1,13 +1,12 @@
 package com.kereq.common.config;
 
+import com.kereq.common.constant.ExchangeName;
 import com.kereq.common.constant.QueueName;
+import com.kereq.common.constant.RoutingKey;
 import com.kereq.main.exception.ApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
-import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.Exchange;
-import org.springframework.amqp.core.ExchangeBuilder;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -34,13 +33,10 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-public class RabbitMQConfiguration implements RabbitListenerConfigurer, ApplicationListener<ApplicationStartedEvent> {
+public class RabbitMQConfig implements RabbitListenerConfigurer {
 
     @Autowired
     private ConnectionFactory connectionFactory;
-
-    @Autowired
-    private AmqpAdmin admin;
 
     @Bean
     public Jackson2JsonMessageConverter producerJackson2MessageConverter() {
@@ -102,22 +98,33 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer, Applicat
         registrar.setMessageHandlerMethodFactory(messageHandlerMethodFactory());
     }
 
-    @Override
-    public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
-        registerQueues();
+    @Bean
+    Queue messagesQueue() {
+        return new Queue(QueueName.MESSAGES, true);
     }
 
-    private void registerQueues() {
-        log.info("Registering queues");
-        for (QueueName queueName : QueueName.values()) {
-            log.info("Registering queue name: {}", queueName.getLiteral());
-            org.springframework.amqp.core.Queue queue = new org.springframework.amqp.core.Queue(queueName.getLiteral(), true, false, false);
-            Binding binding = new Binding(queueName.getLiteral(), Binding.DestinationType.QUEUE, queueName.getLiteral(), queueName.getLiteral(), null);
-            Exchange exchange = ExchangeBuilder.topicExchange(queueName.getLiteral()).build();
-            admin.declareExchange(exchange);
-            admin.declareQueue(queue);
-            admin.declareBinding(binding);
-        }
-        log.info("All queues registered");
+    @Bean
+    FanoutExchange messagesExchange() {
+        return new FanoutExchange(ExchangeName.MESSAGES);
+    }
+
+    @Bean
+    Binding messagesBinding(Queue messagesQueue, FanoutExchange messagesExchange) {
+        return BindingBuilder.bind(messagesQueue).to(messagesExchange);
+    }
+
+    @Bean
+    Queue connectionsQueue() {
+        return new Queue(QueueName.CONNECTIONS, false);
+    }
+
+    @Bean
+    DirectExchange connectionsExchange() {
+        return new DirectExchange(ExchangeName.CONNECTIONS);
+    }
+
+    @Bean
+    Binding connectionsBinding(Queue connectionsQueue, DirectExchange connectionsExchange) {
+        return BindingBuilder.bind(connectionsQueue).to(connectionsExchange).with(RoutingKey.BACKEND);
     }
 }

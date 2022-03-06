@@ -73,6 +73,10 @@ public class UserData extends AuditableEntity implements UserDataInfo {
     @NotNull
     private boolean activated;
 
+    @Column(name = "USER_ONLINE")
+    @NotNull
+    private boolean online;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "USER_BIRTH_DATE")
     @NotNull

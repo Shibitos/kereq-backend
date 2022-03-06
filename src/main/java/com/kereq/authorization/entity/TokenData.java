@@ -53,7 +53,7 @@ public class TokenData extends BaseEntity {
 
     @OneToOne(targetEntity = UserData.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "TKN_USER_ID")
-    private UserData user;
+    private UserData user; //TODO: N+1
 
     public interface TokenType {
         String VERIFICATION = "V";

@@ -1,6 +1,6 @@
 package com.kereq.unit.common;
 
-import com.kereq.common.constant.QueueName;
+import com.kereq.common.constant.ExchangeName;
 import com.kereq.common.service.MessagingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +28,7 @@ class MessagingServiceUnitTest {
     @Test
     void testSendMessageToQueue() {
         String str = "test";
-        messagingService.sendMessageToQueue(QueueName.Constant.MESSAGES, str);
-        Mockito.verify(rabbitTemplate, times(1))
-                .convertAndSend(QueueName.Constant.MESSAGES, QueueName.Constant.MESSAGES, str);
+        messagingService.sendMessageFanout(ExchangeName.MESSAGES, str);
+        Mockito.verify(rabbitTemplate, times(1)).convertAndSend(ExchangeName.MESSAGES, "", str);
     }
 }

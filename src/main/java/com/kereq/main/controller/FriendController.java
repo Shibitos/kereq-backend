@@ -66,6 +66,11 @@ public class FriendController {
         return userService.getFriends(user.getId(), page).map(f -> modelMapper.map(f, FriendshipDTO.class));
     }
 
+    @GetMapping("/online")
+    public Page<FriendshipDTO> getFriendsOnline(Pageable page, @AuthenticationPrincipal UserDataInfo user) {
+        return userService.getFriendsOnline(user.getId(), page).map(f -> modelMapper.map(f, FriendshipDTO.class));
+    }
+
     @GetMapping("/{userId}")
     public Page<FriendshipDTO> getFriends(Pageable page, @PathVariable("userId") long userId) {
         return userService.getFriends(userId, page).map(f -> modelMapper.map(f, FriendshipDTO.class));

@@ -20,6 +20,12 @@
 		<aspectj-maven-plugin.version>1.14.0</aspectj-maven-plugin.version>
 	</properties>
 	<dependencies>
+		<!--COMMUNICATOR-->
+		<dependency>
+			<groupId>com.kereq.communicator</groupId>
+			<artifactId>shared</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!--SPRING-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

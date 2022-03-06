@@ -8,8 +8,6 @@ import com.kereq.messaging.error.MessageError;
 import com.kereq.messaging.repository.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.plexus.util.StringUtils;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -35,12 +33,7 @@ public class MessageListener {
     @Autowired
     private EntityManager entityManager;
 
-    @RabbitListener(bindings = @QueueBinding(
-            value = @org.springframework.amqp.rabbit.annotation.Queue(value = QueueName.Constant.MESSAGES, durable = "true"),
-            exchange = @Exchange(name = QueueName.Constant.MESSAGES, durable = "true", type = "topic"),
-            key = QueueName.Constant.MESSAGES
-    )
-    )
+    @RabbitListener(queues = QueueName.MESSAGES)
     @Transactional
     public void onMessage(@Payload long messageId) {
         MessageData message = messageRepository.findForSendingById(messageId);
@@ -63,7 +56,7 @@ public class MessageListener {
                 message.setErrorMessage(StringUtils.abbreviate(e.getMessage(), 100));
             }
             messageRepository.save(message);
-            log.error("Error while sending message (id: {}).", message.getId());
+            log.error("Error while sending message (id: {}).", message.getId(), e);
             throw new ApplicationException(MessageError.UNABLE_TO_SEND);
         }
         message.setStatus(MessageData.Status.SENT);

@@ -1,7 +1,7 @@
 package com.kereq.messaging.service;
 
+import com.kereq.common.constant.ExchangeName;
 import com.kereq.common.constant.ParamKey;
-import com.kereq.common.constant.QueueName;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
 import com.kereq.common.service.EnvironmentService;
@@ -63,7 +63,7 @@ public class EmailService {
         if (!MessageData.Status.PENDING.equals(message.getStatus())) {
             throw new ApplicationException(CommonError.INVALID_ERROR, "status");
         }
-        messagingService.sendMessageToQueue(QueueName.Constant.MESSAGES, message.getId());
+        messagingService.sendMessageFanout(ExchangeName.MESSAGES, message.getId());
     }
 
     private String appendParameters(String content, Map<String, String> params) {

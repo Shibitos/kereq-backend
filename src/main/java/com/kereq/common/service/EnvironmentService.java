@@ -26,8 +26,7 @@ public class EnvironmentService implements EnvironmentAware {
     public Integer getParamInteger(String key) {
         int value = Integer.parseInt(getEnvProperty(key));
         boolean rangeConditionFailed = Arrays.stream(ParamRange.values())
-                .anyMatch(pr -> pr.getKey().equals(key)
-                        && ((pr.getMin() > 0 && value < pr.getMin()) || (pr.getMax() > 0 && value > pr.getMax())));
+                .anyMatch(pr -> pr.getKey().equals(key) && isIntNotInRange(value, pr.getMin(), pr.getMax()));
         if (rangeConditionFailed) {
             throw new ApplicationException(CommonError.OTHER_ERROR);
         }
@@ -45,5 +44,9 @@ public class EnvironmentService implements EnvironmentAware {
             throw new ApplicationException(CommonError.OTHER_ERROR);
         }
         return value;
+    }
+
+    private boolean isIntNotInRange(int value, double minRange, double maxRange) {
+        return ((minRange > 0 && value < minRange) || (maxRange > 0 && value > maxRange));
     }
 }
