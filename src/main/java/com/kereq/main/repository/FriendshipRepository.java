@@ -16,10 +16,6 @@ public interface FriendshipRepository extends BaseRepository<FriendshipData> {
             " AND fs.status = '" + FriendshipData.FriendshipStatus.ACCEPTED + "'")
     Page<FriendshipData> findUserFriends(long userId, Pageable page);
 
-    @Query("SELECT new FriendshipData(fs.friend, true, fs.auditMD) FROM FriendshipData fs WHERE fs.userId = :userId" +
-            " AND fs.status = '" + FriendshipData.FriendshipStatus.ACCEPTED + "' AND fs.friend.online IS TRUE")
-    Page<FriendshipData> findUserFriendsOnline(long userId, Pageable page);
-
     @Query("SELECT fs.friend.id FROM FriendshipData fs WHERE fs.userId = :userId" +
             " AND fs.status = '" + FriendshipData.FriendshipStatus.ACCEPTED + "' AND fs.friend.online IS TRUE")
     Page<Long> findUserFriendsIdOnline(long userId, Pageable page);

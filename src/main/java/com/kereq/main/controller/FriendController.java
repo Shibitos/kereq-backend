@@ -1,12 +1,15 @@
 package com.kereq.main.controller;
 
 import com.kereq.main.dto.FriendshipDTO;
+import com.kereq.main.entity.FriendshipData;
 import com.kereq.main.entity.UserDataInfo;
 import com.kereq.main.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -66,13 +69,22 @@ public class FriendController {
         return userService.getFriends(user.getId(), page).map(f -> modelMapper.map(f, FriendshipDTO.class));
     }
 
-    @GetMapping("/online")
-    public Page<FriendshipDTO> getFriendsOnline(Pageable page, @AuthenticationPrincipal UserDataInfo user) {
-        return userService.getFriendsOnline(user.getId(), page).map(f -> modelMapper.map(f, FriendshipDTO.class));
+    @GetMapping("/online-first")
+    public Page<FriendshipDTO> getFriendsOnlineFirst(
+            @PageableDefault(sort = "friend.online", direction = Sort.Direction.DESC) Pageable page,
+            @AuthenticationPrincipal UserDataInfo user) {
+        return userService.getFriends(user.getId(), page).map(f -> modelMapper.map(f, FriendshipDTO.class));
     }
 
     @GetMapping("/{userId}")
     public Page<FriendshipDTO> getFriends(Pageable page, @PathVariable("userId") long userId) {
         return userService.getFriends(userId, page).map(f -> modelMapper.map(f, FriendshipDTO.class));
+    }
+
+    @GetMapping("/with/{friendId}")
+    public FriendshipDTO getFriendship(@AuthenticationPrincipal UserDataInfo user,
+                                       @PathVariable("friendId") long friendId) {
+        FriendshipData friendship = userService.getFriendship(user.getId(), friendId);
+        return modelMapper.map(friendship, FriendshipDTO.class);
     }
 }

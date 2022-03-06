@@ -117,12 +117,12 @@ public class UserService {
         return friendshipRepository.findUserFriends(userId, page);
     }
 
-    public Page<FriendshipData> getFriendsOnline(long userId, Pageable page) {
-        return friendshipRepository.findUserFriendsOnline(userId, page);
-    }
-
     public Page<FriendshipData> getInvitationsUsers(long userId, Pageable page) {
         return friendshipRepository.findUserInvitations(userId, page);
+    }
+
+    public FriendshipData getFriendship(long userId, long friendId) {
+        return friendshipRepository.findByUserIdAndFriendId(userId, friendId);
     }
 
     public UserData getUser(long userId) {
