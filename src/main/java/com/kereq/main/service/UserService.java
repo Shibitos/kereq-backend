@@ -2,12 +2,14 @@ package com.kereq.main.service;
 
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
+import com.kereq.communicator.shared.dto.ConnectionEventDTO;
 import com.kereq.main.entity.FriendshipData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.FriendshipRepository;
 import com.kereq.main.repository.PhotoRepository;
 import com.kereq.main.repository.UserRepository;
+import com.kereq.main.sender.ConnectionEventSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,9 @@ public class UserService {
 
     @Autowired
     private FriendshipRepository friendshipRepository;
+
+    @Autowired
+    private ConnectionEventSender connectionEventSender;
 
     private static final String STATUS_FIELD = "status"; //TODO: remove?
 
@@ -84,6 +89,8 @@ public class UserService {
         accepted.setFriendId(senderId);
         accepted.setStatus(FriendshipData.FriendshipStatus.ACCEPTED);
         friendshipRepository.save(accepted);
+        connectionEventSender.send(new ConnectionEventDTO(ConnectionEventDTO.Type.CONNECT, userId, senderId));
+        connectionEventSender.send(new ConnectionEventDTO(ConnectionEventDTO.Type.CONNECT, senderId, userId));
     }
 
     @Transactional
@@ -111,6 +118,8 @@ public class UserService {
         }
         friendshipRepository.delete(userEntry);
         friendshipRepository.delete(friendEntry);
+        connectionEventSender.send(new ConnectionEventDTO(ConnectionEventDTO.Type.REMOVAL, userId, friendId));
+        connectionEventSender.send(new ConnectionEventDTO(ConnectionEventDTO.Type.REMOVAL, friendId, userId));
     }
 
     public Page<FriendshipData> getFriends(long userId, Pageable page) {
