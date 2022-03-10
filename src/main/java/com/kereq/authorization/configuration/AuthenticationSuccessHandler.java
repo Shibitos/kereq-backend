@@ -18,11 +18,14 @@ import java.io.IOException;
 @Component
 public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    @Autowired
-    private JWTService jwtService;
+    private final JWTService jwtService;
 
-    @Autowired
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
+
+    public AuthenticationSuccessHandler(JWTService jwtService, ObjectMapper mapper) {
+        this.jwtService = jwtService;
+        this.mapper = mapper;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

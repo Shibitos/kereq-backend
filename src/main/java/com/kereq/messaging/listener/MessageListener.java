@@ -24,14 +24,17 @@ public class MessageListener {
 
     public static final Integer MAX_RETRY_COUNT = 3; //TODO: params
 
-    @Autowired
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
-    @Autowired
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
+
+    public MessageListener(MessageRepository messageRepository, JavaMailSender mailSender, EntityManager entityManager) {
+        this.messageRepository = messageRepository;
+        this.mailSender = mailSender;
+        this.entityManager = entityManager;
+    }
 
     @RabbitListener(queues = QueueName.MESSAGES)
     @Transactional

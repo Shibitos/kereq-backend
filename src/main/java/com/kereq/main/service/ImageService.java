@@ -32,8 +32,7 @@ public class ImageService {
     private final ImageUtil imageUtil;
 
     private final FileUtil fileUtil;
-    
-    @Autowired
+
     public ImageService(EnvironmentService environmentService, ImageUtil imageUtil, FileUtil fileUtil) {
         this.environmentService = environmentService;
         this.imageUtil = imageUtil;

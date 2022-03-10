@@ -15,17 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PostService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private PostStatisticsService postStatisticsService;
+    private final PostStatisticsService postStatisticsService;
+
+    public PostService(PostRepository postRepository, CommentService commentService, UserService userService, PostStatisticsService postStatisticsService) {
+        this.postRepository = postRepository;
+        this.commentService = commentService;
+        this.userService = userService;
+        this.postStatisticsService = postStatisticsService;
+    }
 
     @Transactional
     public PostData createPost(PostData post) { //TODO: sanitize html

@@ -14,14 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PostLikeService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    @Autowired
-    private PostLikeRepository postLikeRepository;
+    private final PostLikeRepository postLikeRepository;
 
-    @Autowired
-    private PostStatisticsService postStatisticsService;
+    private final PostStatisticsService postStatisticsService;
+
+    public PostLikeService(PostRepository postRepository, PostLikeRepository postLikeRepository, PostStatisticsService postStatisticsService) {
+        this.postRepository = postRepository;
+        this.postLikeRepository = postLikeRepository;
+        this.postStatisticsService = postStatisticsService;
+    }
 
     public PostLikeData getUserLike(long userId, long postId) {
         return postLikeRepository.findByUserIdAndPostId(userId, postId);

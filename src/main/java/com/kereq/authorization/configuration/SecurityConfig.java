@@ -27,17 +27,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AccessDeniedHandler accessDeniedHandler;
     private final JWTService jwtService;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     public SecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler,
                           AuthenticationFailureHandler authenticationFailureHandler,
                           CustomAccessDeniedHandler accessDeniedHandler,
-                          JWTService jwtService) {
+                          JWTService jwtService, UserDetailsService userDetailsService) {
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.authenticationFailureHandler = authenticationFailureHandler;
         this.accessDeniedHandler = accessDeniedHandler;
         this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean

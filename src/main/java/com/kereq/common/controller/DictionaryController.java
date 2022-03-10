@@ -17,11 +17,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/dictionaries")
 public class DictionaryController {
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public DictionaryController(DictionaryService dictionaryService, ModelMapper modelMapper) {
+        this.dictionaryService = dictionaryService;
+        this.modelMapper = modelMapper;
+    }
 
     @GetMapping("/{code}")
     public List<DictionaryItemDTO> getDictionaryValues(@PathVariable("code") String code) {

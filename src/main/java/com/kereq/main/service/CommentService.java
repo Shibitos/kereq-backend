@@ -14,17 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private PostStatisticsService postStatisticsService;
+    private final PostStatisticsService postStatisticsService;
 
-    @Autowired
-    private CommentStatisticsService commentStatisticsService;
+    private final CommentStatisticsService commentStatisticsService;
+
+    public CommentService(CommentRepository commentRepository, UserService userService, PostStatisticsService postStatisticsService, CommentStatisticsService commentStatisticsService) {
+        this.commentRepository = commentRepository;
+        this.userService = userService;
+        this.postStatisticsService = postStatisticsService;
+        this.commentStatisticsService = commentStatisticsService;
+    }
 
     @Transactional
     public CommentData createComment(CommentData comment) { //TODO: sanitize html

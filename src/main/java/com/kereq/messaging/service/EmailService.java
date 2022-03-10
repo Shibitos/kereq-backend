@@ -27,14 +27,17 @@ public class EmailService {
 
     private static final Pattern PARAM_PATTERN = Pattern.compile("\\{\\{.*?}}");
 
-    @Autowired
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
 
-    @Autowired
-    private EnvironmentService environmentService;
+    private final EnvironmentService environmentService;
 
-    @Autowired
-    private MessagingService messagingService;
+    private final MessagingService messagingService;
+
+    public EmailService(MessageRepository messageRepository, EnvironmentService environmentService, MessagingService messagingService) {
+        this.messageRepository = messageRepository;
+        this.environmentService = environmentService;
+        this.messagingService = messagingService;
+    }
 
     public MessageData createMessageFromTemplate(MessageTemplateData template, String to, Map<String, String> data) {
         if (ObjectUtils.isEmpty(environmentService.getParam(ParamKey.EMAIL_SUPPORT))) {

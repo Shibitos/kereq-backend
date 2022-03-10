@@ -1,6 +1,7 @@
 package com.kereq.unit.common;
 
 import com.kereq.common.constant.ExchangeName;
+import com.kereq.common.repository.DictionaryRepository;
 import com.kereq.common.service.MessagingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,15 +15,13 @@ import static org.mockito.Mockito.times;
 
 class MessagingServiceUnitTest {
 
-    @Mock
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate = Mockito.mock(RabbitTemplate.class);
 
-    @InjectMocks
     private MessagingService messagingService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        messagingService = new MessagingService(rabbitTemplate);
     }
 
     @Test

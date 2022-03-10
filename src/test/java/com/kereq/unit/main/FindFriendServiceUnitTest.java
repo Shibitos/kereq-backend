@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -25,16 +26,14 @@ import static org.mockito.Mockito.when;
 
 class FindFriendServiceUnitTest {
 
-    @Mock
-    private FindFriendRepository findFriendRepository;
+    private final FindFriendRepository findFriendRepository = Mockito.mock(FindFriendRepository.class);
 
-    @InjectMocks
     private FindFriendService findFriendService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(findFriendRepository.save(Mockito.any(FindFriendData.class))).thenAnswer(i -> i.getArguments()[0]);
+        findFriendService = new FindFriendService(findFriendRepository);
     }
 
     @Test

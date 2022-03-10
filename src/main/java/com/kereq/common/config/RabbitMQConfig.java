@@ -28,8 +28,11 @@ import java.util.Map;
 @Configuration
 public class RabbitMQConfig implements RabbitListenerConfigurer {
 
-    @Autowired
-    private ConnectionFactory connectionFactory;
+    private final ConnectionFactory connectionFactory;
+
+    public RabbitMQConfig(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
 
     @Bean
     public RabbitAdmin rabbitAdmin() {

@@ -34,7 +34,6 @@ public class PhotoService {
 
     private final UserRepository userRepository;
 
-    @Autowired
     public PhotoService(ImageService imageService,
                         PhotoRepository photoRepository,
                         UserRepository userRepository,

@@ -15,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.security.core.parameters.P;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -22,25 +24,21 @@ import static org.mockito.Mockito.when;
 class PostStatisticsServiceUnitTest {
 
 
-    @Mock
-    private PostRepository postRepository;
+    private final PostRepository postRepository = Mockito.mock(PostRepository.class);
 
-    @Mock
-    private PostLikeRepository postLikeRepository;
+    private final PostLikeRepository postLikeRepository = Mockito.mock(PostLikeRepository.class);
 
-    @Mock
-    private PostStatisticsRepository postStatisticsRepository;
+    private final PostStatisticsRepository postStatisticsRepository = Mockito.mock(PostStatisticsRepository.class);
 
-    @InjectMocks
     private PostStatisticsService postStatisticsService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(postStatisticsRepository.save(Mockito.any(PostStatisticsData.class)))
                 .thenAnswer(i -> i.getArguments()[0]);
         when(postStatisticsRepository.findByPostId(1L)).thenReturn(null);
         when(postStatisticsRepository.findByPostId(2L)).thenReturn(new PostStatisticsData());
+        postStatisticsService = new PostStatisticsService(postRepository, postLikeRepository, postStatisticsRepository);
     }
     
     @Test

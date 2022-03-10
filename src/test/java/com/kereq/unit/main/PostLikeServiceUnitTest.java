@@ -5,6 +5,7 @@ import com.kereq.helper.AssertHelper;
 import com.kereq.main.constant.LikeType;
 import com.kereq.main.entity.PostLikeData;
 import com.kereq.main.repository.PostLikeRepository;
+import com.kereq.main.repository.PostRepository;
 import com.kereq.main.service.PostLikeService;
 import com.kereq.main.service.PostStatisticsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,29 +14,29 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 class PostLikeServiceUnitTest {
 
-    @Mock
-    private PostLikeRepository postLikeRepository;
+    private final PostRepository postRepository = Mockito.mock(PostRepository.class);
 
-    @Mock
-    private PostStatisticsService postStatisticsService;
+    private final PostLikeRepository postLikeRepository = Mockito.mock(PostLikeRepository.class);
 
-    @InjectMocks
+    private final PostStatisticsService postStatisticsService = Mockito.mock(PostStatisticsService.class);
+
     private PostLikeService postLikeService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(postLikeRepository.findByUserIdAndPostId(1L, 1L)).thenReturn(null);
         when(postLikeRepository.findByUserIdAndPostId(2L, 1L))
                 .thenReturn(buildPostLike(LikeType.LIKE));
         when(postLikeRepository.findByUserIdAndPostId(3L, 1L))
                 .thenReturn(buildPostLike(LikeType.DISLIKE));
+        postLikeService = new PostLikeService(postRepository, postLikeRepository, postStatisticsService);
     }
 
     @Test

@@ -8,15 +8,18 @@ import com.kereq.main.entity.PostData;
 import com.kereq.main.entity.PostStatisticsData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.repository.PostRepository;
+import com.kereq.main.repository.UserRepository;
 import com.kereq.main.service.CommentService;
 import com.kereq.main.service.PostService;
 import com.kereq.main.service.PostStatisticsService;
+import com.kereq.main.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -29,31 +32,28 @@ import static org.mockito.Mockito.*;
 
 class PostServiceUnitTest {
 
-    @Mock
-    private CommentService commentService;
+    private final CommentService commentService = Mockito.mock(CommentService.class);
 
-    @Mock
-    private PostRepository postRepository;
+    private final PostRepository postRepository = Mockito.mock(PostRepository.class);
 
-    @Mock
-    private PostStatisticsService postStatisticsService;
+    private final UserService userService = Mockito.mock(UserService.class);
 
-    @InjectMocks
+    private final PostStatisticsService postStatisticsService = Mockito.mock(PostStatisticsService.class);
+
     private PostService postService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(postStatisticsService.initialize()).thenReturn(new PostStatisticsData());
         when(postRepository.save(Mockito.any(PostData.class))).thenAnswer(i -> {
             PostData post = (PostData) i.getArguments()[0];
             post.setId(1L);
             return post;
         });
-
         Page<CommentData> commentsPage = new PageImpl<>(List.of(new CommentData()));
         when(commentService.getPostComments(Mockito.anyLong(), Mockito.anyLong(), Mockito.any()))
                 .thenReturn(commentsPage);
+        postService = new PostService(postRepository, commentService, userService, postStatisticsService);
     }
 
     @Test

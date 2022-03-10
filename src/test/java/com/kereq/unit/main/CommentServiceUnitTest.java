@@ -10,12 +10,14 @@ import com.kereq.main.repository.CommentRepository;
 import com.kereq.main.service.CommentService;
 import com.kereq.main.service.CommentStatisticsService;
 import com.kereq.main.service.PostStatisticsService;
+import com.kereq.main.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -28,27 +30,25 @@ import static org.mockito.Mockito.*;
 
 class CommentServiceUnitTest {
 
-    @Mock
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository = Mockito.mock(CommentRepository.class);
 
-    @Mock
-    private PostStatisticsService postStatisticsService;
+    private final PostStatisticsService postStatisticsService = Mockito.mock(PostStatisticsService.class);
 
-    @Mock
-    private CommentStatisticsService commentStatisticsService;
+    private final CommentStatisticsService commentStatisticsService = Mockito.mock(CommentStatisticsService.class);
 
-    @InjectMocks
+    private final UserService userService = Mockito.mock(UserService.class);
+
     private CommentService commentService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(commentStatisticsService.initialize()).thenReturn(new CommentStatisticsData());
         when(commentRepository.save(Mockito.any(CommentData.class))).thenAnswer(i -> {
             CommentData comment = (CommentData) i.getArguments()[0];
             comment.setId(1L);
             return comment;
         });
+        commentService = new CommentService(commentRepository, userService, postStatisticsService, commentStatisticsService);
     }
 
     @Test

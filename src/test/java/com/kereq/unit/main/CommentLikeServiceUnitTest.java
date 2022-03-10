@@ -13,29 +13,27 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 class CommentLikeServiceUnitTest {
 
-    @Mock
-    private CommentLikeRepository commentLikeRepository;
+    private final CommentLikeRepository commentLikeRepository = Mockito.mock(CommentLikeRepository.class);
 
-    @Mock
-    private CommentStatisticsService commentStatisticsService;
+    private final CommentStatisticsService commentStatisticsService = Mockito.mock(CommentStatisticsService.class);
 
-    @InjectMocks
     private CommentLikeService commentLikeService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(commentLikeRepository.findByUserIdAndCommentId(1L, 1L)).thenReturn(null);
         when(commentLikeRepository.findByUserIdAndCommentId(2L, 1L))
                 .thenReturn(buildCommentLike(LikeType.LIKE));
         when(commentLikeRepository.findByUserIdAndCommentId(3L, 1L))
                 .thenReturn(buildCommentLike(LikeType.DISLIKE));
+        commentLikeService = new CommentLikeService(commentLikeRepository, commentStatisticsService);
     }
 
     @Test

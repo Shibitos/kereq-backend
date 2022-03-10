@@ -25,14 +25,17 @@ import javax.validation.Valid;
 @RequestMapping("/posts/{postId}/comments")
 public class CommentController {
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
 
-    @Autowired
-    private CommentLikeService commentLikeService;
+    private final CommentLikeService commentLikeService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public CommentController(CommentService commentService, CommentLikeService commentLikeService, ModelMapper modelMapper) {
+        this.commentService = commentService;
+        this.commentLikeService = commentLikeService;
+        this.modelMapper = modelMapper;
+    }
 
     @PostMapping
     public CommentDTO addComment(@Valid @RequestBody CommentDTO commentDTO,

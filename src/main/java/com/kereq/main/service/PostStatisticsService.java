@@ -14,14 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PostStatisticsService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    @Autowired
-    private PostLikeRepository postLikeRepository;
+    private final PostLikeRepository postLikeRepository;
 
-    @Autowired
-    private PostStatisticsRepository postStatisticsRepository;
+    private final PostStatisticsRepository postStatisticsRepository;
+
+    public PostStatisticsService(PostRepository postRepository, PostLikeRepository postLikeRepository, PostStatisticsRepository postStatisticsRepository) {
+        this.postRepository = postRepository;
+        this.postLikeRepository = postLikeRepository;
+        this.postStatisticsRepository = postStatisticsRepository;
+    }
 
     public void fillUserLikeType(long userId, PostStatisticsData postStatistics) {
         if (postStatistics == null) {

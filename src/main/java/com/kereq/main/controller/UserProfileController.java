@@ -25,14 +25,17 @@ import javax.validation.Valid;
 @RequestMapping("/profile")
 public class UserProfileController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private PhotoService photoService;
+    private final PhotoService photoService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public UserProfileController(UserService userService, PhotoService photoService, ModelMapper modelMapper) {
+        this.userService = userService;
+        this.photoService = photoService;
+        this.modelMapper = modelMapper;
+    }
 
     @GetMapping
     public UserDTO getLoggedUser(@AuthenticationPrincipal UserDataInfo user) {

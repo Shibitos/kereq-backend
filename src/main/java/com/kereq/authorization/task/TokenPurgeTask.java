@@ -13,8 +13,11 @@ import java.util.Date;
 @Transactional
 public class TokenPurgeTask { //TODO: tasks system
 
-    @Autowired
-    TokenRepository tokenRepository;
+    private final TokenRepository tokenRepository;
+
+    public TokenPurgeTask(TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
+    }
 
     @Scheduled(cron = "${purge.cron.expression}") //TODO: move to parameters?
     public void purgeExpired() {

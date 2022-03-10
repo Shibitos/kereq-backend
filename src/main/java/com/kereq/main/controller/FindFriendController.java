@@ -20,11 +20,14 @@ import javax.validation.Valid;
 @RequestMapping("/find-friends")
 public class FindFriendController {
 
-    @Autowired
-    private FindFriendService findFriendService;
+    private final FindFriendService findFriendService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public FindFriendController(FindFriendService findFriendService, ModelMapper modelMapper) {
+        this.findFriendService = findFriendService;
+        this.modelMapper = modelMapper;
+    }
 
     @GetMapping
     public FindFriendDTO getMyAd(@AuthenticationPrincipal UserDataInfo user) {

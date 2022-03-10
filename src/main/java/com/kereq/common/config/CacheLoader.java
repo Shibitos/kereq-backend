@@ -9,6 +9,7 @@ import com.kereq.common.entity.CodeEntity;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.repository.DictionaryItemRepository;
 import com.kereq.main.exception.ApplicationException;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -18,6 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -27,17 +29,20 @@ import java.util.stream.Collectors;
 @Service
 public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Autowired
-    CacheManager cacheManager;
+    private final CacheManager cacheManager;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
-    @Autowired
-    private DictionaryItemRepository dictionaryItemRepository;
+    private final DictionaryItemRepository dictionaryItemRepository;
+
+    public CacheLoader(CacheManager cacheManager, ApplicationContext applicationContext, DictionaryItemRepository dictionaryItemRepository) {
+        this.cacheManager = cacheManager;
+        this.applicationContext = applicationContext;
+        this.dictionaryItemRepository = dictionaryItemRepository;
+    }
 
     @Override
-    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+    public void onApplicationEvent(@NonNull ApplicationReadyEvent applicationReadyEvent) {
         loadCaches();
     }
 

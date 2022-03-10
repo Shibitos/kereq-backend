@@ -19,8 +19,11 @@ import java.util.Map;
 @Component
 public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    @Autowired
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
+
+    public AuthenticationFailureHandler(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {

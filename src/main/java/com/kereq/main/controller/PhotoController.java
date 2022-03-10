@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/image")
 public class PhotoController {
 
-    @Autowired
-    private ImageService imageService;
+    private final ImageService imageService;
+
+    public PhotoController(ImageService imageService) {
+        this.imageService = imageService;
+    }
 
     @GetMapping(value = "/og/{photoId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getImage(@PathVariable("photoId") String photoId) {

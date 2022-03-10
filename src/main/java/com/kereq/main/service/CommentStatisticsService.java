@@ -13,11 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CommentStatisticsService {
 
-    @Autowired
-    private CommentLikeRepository commentLikeRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
-    @Autowired
-    private CommentStatisticsRepository commentStatisticsRepository;
+    private final CommentStatisticsRepository commentStatisticsRepository;
+
+    public CommentStatisticsService(CommentLikeRepository commentLikeRepository, CommentStatisticsRepository commentStatisticsRepository) {
+        this.commentLikeRepository = commentLikeRepository;
+        this.commentStatisticsRepository = commentStatisticsRepository;
+    }
 
     public void fillUserLikeType(long userId, CommentStatisticsData commentStatistics) {
         if (commentStatistics == null) {

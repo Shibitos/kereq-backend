@@ -32,35 +32,25 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
 class AuthServiceUnitTest {
+    
+    private final UserRepository userRepository = Mockito.mock(UserRepository.class);
+    
+    private final PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
+    
+    private final RoleRepository roleRepository = Mockito.mock(RoleRepository.class);
+    
+    private final MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
+    
+    private final MessageTemplateRepository messageTemplateRepository = Mockito.mock(MessageTemplateRepository.class);
+    
+    private final TokenRepository tokenRepository = Mockito.mock(TokenRepository.class);
+    
+    private final EmailService emailService = Mockito.mock(EmailService.class);
 
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
-
-    @Mock
-    private RoleRepository roleRepository;
-
-    @Mock
-    private MessageRepository messageRepository;
-
-    @Mock
-    private MessageTemplateRepository messageTemplateRepository;
-
-    @Mock
-    private TokenRepository tokenRepository;
-
-    @InjectMocks
     private AuthService authService;
-
-    @Mock
-    private EmailService emailService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-
         when(userRepository.existsById(1L)).thenReturn(false);
         when(userRepository.existsById(2L)).thenReturn(true);
         when(userRepository.existsById(3L)).thenReturn(true);
@@ -74,6 +64,8 @@ class AuthServiceUnitTest {
         template.setBody("test{{CONFIRM_URL}}test");
         when(messageTemplateRepository.findByCode(template.getCode())).thenReturn(template);
         doNothing().when(emailService).sendMessage(Mockito.any(MessageData.class));
+        authService = new AuthService(userRepository, roleRepository, tokenRepository,
+                messageTemplateRepository, messageRepository, passwordEncoder, emailService, null);
     }
 
     @Test

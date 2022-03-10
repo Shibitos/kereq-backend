@@ -31,9 +31,10 @@ class JWTServiceUnitTest {
 
     private static final int MIN_EXPIRE_TIME = 1;
 
+    private final UserDetailsService userDetailsService = Mockito.mock(UserDetailsService.class);
+
     private JWTService jwtService;
     private JWTService expiringJwtService;
-    private UserDetailsService userDetailsService = Mockito.mock(UserDetailsService.class);
 
     @BeforeEach
     public void setup() {

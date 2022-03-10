@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,18 +19,15 @@ import static org.mockito.Mockito.when;
 
 class DictionaryServiceUnitTest {
 
-    @Mock
-    private DictionaryRepository dictionaryRepository;
+    private final DictionaryRepository dictionaryRepository = Mockito.mock(DictionaryRepository.class);
 
-    @Mock
-    private DictionaryItemRepository dictionaryItemRepository;
+    private final DictionaryItemRepository dictionaryItemRepository = Mockito.mock(DictionaryItemRepository.class);
 
-    @InjectMocks
     private DictionaryService dictionaryService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        dictionaryService = new DictionaryService(dictionaryRepository, dictionaryItemRepository);
     }
 
     @Test

@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,16 +28,12 @@ import static org.mockito.Mockito.when;
 
 class EmailServiceUnitTest {
 
-    @Mock
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
 
-    @Mock
-    private EnvironmentService environmentService;
+    private final EnvironmentService environmentService = Mockito.mock(EnvironmentService.class);
 
-    @Mock
-    private MessagingService messagingService;
+    private final MessagingService messagingService = Mockito.mock(MessagingService.class);
 
-    @InjectMocks
     private EmailService emailService;
 
     private final String[] validEmails = {
@@ -73,9 +70,9 @@ class EmailServiceUnitTest {
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(environmentService.getParam(ParamKey.EMAIL_SUPPORT)).thenReturn("kereq@ethereal.email");
         when(messageRepository.save(Mockito.any(MessageData.class))).thenAnswer(i -> i.getArguments()[0]);
+        emailService = new EmailService(messageRepository, environmentService, messagingService);
     }
 
     @Test

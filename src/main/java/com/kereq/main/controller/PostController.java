@@ -24,14 +24,17 @@ import javax.validation.Valid;
 @RequestMapping("/posts")
 public class PostController {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
 
-    @Autowired
-    private PostLikeService postLikeService;
+    private final PostLikeService postLikeService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public PostController(PostService postService, PostLikeService postLikeService, ModelMapper modelMapper) {
+        this.postService = postService;
+        this.postLikeService = postLikeService;
+        this.modelMapper = modelMapper;
+    }
 
     @PostMapping
     public PostDTO addPost(@Valid @RequestBody PostDTO postDTO,

@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
@@ -25,25 +26,18 @@ import static org.mockito.Mockito.when;
 
 class MessageListenerUnitTest {
 
-    @Mock
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
 
-    @Mock
-    private Environment env;
+    private final JavaMailSender mailSender = Mockito.mock(JavaMailSender.class);
 
-    @Mock
-    private JavaMailSender mailSender;
+    private final EntityManager entityManager = Mockito.mock(EntityManager.class);
 
-    @Mock
-    private EntityManager entityManager;
-
-    @InjectMocks
     private MessageListener messageListener;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(messageRepository.save(Mockito.any(MessageData.class))).thenAnswer(i -> i.getArguments()[0]);
+        messageListener = new MessageListener(messageRepository, mailSender, entityManager);
     }
 
     @Test

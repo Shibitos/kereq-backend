@@ -23,14 +23,17 @@ import java.util.UUID;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
-    @Autowired
-    private JWTService jwtService;
+    private final JWTService jwtService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public AuthController(AuthService authService, JWTService jwtService, ModelMapper modelMapper) {
+        this.authService = authService;
+        this.jwtService = jwtService;
+        this.modelMapper = modelMapper;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {

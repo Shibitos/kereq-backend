@@ -15,11 +15,14 @@ import java.util.List;
 @Service
 public class DictionaryService {
 
-    @Autowired
-    private DictionaryRepository dictionaryRepository;
+    private final DictionaryRepository dictionaryRepository;
 
-    @Autowired
-    private DictionaryItemRepository dictionaryItemRepository;
+    private final DictionaryItemRepository dictionaryItemRepository;
+
+    public DictionaryService(DictionaryRepository dictionaryRepository, DictionaryItemRepository dictionaryItemRepository) {
+        this.dictionaryRepository = dictionaryRepository;
+        this.dictionaryItemRepository = dictionaryItemRepository;
+    }
 
     @Cacheable(value = CacheName.DICTIONARY_ITEMS, key = "#code")
     public List<DictionaryItemData> getAllDictionaryItems(String code) {

@@ -15,32 +15,26 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 class CommentStatisticsServiceUnitTest {
 
+    private final CommentLikeRepository commentLikeRepository = Mockito.mock(CommentLikeRepository.class);
 
-    @Mock
-    private CommentRepository commentRepository;
+    private final CommentStatisticsRepository commentStatisticsRepository = Mockito.mock(CommentStatisticsRepository.class);
 
-    @Mock
-    private CommentLikeRepository commentLikeRepository;
-
-    @Mock
-    private CommentStatisticsRepository commentStatisticsRepository;
-
-    @InjectMocks
     private CommentStatisticsService commentStatisticsService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(commentStatisticsRepository.save(Mockito.any(CommentStatisticsData.class)))
                 .thenAnswer(i -> i.getArguments()[0]);
         when(commentStatisticsRepository.findByCommentId(1L)).thenReturn(null);
         when(commentStatisticsRepository.findByCommentId(2L)).thenReturn(new CommentStatisticsData());
+        commentStatisticsService = new CommentStatisticsService(commentLikeRepository, commentStatisticsRepository);
     }
 
     @Test

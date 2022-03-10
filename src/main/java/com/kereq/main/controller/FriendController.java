@@ -1,8 +1,10 @@
 package com.kereq.main.controller;
 
+import com.kereq.communicator.shared.dto.ConnectionEventDTO;
 import com.kereq.main.dto.FriendshipDTO;
 import com.kereq.main.entity.FriendshipData;
 import com.kereq.main.entity.UserDataInfo;
+import com.kereq.main.sender.ConnectionEventSender;
 import com.kereq.main.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/friends")
 public class FriendController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    private final ConnectionEventSender connectionEventSender;
+
+    public FriendController(UserService userService, ModelMapper modelMapper, ConnectionEventSender connectionEventSender) {
+        this.userService = userService;
+        this.modelMapper = modelMapper;
+        this.connectionEventSender = connectionEventSender;
+    }
 
     @GetMapping("/invitations")
     public Page<FriendshipDTO> getInvitations(Pageable page, @AuthenticationPrincipal UserDataInfo user) {
@@ -47,6 +55,8 @@ public class FriendController {
     public ResponseEntity<Object> acceptInvitation(@PathVariable("senderId") long senderId,
                                                    @AuthenticationPrincipal UserDataInfo user) {
         userService.acceptInvitation(user.getId(), senderId);
+        connectionEventSender.send(new ConnectionEventDTO(ConnectionEventDTO.Type.CONNECT, user.getId(), senderId));
+        connectionEventSender.send(new ConnectionEventDTO(ConnectionEventDTO.Type.CONNECT, senderId, user.getId()));
         return ResponseEntity.ok().build();
     }
 
@@ -61,6 +71,8 @@ public class FriendController {
     public ResponseEntity<Object> removeFriend(@PathVariable("friendId") long friendId,
                                                @AuthenticationPrincipal UserDataInfo user) {
         userService.removeFriend(user.getId(), friendId);
+        connectionEventSender.send(new ConnectionEventDTO(ConnectionEventDTO.Type.REMOVAL, user.getId(), friendId));
+        connectionEventSender.send(new ConnectionEventDTO(ConnectionEventDTO.Type.REMOVAL, friendId, user.getId()));
         return ResponseEntity.ok().build();
     }
 

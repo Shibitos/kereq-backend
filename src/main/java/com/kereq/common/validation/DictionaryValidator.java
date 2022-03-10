@@ -11,8 +11,11 @@ public class DictionaryValidator implements ConstraintValidator<DictionaryValue,
 
     private String dictCode;
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
+
+    public DictionaryValidator(DictionaryService dictionaryService) {
+        this.dictionaryService = dictionaryService;
+    }
 
     @Override
     public void initialize(DictionaryValue constraintAnnotation) {

@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,21 +53,16 @@ class ImageServiceUnitTest {
 
     private static final String THUMBNAIL_MINI_SUFFIX = "_tbm";
 
-    @Mock
-    private EnvironmentService environmentService;
+    private final EnvironmentService environmentService = Mockito.mock(EnvironmentService.class);
 
-    @Mock
-    private ImageUtil imageUtil;
+    private final ImageUtil imageUtil = Mockito.mock(ImageUtil.class);
 
-    @Mock
-    private FileUtil fileUtil;
+    private final FileUtil fileUtil = Mockito.mock(FileUtil.class);
 
     private ImageService imageService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-
         when(environmentService.getParam(ParamKey.IMG_EXTENSION)).thenReturn(IMAGE_EXTENSION);
         when(environmentService.getParamInteger(ParamKey.IMG_DIR_DIV_CHAR_COUNT)).thenReturn(CHAR_DIV_COUNT);
         when(environmentService.getParamInteger(ParamKey.IMG_DIR_DIV_MAX_LEVEL)).thenReturn(DIRECTORY_MAX_LEVEL);
@@ -76,7 +72,6 @@ class ImageServiceUnitTest {
         when(environmentService.getParam(ParamKey.THUMBNAIL_SUFFIX)).thenReturn(THUMBNAIL_SUFFIX);
         when(environmentService.getParamInteger(ParamKey. THUMBNAIL_MINI_SIZE)).thenReturn(THUMBNAIL_MINI_SIZE);
         when(environmentService.getParam(ParamKey.THUMBNAIL_MINI_SUFFIX)).thenReturn(THUMBNAIL_MINI_SUFFIX);
-
         imageService = new ImageService(environmentService, imageUtil, fileUtil);
     }
 

@@ -15,8 +15,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class FindFriendService {
 
-    @Autowired
-    private FindFriendRepository findFriendRepository;
+    private final FindFriendRepository findFriendRepository;
+
+    public FindFriendService(FindFriendRepository findFriendRepository) {
+        this.findFriendRepository = findFriendRepository;
+    }
 
     public void createFindFriendAd(FindFriendData findFriendData) { //TODO: sanitize html
         if (findFriendData.getUser() == null) {

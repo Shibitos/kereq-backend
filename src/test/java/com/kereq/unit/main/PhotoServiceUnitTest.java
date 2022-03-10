@@ -19,6 +19,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,17 +39,13 @@ class PhotoServiceUnitTest {
 
     private final int profilePhotoMaxHeight = 500;
 
-    @Mock
-    private ImageService imageService;
+    private final ImageService imageService = Mockito.mock(ImageService.class);
 
-    @Mock
-    private PhotoRepository photoRepository;
+    private final PhotoRepository photoRepository = Mockito.mock(PhotoRepository.class);
 
-    @Mock
-    private UserRepository userRepository;
+    private final UserRepository userRepository = Mockito.mock(UserRepository.class);
 
-    @Mock
-    private EnvironmentService environmentService;
+    private final EnvironmentService environmentService = Mockito.mock(EnvironmentService.class);
 
     private PhotoService photoService;
 
