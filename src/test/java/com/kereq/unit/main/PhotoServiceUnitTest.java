@@ -51,7 +51,6 @@ class PhotoServiceUnitTest {
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(environmentService.getParamInteger(ParamKey.PHOTO_MAX_WIDTH)).thenReturn(photoMaxWidth);
         when(environmentService.getParamInteger(ParamKey.PHOTO_MAX_HEIGHT)).thenReturn(photoMaxHeight);
         when(environmentService.getParamInteger(ParamKey.PHOTO_PROFILE_MAX_WIDTH)).thenReturn(profilePhotoMaxWidth);

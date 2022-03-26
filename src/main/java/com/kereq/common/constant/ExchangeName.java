@@ -5,7 +5,7 @@ public class ExchangeName {
     private ExchangeName() {
     }
 
-    public static final String CONNECTIONS_BACKEND = "exchange.connections.backend";
-    public static final String CONNECTIONS_WEBSOCKET = "exchange.connections.websocket";
+    public static final String CONNECTIONS_BACKEND = "exchange.backend.connections";
+    public static final String CONNECTIONS_WEBSOCKET = "exchange.websocket.connections";
     public static final String MESSAGES = "exchange.messages";
 }
