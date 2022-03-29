@@ -7,7 +7,6 @@ import com.kereq.main.entity.PostStatisticsData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.PostLikeRepository;
 import com.kereq.main.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

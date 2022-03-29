@@ -1,16 +1,17 @@
 package com.kereq.main.controller;
 
+import com.kereq.common.service.EventPublisherService;
 import com.kereq.main.dto.PhotoDTO;
 import com.kereq.main.dto.ProfileImageDTO;
 import com.kereq.main.dto.UserBiographyDTO;
 import com.kereq.main.dto.UserDTO;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.entity.UserDataInfo;
+import com.kereq.main.event.ChangedProfilePictureEvent;
 import com.kereq.main.service.PhotoService;
 import com.kereq.main.service.UserService;
 import com.kereq.main.util.ImageCropOptions;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,11 +30,14 @@ public class UserProfileController {
 
     private final PhotoService photoService;
 
+    private final EventPublisherService eventPublisherService;
+
     private final ModelMapper modelMapper;
 
-    public UserProfileController(UserService userService, PhotoService photoService, ModelMapper modelMapper) {
+    public UserProfileController(UserService userService, PhotoService photoService, EventPublisherService eventPublisherService, ModelMapper modelMapper) {
         this.userService = userService;
         this.photoService = photoService;
+        this.eventPublisherService = eventPublisherService;
         this.modelMapper = modelMapper;
     }
 
@@ -76,6 +80,7 @@ public class UserProfileController {
                                                      @AuthenticationPrincipal UserDataInfo user) {
         photoService.addProfilePhoto(user.getId(), profileImageDTO.getFile(),
                 new ImageCropOptions(profileImageDTO.getSize(), profileImageDTO.getPosX(), profileImageDTO.getPosY()));
+        eventPublisherService.publishEvent(new ChangedProfilePictureEvent(user.getId()));
         return ResponseEntity.ok().build();
     }
 }

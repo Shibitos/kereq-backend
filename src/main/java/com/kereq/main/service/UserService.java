@@ -8,7 +8,6 @@ import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.FriendshipRepository;
 import com.kereq.main.repository.PhotoRepository;
 import com.kereq.main.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

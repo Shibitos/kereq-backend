@@ -6,7 +6,6 @@ import com.kereq.main.entity.CommentStatisticsData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.CommentLikeRepository;
 import com.kereq.main.repository.CommentStatisticsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

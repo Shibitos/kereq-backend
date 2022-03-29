@@ -12,7 +12,6 @@ import com.kereq.main.util.ImageCropOptions;
 import com.kereq.main.util.ImageResizeOptions;
 import com.kereq.main.util.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

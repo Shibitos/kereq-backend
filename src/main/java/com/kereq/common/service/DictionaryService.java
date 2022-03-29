@@ -6,7 +6,6 @@ import com.kereq.common.error.RepositoryError;
 import com.kereq.common.repository.DictionaryItemRepository;
 import com.kereq.common.repository.DictionaryRepository;
 import com.kereq.main.exception.ApplicationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 

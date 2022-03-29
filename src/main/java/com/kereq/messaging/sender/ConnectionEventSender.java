@@ -1,4 +1,4 @@
-package com.kereq.main.sender;
+package com.kereq.messaging.sender;
 
 import com.kereq.common.constant.ExchangeName;
 import com.kereq.communicator.shared.dto.ConnectionEventDTO;

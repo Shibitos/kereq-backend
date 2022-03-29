@@ -4,7 +4,7 @@ import com.kereq.common.constant.QueueName;
 import com.kereq.communicator.shared.dto.ConnectionEventDTO;
 import com.kereq.main.repository.FriendshipRepository;
 import com.kereq.main.repository.UserRepository;
-import com.kereq.main.sender.ConnectionEventSender;
+import com.kereq.messaging.sender.ConnectionEventSender;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

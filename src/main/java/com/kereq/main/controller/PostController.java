@@ -9,7 +9,6 @@ import com.kereq.main.entity.UserDataInfo;
 import com.kereq.main.service.PostLikeService;
 import com.kereq.main.service.PostService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

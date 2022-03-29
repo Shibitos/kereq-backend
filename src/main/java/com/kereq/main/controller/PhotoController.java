@@ -2,7 +2,6 @@ package com.kereq.main.controller;
 
 import com.kereq.main.constant.PhotoSize;
 import com.kereq.main.service.ImageService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

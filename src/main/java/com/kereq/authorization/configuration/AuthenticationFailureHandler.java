@@ -2,7 +2,6 @@ package com.kereq.authorization.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kereq.authorization.error.AuthError;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
