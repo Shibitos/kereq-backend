@@ -6,18 +6,20 @@ import com.kereq.main.entity.CommentLikeData;
 import com.kereq.main.entity.CommentStatisticsData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.CommentLikeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentLikeService { //TODO: abstract posts&comments?
 
-    @Autowired
-    private CommentLikeRepository commentLikeRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
-    @Autowired
-    private CommentStatisticsService commentStatisticsService;
+    private final CommentStatisticsService commentStatisticsService;
+
+    public CommentLikeService(CommentLikeRepository commentLikeRepository, CommentStatisticsService commentStatisticsService) {
+        this.commentLikeRepository = commentLikeRepository;
+        this.commentStatisticsService = commentStatisticsService;
+    }
 
     public CommentLikeData getUserLike(long userId, long commentId) {
         return commentLikeRepository.findByUserIdAndCommentId(userId, commentId);

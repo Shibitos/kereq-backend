@@ -2,7 +2,6 @@ package com.kereq.common.validation;
 
 import com.kereq.common.service.DictionaryService;
 import com.kereq.common.validation.annotation.DictionaryValue;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -11,8 +10,11 @@ public class DictionaryValidator implements ConstraintValidator<DictionaryValue,
 
     private String dictCode;
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
+
+    public DictionaryValidator(DictionaryService dictionaryService) {
+        this.dictionaryService = dictionaryService;
+    }
 
     @Override
     public void initialize(DictionaryValue constraintAnnotation) {

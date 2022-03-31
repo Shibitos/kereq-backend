@@ -16,9 +16,7 @@ import com.kereq.messaging.entity.MessageTemplateData;
 import com.kereq.messaging.repository.MessageRepository;
 import com.kereq.messaging.repository.MessageTemplateRepository;
 import com.kereq.messaging.service.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -32,38 +30,38 @@ import java.util.UUID;
 @Service
 public class AuthService {
 
-    @Autowired
-    private ApplicationContext ctx;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final TokenRepository tokenRepository;
 
-    @Autowired
-    private TokenRepository tokenRepository;
+    private final MessageTemplateRepository messageTemplateRepository;
 
-    @Autowired
-    private MessageTemplateRepository messageTemplateRepository;
+    private final MessageRepository messageRepository;
 
-    @Autowired
-    private MessageRepository messageRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
-    @Autowired
-    private EmailService emailService;
-
-    @Value("${frontend.url}")
-    private String frontendUrl;
+    private final String frontendUrl;
 
     public static final String VERIFICATION_TEMPLATE_CODE = "COMPLETE_REGISTRATION";
 
     public static final int TOKEN_EXPIRATION_TIME_MIN = 60 * 24; //TODO: move to app parameters (and create them)
 
     public static final int TOKEN_RESEND_TIME_MIN = 1; //TODO: always lower than tokenExpirationTime
+
+    public AuthService(UserRepository userRepository, RoleRepository roleRepository, TokenRepository tokenRepository, MessageTemplateRepository messageTemplateRepository, MessageRepository messageRepository, PasswordEncoder passwordEncoder, EmailService emailService, @Value("${frontend.url}") String frontendUrl) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.tokenRepository = tokenRepository;
+        this.messageTemplateRepository = messageTemplateRepository;
+        this.messageRepository = messageRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
+        this.frontendUrl = frontendUrl;
+    }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public TokenData registerUser(UserData user) {

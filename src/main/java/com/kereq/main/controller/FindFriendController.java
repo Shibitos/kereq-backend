@@ -6,7 +6,6 @@ import com.kereq.main.entity.UserData;
 import com.kereq.main.entity.UserDataInfo;
 import com.kereq.main.service.FindFriendService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,11 +19,14 @@ import javax.validation.Valid;
 @RequestMapping("/find-friends")
 public class FindFriendController {
 
-    @Autowired
-    private FindFriendService findFriendService;
+    private final FindFriendService findFriendService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public FindFriendController(FindFriendService findFriendService, ModelMapper modelMapper) {
+        this.findFriendService = findFriendService;
+        this.modelMapper = modelMapper;
+    }
 
     @GetMapping
     public FindFriendDTO getMyAd(@AuthenticationPrincipal UserDataInfo user) {
@@ -56,7 +58,7 @@ public class FindFriendController {
     }
 
     @GetMapping("/browse")
-    public Page<FindFriendDTO> getAdsForUser(@PageableDefault(sort = { "auditMD" }) Pageable page,
+    public Page<FindFriendDTO> getAdsForUser(@PageableDefault(sort = {"auditMD"}) Pageable page,
                                              @AuthenticationPrincipal UserDataInfo user) {
         return findFriendService.getFindFriendAdsForUser((UserData) user, page)
                 .map(f -> modelMapper.map(f, FindFriendDTO.class));

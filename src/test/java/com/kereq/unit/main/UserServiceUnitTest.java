@@ -14,34 +14,30 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 class UserServiceUnitTest {
 
-    @Mock
-    private UserRepository userRepository;
+    private final UserRepository userRepository = Mockito.mock(UserRepository.class);
 
-    @Mock
-    private FriendshipRepository friendshipRepository;
+    private final FriendshipRepository friendshipRepository = Mockito.mock(FriendshipRepository.class);
 
-    @Mock
-    private PhotoRepository photoRepository;
+    private final PhotoRepository photoRepository = Mockito.mock(PhotoRepository.class);
 
-    @InjectMocks
     private UserService userService;
 
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        userService = new UserService(userRepository, photoRepository, friendshipRepository);
     }
 
     @Test
@@ -147,10 +143,10 @@ class UserServiceUnitTest {
         AssertHelper.assertException(CommonError.INVALID_ERROR,
                 () -> userService.acceptInvitation(1L, 3L));
 
-        ArgumentCaptor<FriendshipData> captor = ArgumentCaptor.forClass(FriendshipData.class);
+        ArgumentCaptor<FriendshipData> friendshipArgumentCaptor = ArgumentCaptor.forClass(FriendshipData.class);
         userService.acceptInvitation(1L, 4L);
-        Mockito.verify(friendshipRepository, times(2)).save(captor.capture());
-        Assertions.assertThat(captor.getAllValues())
+        Mockito.verify(friendshipRepository, times(2)).save(friendshipArgumentCaptor.capture());
+        Assertions.assertThat(friendshipArgumentCaptor.getAllValues())
                 .allMatch(f -> FriendshipData.FriendshipStatus.ACCEPTED.equals(f.getStatus()));
     }
 

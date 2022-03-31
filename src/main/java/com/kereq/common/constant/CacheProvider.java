@@ -20,11 +20,4 @@ public enum CacheProvider {
     ROLES(new CacheRegion<RoleData>(CacheName.ROLES, RoleRepository.class, true));
 
     private CacheRegion<? extends BaseEntity> cacheRegion;
-
-    public interface CacheName {
-
-        String DICTIONARY_ITEMS = "DICTIONARY_ITEMS";
-        String MESSAGE_TEMPLATES = "MESSAGE_TEMPLATES";
-        String ROLES = "ROLES";
-    }
 }

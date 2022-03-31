@@ -13,12 +13,14 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
 @Constraint(validatedBy = DateValidator.class)
-@Target({ TYPE, FIELD, ANNOTATION_TYPE })
+@Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
 public @interface ValidDate {
 
     String message() default "Invalid date.";
+
     String messageFormat() default "Invalid date format. Expected: ";
+
     String messagePast() default "Date must be in the past";
 
     Class<?>[] groups() default {};

@@ -7,7 +7,6 @@ import com.kereq.main.entity.FindFriendData;
 import com.kereq.main.entity.UserData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.FindFriendRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,8 +14,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class FindFriendService {
 
-    @Autowired
-    private FindFriendRepository findFriendRepository;
+    private final FindFriendRepository findFriendRepository;
+
+    public FindFriendService(FindFriendRepository findFriendRepository) {
+        this.findFriendRepository = findFriendRepository;
+    }
 
     public void createFindFriendAd(FindFriendData findFriendData) { //TODO: sanitize html
         if (findFriendData.getUser() == null) {

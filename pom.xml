@@ -20,6 +20,12 @@
 		<aspectj-maven-plugin.version>1.14.0</aspectj-maven-plugin.version>
 	</properties>
 	<dependencies>
+		<!--COMMUNICATOR-->
+		<dependency>
+			<groupId>com.kereq.communicator</groupId>
+			<artifactId>shared</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<!--SPRING-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -152,6 +158,11 @@
 			<groupId>org.imgscalr</groupId>
 			<artifactId>imgscalr-lib</artifactId>
 			<version>4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yannbriancon</groupId>
+			<artifactId>spring-hibernate-query-utils</artifactId>
+			<version>1.0.3</version>
 		</dependency>
 
 		<!--AOP-->

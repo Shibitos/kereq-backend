@@ -49,8 +49,15 @@ public class CommentData extends AuditableEntity {
     @NotNull
     private String content;
 
-    @Transient
+    @OneToOne(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private CommentStatisticsData statistics;
+
+    public void setStatistics(CommentStatisticsData statistics) {
+        if (statistics != null) {
+            statistics.setComment(this);
+            this.statistics = statistics;
+        }
+    }
 
     @Override
     public boolean equals(Object o) {

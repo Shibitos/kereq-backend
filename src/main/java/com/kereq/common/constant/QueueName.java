@@ -1,18 +1,10 @@
 package com.kereq.common.constant;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public class QueueName {
 
-@AllArgsConstructor
-@Getter
-public enum QueueName {
-
-    MESSAGES(Constant.MESSAGES);
-
-    String name;
-
-    public interface Constant {
-
-        String MESSAGES = "messages";
+    private QueueName() {
     }
+
+    public static final String CONNECTIONS_BACKEND = "queue.connections";
+    public static final String MESSAGES = "queue.messages";
 }

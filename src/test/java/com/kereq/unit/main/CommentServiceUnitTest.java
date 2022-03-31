@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -25,37 +26,29 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class CommentServiceUnitTest {
 
-    @Mock
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository = Mockito.mock(CommentRepository.class);
 
-    @Mock
-    private PostStatisticsService postStatisticsService;
+    private final PostStatisticsService postStatisticsService = Mockito.mock(PostStatisticsService.class);
 
-    @Mock
-    private CommentStatisticsService commentStatisticsService;
+    private final CommentStatisticsService commentStatisticsService = Mockito.mock(CommentStatisticsService.class);
 
-    @Mock
-    private UserService userService;
+    private final UserService userService = Mockito.mock(UserService.class);
 
-    @InjectMocks
     private CommentService commentService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-        when(commentStatisticsService.initialize(Mockito.anyLong())).thenReturn(new CommentStatisticsData());
-        when(commentStatisticsService.getStatistics(Mockito.anyLong(), Mockito.anyLong()))
-                .thenReturn(new CommentStatisticsData());
+        when(commentStatisticsService.initialize()).thenReturn(new CommentStatisticsData());
         when(commentRepository.save(Mockito.any(CommentData.class))).thenAnswer(i -> {
             CommentData comment = (CommentData) i.getArguments()[0];
             comment.setId(1L);
             return comment;
         });
+        commentService = new CommentService(commentRepository, userService, postStatisticsService, commentStatisticsService);
     }
 
     @Test
@@ -121,7 +114,6 @@ class CommentServiceUnitTest {
 
         commentService.removeComment(3L, 2L);
         Mockito.verify(postStatisticsService, times(1)).removeComment(comment.getPostId());
-        Mockito.verify(commentStatisticsService, times(1)).remove(3L);
         Mockito.verify(commentRepository, times(1)).delete(Mockito.any(CommentData.class));
     }
 
@@ -132,14 +124,17 @@ class CommentServiceUnitTest {
         CommentData commentOne = new CommentData();
         commentOne.setId(1L);
         commentOne.setUser(user);
+        commentOne.setStatistics(new CommentStatisticsData());
         CommentData commentTwo = new CommentData();
         commentTwo.setId(2L);
         commentTwo.setUser(user);
+        commentTwo.setStatistics(new CommentStatisticsData());
         List<CommentData> list = Arrays.asList(commentOne, commentTwo);
         Page<CommentData> page = new PageImpl<>(list);
         when(commentRepository.findByPostId(Mockito.anyLong(), Mockito.any())).thenReturn(page);
 
         commentService.getPostComments(1L, 1L, null);
-        assertThat(list).allMatch(c -> c.getStatistics() != null);
+        verify(commentStatisticsService, times(list.size()))
+                .fillUserLikeType(Mockito.anyLong(), Mockito.any(CommentStatisticsData.class));
     }
 }

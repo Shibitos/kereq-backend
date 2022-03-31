@@ -7,52 +7,41 @@ import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.PostLikeRepository;
 import com.kereq.main.repository.PostRepository;
 import com.kereq.main.repository.PostStatisticsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostStatisticsService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    @Autowired
-    private PostLikeRepository postLikeRepository;
+    private final PostLikeRepository postLikeRepository;
 
-    @Autowired
-    private PostStatisticsRepository postStatisticsRepository;
+    private final PostStatisticsRepository postStatisticsRepository;
 
-    public PostStatisticsData getStatistics(long userId, long postId) {
-        PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
+    public PostStatisticsService(PostRepository postRepository, PostLikeRepository postLikeRepository, PostStatisticsRepository postStatisticsRepository) {
+        this.postRepository = postRepository;
+        this.postLikeRepository = postLikeRepository;
+        this.postStatisticsRepository = postStatisticsRepository;
+    }
+
+    public void fillUserLikeType(long userId, PostStatisticsData postStatistics) {
         if (postStatistics == null) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
-        PostLikeData postLikeData = postLikeRepository.findByUserIdAndPostId(userId, postId);
+        PostLikeData postLikeData = postLikeRepository
+                .findByUserIdAndPostId(userId, postStatistics.getPostId());
         if (postLikeData != null) {
             postStatistics.setUserLikeType(postLikeData.getType());
         }
-        return postStatistics;
     }
 
-    public PostStatisticsData initialize(long postId) {
-        if (postStatisticsRepository.existsByPostId(postId)) {
-            throw new ApplicationException(RepositoryError.RESOURCE_ALREADY_EXISTS);
-        }
+    public PostStatisticsData initialize() {
         PostStatisticsData postStatistics = new PostStatisticsData();
-        postStatistics.setPostId(postId);
         postStatistics.setLikesCount(0);
         postStatistics.setDislikesCount(0);
         postStatistics.setCommentsCount(0);
-        return postStatisticsRepository.save(postStatistics);
-    }
-
-    public void remove(long postId) {
-        PostStatisticsData postStatistics = postStatisticsRepository.findByPostId(postId);
-        if (postStatistics == null) {
-            throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
-        }
-        postStatisticsRepository.delete(postStatistics);
+        return postStatistics;
     }
 
     @Transactional

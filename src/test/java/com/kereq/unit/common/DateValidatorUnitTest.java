@@ -17,22 +17,16 @@ import static org.mockito.Mockito.when;
 
 class DateValidatorUnitTest {
 
-    private DateValidator dateValidator = new DateValidator();
+    private final DateValidator dateValidator = new DateValidator();
 
-    @Mock
-    private ConstraintValidatorContext context;
+    private final ConstraintValidatorContext context = Mockito.mock(ConstraintValidatorContext.class);
 
-    @Mock
-    private ConstraintValidatorContext.ConstraintViolationBuilder constraintViolationBuilder;
-
-    @Mock
-    private ConstraintValidatorContext constraintValidatorContext;
+    private final ConstraintValidatorContext.ConstraintViolationBuilder constraintViolationBuilder = Mockito.mock(ConstraintValidatorContext.ConstraintViolationBuilder.class);
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(context.buildConstraintViolationWithTemplate(Mockito.any())).thenReturn(constraintViolationBuilder);
-        when(constraintViolationBuilder.addConstraintViolation()).thenReturn(constraintValidatorContext);
+        when(constraintViolationBuilder.addConstraintViolation()).thenReturn(context);
     }
 
     @Test

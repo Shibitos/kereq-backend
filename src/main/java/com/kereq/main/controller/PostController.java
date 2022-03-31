@@ -9,7 +9,6 @@ import com.kereq.main.entity.UserDataInfo;
 import com.kereq.main.service.PostLikeService;
 import com.kereq.main.service.PostService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,18 +23,21 @@ import javax.validation.Valid;
 @RequestMapping("/posts")
 public class PostController {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
 
-    @Autowired
-    private PostLikeService postLikeService;
+    private final PostLikeService postLikeService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public PostController(PostService postService, PostLikeService postLikeService, ModelMapper modelMapper) {
+        this.postService = postService;
+        this.postLikeService = postLikeService;
+        this.modelMapper = modelMapper;
+    }
 
     @PostMapping
     public PostDTO addPost(@Valid @RequestBody PostDTO postDTO,
-                                        @AuthenticationPrincipal UserDataInfo user) {
+                           @AuthenticationPrincipal UserDataInfo user) {
         PostData post = modelMapper.map(postDTO, PostData.class);
         post.setUser((UserData) user);
         PostData saved = postService.createPost(post);
@@ -44,8 +46,8 @@ public class PostController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> modifyPost(@Valid @RequestBody PostDTO postDTO,
-                                           @PathVariable("id") long postId,
-                                           @AuthenticationPrincipal UserDataInfo user) {
+                                             @PathVariable("id") long postId,
+                                             @AuthenticationPrincipal UserDataInfo user) {
         PostData post = modelMapper.map(postDTO, PostData.class);
         postService.modifyPost(postId, user.getId(), post);
         return ResponseEntity.ok().build();
@@ -59,7 +61,7 @@ public class PostController {
 
     @GetMapping("/browse")
     public Page<PostDTO> browsePosts(
-            @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
+            @PageableDefault(sort = {"auditCD"}, direction = Sort.Direction.DESC)
                     Pageable page,
             @AuthenticationPrincipal UserDataInfo user) {
         return postService.getBrowsePosts(user.getId(), page).map(p -> modelMapper.map(p, PostDTO.class));
@@ -67,7 +69,7 @@ public class PostController {
 
     @GetMapping("/user/{userId}")
     public Page<PostDTO> getUserPosts(
-            @PageableDefault(sort = { "auditCD" }, direction = Sort.Direction.DESC)
+            @PageableDefault(sort = {"auditCD"}, direction = Sort.Direction.DESC)
                     Pageable page,
             @PathVariable("userId") long userId,
             @AuthenticationPrincipal UserDataInfo principal) {
@@ -83,21 +85,21 @@ public class PostController {
 
     @DeleteMapping("/{id}/like")
     public PostStatisticsDTO removeLike(@PathVariable("id") long postId,
-                                     @AuthenticationPrincipal UserDataInfo user) {
+                                        @AuthenticationPrincipal UserDataInfo user) {
         PostStatisticsData postStatistics = postLikeService.removeLike(user.getId(), postId);
         return modelMapper.map(postStatistics, PostStatisticsDTO.class);
     }
 
     @PostMapping("/{id}/dislike")
     public PostStatisticsDTO addDislike(@PathVariable("id") long postId,
-                                     @AuthenticationPrincipal UserDataInfo user) {
+                                        @AuthenticationPrincipal UserDataInfo user) {
         PostStatisticsData postStatistics = postLikeService.addDislike(user.getId(), postId);
         return modelMapper.map(postStatistics, PostStatisticsDTO.class);
     }
 
     @DeleteMapping("/{id}/dislike")
     public PostStatisticsDTO removeDislike(@PathVariable("id") long postId,
-                                        @AuthenticationPrincipal UserDataInfo user) {
+                                           @AuthenticationPrincipal UserDataInfo user) {
         PostStatisticsData postStatistics = postLikeService.removeDislike(user.getId(), postId);
         return modelMapper.map(postStatistics, PostStatisticsDTO.class);
     }

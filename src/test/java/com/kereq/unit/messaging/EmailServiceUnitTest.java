@@ -1,8 +1,10 @@
 package com.kereq.unit.messaging;
 
-import com.kereq.common.constant.QueueName;
+import com.kereq.common.constant.ExchangeName;
+import com.kereq.common.constant.ParamKey;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
+import com.kereq.common.service.EnvironmentService;
 import com.kereq.common.service.MessagingService;
 import com.kereq.helper.AssertHelper;
 import com.kereq.messaging.entity.MessageData;
@@ -15,7 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.core.env.Environment;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,16 +28,12 @@ import static org.mockito.Mockito.when;
 
 class EmailServiceUnitTest {
 
-    @Mock
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository = Mockito.mock(MessageRepository.class);
 
-    @Mock
-    private Environment env;
+    private final EnvironmentService environmentService = Mockito.mock(EnvironmentService.class);
 
-    @Mock
-    private MessagingService messagingService;
+    private final MessagingService messagingService = Mockito.mock(MessagingService.class);
 
-    @InjectMocks
     private EmailService emailService;
 
     private final String[] validEmails = {
@@ -72,9 +70,9 @@ class EmailServiceUnitTest {
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-        when(env.getProperty("email.support")).thenReturn("kereq@ethereal.email");
+        when(environmentService.getParam(ParamKey.EMAIL_SUPPORT)).thenReturn("kereq@ethereal.email");
         when(messageRepository.save(Mockito.any(MessageData.class))).thenAnswer(i -> i.getArguments()[0]);
+        emailService = new EmailService(messageRepository, environmentService, messagingService);
     }
 
     @Test
@@ -147,7 +145,7 @@ class EmailServiceUnitTest {
         message.setStatus(MessageData.Status.PENDING);
         emailService.sendMessage(message);
         Mockito.verify(messagingService, times(1))
-                .sendMessageToQueue(QueueName.Constant.MESSAGES, 2L);
+                .sendMessageFanout(ExchangeName.MESSAGES, 2L);
     }
 
     private MessageTemplateData getTestTemplate(String code, String subject, String body) {

@@ -4,7 +4,6 @@ import com.kereq.common.dto.DictionaryItemDTO;
 import com.kereq.common.entity.DictionaryItemData;
 import com.kereq.common.service.DictionaryService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +16,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/dictionaries")
 public class DictionaryController {
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public DictionaryController(DictionaryService dictionaryService, ModelMapper modelMapper) {
+        this.dictionaryService = dictionaryService;
+        this.modelMapper = modelMapper;
+    }
 
     @GetMapping("/{code}")
     public List<DictionaryItemDTO> getDictionaryValues(@PathVariable("code") String code) {

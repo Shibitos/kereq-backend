@@ -1,6 +1,6 @@
 package com.kereq.common.config;
 
-import com.kereq.common.constant.CacheProvider;
+import com.kereq.common.constant.CacheName;
 import org.ehcache.config.CacheConfiguration;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
@@ -47,7 +47,7 @@ public class CacheConfig extends CachingConfigurerSupport {
 
     private Map<String, org.ehcache.config.CacheConfiguration<?, ?>> createCacheConfigurations(
             org.ehcache.config.CacheConfiguration<Object, Object> cacheConfiguration) {
-        return Arrays.stream(CacheProvider.CacheName.class.getFields())
+        return Arrays.stream(CacheName.class.getFields())
                 .collect(Collectors.toMap(Field::getName, field -> cacheConfiguration));
     }
 

@@ -1,6 +1,7 @@
 package com.kereq.common.config;
 
 import com.kereq.common.cache.CacheRegion;
+import com.kereq.common.constant.CacheName;
 import com.kereq.common.constant.CacheProvider;
 import com.kereq.common.constant.Dictionary;
 import com.kereq.common.entity.BaseEntity;
@@ -8,8 +9,8 @@ import com.kereq.common.entity.CodeEntity;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.repository.DictionaryItemRepository;
 import com.kereq.main.exception.ApplicationException;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -26,17 +27,20 @@ import java.util.stream.Collectors;
 @Service
 public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Autowired
-    CacheManager cacheManager;
+    private final CacheManager cacheManager;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
-    @Autowired
-    private DictionaryItemRepository dictionaryItemRepository;
+    private final DictionaryItemRepository dictionaryItemRepository;
+
+    public CacheLoader(CacheManager cacheManager, ApplicationContext applicationContext, DictionaryItemRepository dictionaryItemRepository) {
+        this.cacheManager = cacheManager;
+        this.applicationContext = applicationContext;
+        this.dictionaryItemRepository = dictionaryItemRepository;
+    }
 
     @Override
-    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+    public void onApplicationEvent(@NonNull ApplicationReadyEvent applicationReadyEvent) {
         loadCaches();
     }
 
@@ -56,8 +60,7 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
                 }
                 if (obj instanceof CodeEntity) {
                     cache.put(((CodeEntity) obj).getCode(), obj);
-                }
-                else if (obj instanceof BaseEntity) {
+                } else if (obj instanceof BaseEntity) {
                     cache.put(((BaseEntity) obj).getId(), obj);
                 }
             }
@@ -68,7 +71,7 @@ public class CacheLoader implements ApplicationListener<ApplicationReadyEvent> {
 
     private void loadDictionariesLists() {
         log.info("Loading dictionaries lists");
-        Cache cache = cacheManager.getCache(CacheProvider.CacheName.DICTIONARY_ITEMS);
+        Cache cache = cacheManager.getCache(CacheName.DICTIONARY_ITEMS);
         if (cache == null) {
             throw new ApplicationException(CommonError.OTHER_ERROR);
         }

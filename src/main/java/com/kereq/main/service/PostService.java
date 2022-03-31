@@ -6,7 +6,6 @@ import com.kereq.main.entity.CommentData;
 import com.kereq.main.entity.PostData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,26 +14,28 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PostService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private PostStatisticsService postStatisticsService;
+    private final PostStatisticsService postStatisticsService;
+
+    public PostService(PostRepository postRepository, CommentService commentService, UserService userService, PostStatisticsService postStatisticsService) {
+        this.postRepository = postRepository;
+        this.commentService = commentService;
+        this.userService = userService;
+        this.postStatisticsService = postStatisticsService;
+    }
 
     @Transactional
     public PostData createPost(PostData post) { //TODO: sanitize html
         if (post.getUser() == null) { //TODO: needed?
             throw new ApplicationException(CommonError.MISSING_ERROR, "user");
         }
-        PostData saved = postRepository.save(post);
-        saved.setStatistics(postStatisticsService.initialize(saved.getId()));
-        return saved;
+        post.setStatistics(postStatisticsService.initialize());
+        return postRepository.save(post);
     }
 
     public void modifyPost(long postId, long userId, PostData post) { //TODO: sanitize html
@@ -54,16 +55,15 @@ public class PostService {
         if (!post.getUser().getId().equals(userId)) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
         }
-        postStatisticsService.remove(post.getId());
         postRepository.delete(post);
     }
 
     public Page<PostData> getBrowsePosts(long userId, Pageable page) {
         Page<PostData> posts = postRepository.findPostsForUser(userId, page);
         posts.forEach(post -> {
-            Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3));
+            postStatisticsService.fillUserLikeType(userId, post.getStatistics());
+            Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3)); //TODO: param
             post.setComments(comments.toSet());
-            post.setStatistics(postStatisticsService.getStatistics(userId, post.getId()));
         });
         return posts;
     }
@@ -71,9 +71,9 @@ public class PostService {
     public Page<PostData> getUserPosts(long userId, Pageable page) {
         Page<PostData> posts = postRepository.findByUserId(userId, page);
         posts.forEach(post -> {
+            postStatisticsService.fillUserLikeType(userId, post.getStatistics());
             Page<CommentData> comments = commentService.getPostComments(userId, post.getId(), Pageable.ofSize(3));
             post.setComments(comments.toSet());
-            post.setStatistics(postStatisticsService.getStatistics(userId, post.getId()));
         });
         return posts;
     }

@@ -8,7 +8,6 @@ import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.FriendshipRepository;
 import com.kereq.main.repository.PhotoRepository;
 import com.kereq.main.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,17 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PhotoRepository photoRepository;
-
-    @Autowired
-    private FriendshipRepository friendshipRepository;
-
+    
     private static final String STATUS_FIELD = "status"; //TODO: remove?
+    
+    private final UserRepository userRepository;
+
+    private final PhotoRepository photoRepository;
+
+    private final FriendshipRepository friendshipRepository;
+
+    public UserService(UserRepository userRepository, PhotoRepository photoRepository, FriendshipRepository friendshipRepository) {
+        this.userRepository = userRepository;
+        this.photoRepository = photoRepository;
+        this.friendshipRepository = friendshipRepository;
+    }
 
     public UserData modifyUser(long userId, UserData user) {
         UserData original = userRepository.findById(userId)
@@ -119,6 +121,10 @@ public class UserService {
 
     public Page<FriendshipData> getInvitationsUsers(long userId, Pageable page) {
         return friendshipRepository.findUserInvitations(userId, page);
+    }
+
+    public FriendshipData getFriendship(long userId, long friendId) {
+        return friendshipRepository.findByUserIdAndFriendId(userId, friendId);
     }
 
     public UserData getUser(long userId) {

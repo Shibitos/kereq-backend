@@ -42,4 +42,6 @@ public class UserDTO extends BaseDTO {
     private Set<RoleDTO> roles;
 
     private PhotoDTO profilePhoto;
+
+    private boolean online; //TODO: visible to anyone?
 }

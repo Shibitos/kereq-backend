@@ -1,8 +1,10 @@
 package com.kereq.messaging.service;
 
-import com.kereq.common.constant.QueueName;
+import com.kereq.common.constant.ExchangeName;
+import com.kereq.common.constant.ParamKey;
 import com.kereq.common.error.CommonError;
 import com.kereq.common.error.RepositoryError;
+import com.kereq.common.service.EnvironmentService;
 import com.kereq.common.service.MessagingService;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.messaging.entity.MessageData;
@@ -10,9 +12,9 @@ import com.kereq.messaging.entity.MessageTemplateData;
 import com.kereq.messaging.repository.MessageRepository;
 import com.sanctionco.jmail.JMail;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Map;
@@ -24,24 +26,27 @@ public class EmailService {
 
     private static final Pattern PARAM_PATTERN = Pattern.compile("\\{\\{.*?}}");
 
-    @Autowired
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
 
-    @Autowired
-    private Environment env;
+    private final EnvironmentService environmentService;
 
-    @Autowired
-    private MessagingService messagingService;
+    private final MessagingService messagingService;
+
+    public EmailService(MessageRepository messageRepository, EnvironmentService environmentService, MessagingService messagingService) {
+        this.messageRepository = messageRepository;
+        this.environmentService = environmentService;
+        this.messagingService = messagingService;
+    }
 
     public MessageData createMessageFromTemplate(MessageTemplateData template, String to, Map<String, String> data) {
-        if (ObjectUtils.isEmpty(env.getProperty("email.support"))) { //TODO: better, params
+        if (ObjectUtils.isEmpty(environmentService.getParam(ParamKey.EMAIL_SUPPORT))) {
             throw new ApplicationException(CommonError.INVALID_ERROR, "sender");
         }
         if (!JMail.isValid(to)) {
             throw new ApplicationException(CommonError.INVALID_ERROR, "email");
         }
         MessageData message = new MessageData();
-        message.setFrom(env.getProperty("email.support"));
+        message.setFrom(environmentService.getParam(ParamKey.EMAIL_SUPPORT));
         message.setTo(to);
         message.setSubject(appendParameters(template.getSubject(), data));
         message.setBody(appendParameters(template.getBody(), data)); //TODO: sanitizing
@@ -52,6 +57,7 @@ public class EmailService {
         return messageRepository.save(message);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void sendMessage(MessageData message) { //TODO: bulk message?
         if (!messageRepository.existsById(message.getId())) {
             throw new ApplicationException(RepositoryError.RESOURCE_NOT_FOUND);
@@ -59,7 +65,7 @@ public class EmailService {
         if (!MessageData.Status.PENDING.equals(message.getStatus())) {
             throw new ApplicationException(CommonError.INVALID_ERROR, "status");
         }
-        messagingService.sendMessageToQueue(QueueName.Constant.MESSAGES, message.getId());
+        messagingService.sendMessageFanout(ExchangeName.MESSAGES, message.getId());
     }
 
     private String appendParameters(String content, Map<String, String> params) {

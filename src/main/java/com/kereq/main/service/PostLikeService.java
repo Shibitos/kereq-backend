@@ -7,21 +7,23 @@ import com.kereq.main.entity.PostStatisticsData;
 import com.kereq.main.exception.ApplicationException;
 import com.kereq.main.repository.PostLikeRepository;
 import com.kereq.main.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostLikeService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    @Autowired
-    private PostLikeRepository postLikeRepository;
+    private final PostLikeRepository postLikeRepository;
 
-    @Autowired
-    private PostStatisticsService postStatisticsService;
+    private final PostStatisticsService postStatisticsService;
+
+    public PostLikeService(PostRepository postRepository, PostLikeRepository postLikeRepository, PostStatisticsService postStatisticsService) {
+        this.postRepository = postRepository;
+        this.postLikeRepository = postLikeRepository;
+        this.postStatisticsService = postStatisticsService;
+    }
 
     public PostLikeData getUserLike(long userId, long postId) {
         return postLikeRepository.findByUserIdAndPostId(userId, postId);
@@ -70,7 +72,6 @@ public class PostLikeService {
         postLikeRepository.save(postLike);
         return postStatisticsService.addDislike(postId);
     }
-
 
     @Transactional
     public PostStatisticsData removeDislike(long userId, long postId) {

@@ -8,10 +8,7 @@ import com.kereq.messaging.error.MessageError;
 import com.kereq.messaging.repository.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.plexus.util.StringUtils;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -26,21 +23,19 @@ public class MessageListener {
 
     public static final Integer MAX_RETRY_COUNT = 3; //TODO: params
 
-    @Autowired
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
-    @Autowired
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
-    @RabbitListener(bindings = @QueueBinding(
-            value = @org.springframework.amqp.rabbit.annotation.Queue(value = QueueName.Constant.MESSAGES, durable = "true"),
-            exchange = @Exchange(name = QueueName.Constant.MESSAGES, durable = "true", type = "topic"),
-            key = QueueName.Constant.MESSAGES
-    )
-    )
+    public MessageListener(MessageRepository messageRepository, JavaMailSender mailSender, EntityManager entityManager) {
+        this.messageRepository = messageRepository;
+        this.mailSender = mailSender;
+        this.entityManager = entityManager;
+    }
+
+    @RabbitListener(queues = QueueName.MESSAGES)
     @Transactional
     public void onMessage(@Payload long messageId) {
         MessageData message = messageRepository.findForSendingById(messageId);
@@ -63,10 +58,9 @@ public class MessageListener {
                 message.setErrorMessage(StringUtils.abbreviate(e.getMessage(), 100));
             }
             messageRepository.save(message);
-            log.error("Error while sending message (id: {}).", message.getId());
+            log.error("Error while sending message (id: {}).", message.getId(), e);
             throw new ApplicationException(MessageError.UNABLE_TO_SEND);
         }
         message.setStatus(MessageData.Status.SENT);
-        messageRepository.save(message);
     }
 }

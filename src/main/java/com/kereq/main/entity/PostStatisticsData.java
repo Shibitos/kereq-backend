@@ -27,13 +27,12 @@ public class PostStatisticsData extends BaseEntity {
     @SequenceGenerator(name = "SEQ_POSTAT_ID", sequenceName = "SEQ_POSTAT_ID", allocationSize = 50)
     @Column(name = "POSTAT_ID")
     private Long id;
-    
-    @Column(name = "POSTAT_POST_ID")
-    //@NotNull
+
+    @Column(name = "POSTAT_POST_ID", insertable = false, updatable = false)
     private Long postId;
 
     @OneToOne(targetEntity = PostData.class, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "POSTAT_POST_ID", insertable = false, updatable = false)
+    @JoinColumn(nullable = false, name = "POSTAT_POST_ID")
     private PostData post;
 
     @Column(name = "POSTAT_LIKES_COUNT")

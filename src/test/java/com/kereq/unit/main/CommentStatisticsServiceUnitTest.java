@@ -15,78 +15,62 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 class CommentStatisticsServiceUnitTest {
 
+    private final CommentLikeRepository commentLikeRepository = Mockito.mock(CommentLikeRepository.class);
 
-    @Mock
-    private CommentRepository commentRepository;
+    private final CommentStatisticsRepository commentStatisticsRepository = Mockito.mock(CommentStatisticsRepository.class);
 
-    @Mock
-    private CommentLikeRepository commentLikeRepository;
-
-    @Mock
-    private CommentStatisticsRepository commentStatisticsRepository;
-
-    @InjectMocks
     private CommentStatisticsService commentStatisticsService;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         when(commentStatisticsRepository.save(Mockito.any(CommentStatisticsData.class)))
                 .thenAnswer(i -> i.getArguments()[0]);
         when(commentStatisticsRepository.findByCommentId(1L)).thenReturn(null);
         when(commentStatisticsRepository.findByCommentId(2L)).thenReturn(new CommentStatisticsData());
+        commentStatisticsService = new CommentStatisticsService(commentLikeRepository, commentStatisticsRepository);
     }
 
     @Test
-    void testGetStatistics() {
+    void testFillUserLikeType() {
         CommentStatisticsData commentStatistics = new CommentStatisticsData();
-        when(commentStatisticsRepository.findByCommentId(3L)).thenReturn(commentStatistics);
-        when(commentStatisticsRepository.findByCommentId(4L)).thenReturn(commentStatistics);
 
         CommentLikeData commentLike = new CommentLikeData();
         commentLike.setType(LikeType.LIKE);
         when(commentLikeRepository.findByUserIdAndCommentId(1L, 4L)).thenReturn(commentLike);
 
-        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
-                () -> commentStatisticsService.getStatistics(1L, 1L));
-        commentStatisticsService.getStatistics(1L, 3L);
+        CommentLikeData commentDislike = new CommentLikeData();
+        commentDislike.setType(LikeType.DISLIKE);
+        when(commentLikeRepository.findByUserIdAndCommentId(1L, 5L)).thenReturn(commentDislike);
+
+        commentStatistics.setCommentId(3L);
+        commentStatisticsService.fillUserLikeType(1L, commentStatistics);
         assertThat(commentStatistics.getUserLikeType()).isNull();
-        commentStatisticsService.getStatistics(1L, 4L);
+
+        commentStatistics.setCommentId(4L);
+        commentStatisticsService.fillUserLikeType(1L, commentStatistics);
         assertThat(commentStatistics.getUserLikeType()).isEqualTo(LikeType.LIKE);
+
+        commentStatistics.setCommentId(5L);
+        commentStatisticsService.fillUserLikeType(1L, commentStatistics);
+        assertThat(commentStatistics.getUserLikeType()).isEqualTo(LikeType.DISLIKE);
+
+        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
+                () -> commentStatisticsService.fillUserLikeType(1L, null));
     }
 
     @Test
     void testInitialize() {
-        when(commentStatisticsRepository.existsByCommentId(1L)).thenReturn(true);
-        when(commentStatisticsRepository.existsByCommentId(2L)).thenReturn(false);
-
-        AssertHelper.assertException(RepositoryError.RESOURCE_ALREADY_EXISTS,
-                () -> commentStatisticsService.initialize(1L));
-        CommentStatisticsData commentStatistics =
-                commentStatisticsService.initialize(2L);
-        assertThat(commentStatistics.getCommentId()).isEqualTo(2L);
+        CommentStatisticsData commentStatistics = commentStatisticsService.initialize();
         assertThat(commentStatistics.getLikesCount()).isZero();
         assertThat(commentStatistics.getDislikesCount()).isZero();
         assertThat(commentStatistics.getUserLikeType()).isNull();
-    }
-
-    @Test
-    void testRemove() {
-        when(commentStatisticsRepository.existsByCommentId(1L)).thenReturn(true);
-        when(commentStatisticsRepository.existsByCommentId(2L)).thenReturn(false);
-
-        AssertHelper.assertException(RepositoryError.RESOURCE_NOT_FOUND,
-                () -> commentStatisticsService.remove(1L));
-        commentStatisticsService.remove(2L);
-        Mockito.verify(commentStatisticsRepository, times(1))
-                .delete(Mockito.any(CommentStatisticsData.class));
     }
 
     @Test

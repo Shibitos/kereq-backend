@@ -6,6 +6,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableScheduling
-@ComponentScan({ "com.kereq.authorization.task" }) //TODO: neccessary?
+@ComponentScan({"com.kereq.authorization.task"}) //TODO: neccessary?
 public class TaskConfig {
 }
